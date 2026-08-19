@@ -1,0 +1,39 @@
+# TikTok LIVE Studio Local Data Access
+
+> A local WebSocket protocol that allows approved third-party applications on the creator machine to receive TikTok LIVE Studio likes, gifts, and chat events.
+
+Protocol version: `1.0.0`. The endpoint is loopback-only at `ws://127.0.0.1:30000-30015/v1/third-party`. A client must validate `SERVER_HELLO` before sending credentials. The public documentation is the source of truth.
+
+## Start Here
+
+- [Overview](https://tiktok-live-studio-local-data-access.pages.dev/guide/overview): Product scope, prerequisites, and local-only deployment model
+- [Quick Start](https://tiktok-live-studio-local-data-access.pages.dev/guide/quick-start): Minimum discovery, authentication, and event-receive flow
+- [Architecture](https://tiktok-live-studio-local-data-access.pages.dev/guide/architecture): Recommended client boundaries and lifecycle
+- [Agent Skill](https://tiktok-live-studio-local-data-access.pages.dev/guide/agent-skill): Install and use the reusable cross-stack coding-agent workflow
+
+## Protocol
+
+- [Connection Lifecycle](https://tiktok-live-studio-local-data-access.pages.dev/protocol/connection): Endpoint discovery, hello validation, native heartbeat, and reconnection
+- [Authentication](https://tiktok-live-studio-local-data-access.pages.dev/protocol/auth): `SERVER_HELLO`, `AUTH`, and `AUTH_RESULT` contracts
+- [Event Envelope](https://tiktok-live-studio-local-data-access.pages.dev/protocol/events): Common event shape, public user object, optional fields, and deduplication
+- [Errors and Disconnects](https://tiktok-live-studio-local-data-access.pages.dev/protocol/errors): Authentication errors, disconnect reasons, and client retry behavior
+
+## Events
+
+- [live.like](https://tiktok-live-studio-local-data-access.pages.dev/events/live-like): Like payload and string count fields
+- [live.gift](https://tiktok-live-studio-local-data-access.pages.dev/events/live-gift): Gift payload, combo fields, and gift object
+- [live.chat](https://tiktok-live-studio-local-data-access.pages.dev/events/live-chat): Plain-text chat payload
+
+## Agent Resources
+
+- [Installable Agent Skill](https://github.com/liangpeiran-bit/tiktok-live-studio-local-data-access/tree/main/.agents/skills/tiktok-live-studio-local-data-access): Protocol-correct implementation, review, and troubleshooting workflow for any compatible technology stack
+- [Complete English Context](https://tiktok-live-studio-local-data-access.pages.dev/llms-full.txt): Concatenated English documentation and Agent Skill source
+- [Chinese LLM Index](https://tiktok-live-studio-local-data-access.pages.dev/zh/llms.txt): Chinese documentation map
+
+## Optional
+
+- [Troubleshooting](https://tiktok-live-studio-local-data-access.pages.dev/guide/troubleshooting): Discovery, authentication, event, and heartbeat diagnostics
+- [JavaScript and TypeScript Sample](https://tiktok-live-studio-local-data-access.pages.dev/samples/javascript): Browser or Node-oriented example
+- [Unity Sample](https://tiktok-live-studio-local-data-access.pages.dev/samples/unity): Unity integration example
+- [H5 Overlay Sample](https://tiktok-live-studio-local-data-access.pages.dev/samples/h5): Local browser overlay example and credential caveats
+- [GitHub Repository](https://github.com/liangpeiran-bit/tiktok-live-studio-local-data-access): Documentation and Agent Skill source
