@@ -1,0 +1,4 @@
+interface:
+  display_name: "TikTok LIVE Studio Local Data Access"
+  short_description: "Integrate local LIVE Studio events in any stack"
+  default_prompt: "Use $tiktok-live-studio-local-data-access to integrate TikTok LIVE Studio local events into this project."

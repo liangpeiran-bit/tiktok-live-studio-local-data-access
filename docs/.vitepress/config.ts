@@ -62,6 +62,7 @@ export default defineConfig({
         nav: [
           { text: 'Overview', link: '/' },
           { text: 'Quick Start', link: '/guide/quick-start' },
+          { text: 'Agent Skill', link: '/guide/agent-skill' },
           { text: 'Protocol', link: '/protocol/connection' },
           { text: 'Events', link: '/events/live-like' },
           { text: 'Samples', link: '/samples/javascript' },
@@ -73,6 +74,7 @@ export default defineConfig({
               { text: 'Overview', link: '/guide/overview' },
               { text: 'Quick Start', link: '/guide/quick-start' },
               { text: 'Architecture', link: '/guide/architecture' },
+              { text: 'Agent Skill', link: '/guide/agent-skill' },
               { text: 'Troubleshooting', link: '/guide/troubleshooting' },
             ],
           },
@@ -114,6 +116,7 @@ export default defineConfig({
         nav: [
           { text: '概览', link: '/zh/' },
           { text: '快速开始', link: '/zh/guide/quick-start' },
+          { text: 'Agent Skill', link: '/zh/guide/agent-skill' },
           { text: '协议', link: '/zh/protocol/connection' },
           { text: '事件', link: '/zh/events/live-like' },
           { text: '示例', link: '/zh/samples/javascript' },
@@ -125,6 +128,7 @@ export default defineConfig({
               { text: '概览', link: '/zh/guide/overview' },
               { text: '快速开始', link: '/zh/guide/quick-start' },
               { text: '架构', link: '/zh/guide/architecture' },
+              { text: 'Agent Skill', link: '/zh/guide/agent-skill' },
               { text: '排障', link: '/zh/guide/troubleshooting' },
             ],
           },
