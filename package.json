@@ -8,8 +8,9 @@
     "node": ">=22"
   },
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:llms": "node scripts/generate-llms.mjs",
+    "docs:dev": "node scripts/generate-llms.mjs && vitepress dev docs",
+    "docs:build": "node scripts/generate-llms.mjs && vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {

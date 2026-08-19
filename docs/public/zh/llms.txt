@@ -1,0 +1,39 @@
+# TikTok LIVE Studio 本地数据开放
+
+> 面向运行在主播同一台机器上的受信任第三方应用，通过本地 WebSocket 接收 TikTok LIVE Studio 点赞、礼物和聊天事件。
+
+协议版本：`1.0.0`。服务仅监听本机回环地址 `ws://127.0.0.1:30000-30015/v1/third-party`。客户端必须先验证 `SERVER_HELLO`，再发送鉴权凭证。公开文档是协议事实来源。
+
+## 开始接入
+
+- [能力概览](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/overview)：产品范围、前提条件和仅限本机的部署模型
+- [快速开始](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/quick-start)：最小发现、鉴权和事件接收流程
+- [架构](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/architecture)：推荐的客户端职责和生命周期
+- [Agent Skill](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/agent-skill)：安装并使用与技术栈无关的编码 Agent 工作流
+
+## 协议
+
+- [连接生命周期](https://tiktok-live-studio-local-data-access.pages.dev/zh/protocol/connection)：端点发现、hello 校验、原生心跳和重连
+- [鉴权](https://tiktok-live-studio-local-data-access.pages.dev/zh/protocol/auth)：`SERVER_HELLO`、`AUTH` 和 `AUTH_RESULT` 契约
+- [事件信封](https://tiktok-live-studio-local-data-access.pages.dev/zh/protocol/events)：公共事件结构、用户对象、可选字段和去重
+- [错误码与断开](https://tiktok-live-studio-local-data-access.pages.dev/zh/protocol/errors)：鉴权错误、断开原因和客户端重试规则
+
+## 事件
+
+- [live.like](https://tiktok-live-studio-local-data-access.pages.dev/zh/events/live-like)：点赞事件及字符串计数字段
+- [live.gift](https://tiktok-live-studio-local-data-access.pages.dev/zh/events/live-gift)：礼物、连击字段和礼物对象
+- [live.chat](https://tiktok-live-studio-local-data-access.pages.dev/zh/events/live-chat)：纯文本聊天事件
+
+## Agent 资源
+
+- [可安装的 Agent Skill](https://github.com/liangpeiran-bit/tiktok-live-studio-local-data-access/tree/main/.agents/skills/tiktok-live-studio-local-data-access)：适配任意兼容技术栈的协议接入、审查和排障流程
+- [完整中文上下文](https://tiktok-live-studio-local-data-access.pages.dev/zh/llms-full.txt)：合并后的中文文档及 Agent Skill 原文
+- [English LLM Index](https://tiktok-live-studio-local-data-access.pages.dev/llms.txt)：英文文档地图
+
+## Optional
+
+- [排障](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/troubleshooting)：发现、鉴权、事件和心跳问题诊断
+- [JavaScript 和 TypeScript 示例](https://tiktok-live-studio-local-data-access.pages.dev/zh/samples/javascript)：面向浏览器或 Node 的示例
+- [Unity 示例](https://tiktok-live-studio-local-data-access.pages.dev/zh/samples/unity)：Unity 接入示例
+- [H5 弹幕层示例](https://tiktok-live-studio-local-data-access.pages.dev/zh/samples/h5)：本地浏览器弹幕层及凭证安全说明
+- [GitHub 仓库](https://github.com/liangpeiran-bit/tiktok-live-studio-local-data-access)：文档和 Agent Skill 源码
