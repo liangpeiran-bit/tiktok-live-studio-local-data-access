@@ -36,6 +36,7 @@ export default defineConfig({
       src: '/logo.png',
       alt: 'LIVE Studio',
     },
+    siteTitle: 'LIVE Studio',
     search: {
       provider: 'local',
       options: {
