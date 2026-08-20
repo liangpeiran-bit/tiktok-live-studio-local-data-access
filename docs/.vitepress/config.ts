@@ -5,6 +5,11 @@ export default defineConfig({
   title: 'LIVE Studio Local Data Access',
   description: 'Local real-time event access for LIVE Studio third-party clients',
   lastUpdated: true,
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/favicon-32x32.png', sizes: '32x32' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+  ],
   markdown: {
     config(md) {
       const defaultFence = md.renderer.rules.fence!
@@ -27,6 +32,10 @@ export default defineConfig({
     },
   },
   themeConfig: {
+    logo: {
+      src: '/logo.png',
+      alt: 'LIVE Studio',
+    },
     search: {
       provider: 'local',
       options: {
