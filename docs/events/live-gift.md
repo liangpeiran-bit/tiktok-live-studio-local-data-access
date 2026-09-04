@@ -65,3 +65,25 @@
 - Use `repeat_end` to finalize combo presentation when needed.
 - The `user` object may be absent.
 
+## Choose a gift and trigger an effect
+
+Use the searchable [Gift Catalog](/reference/gift-catalog) or its [machine-readable JSON](/data/gifts.json) to find an ID. Store gift-to-effect rules in application configuration and match the string value of `payload.gift.id`.
+
+```ts
+const effectByGiftId = new Map([
+  ['5655', 'drop-rose'],
+  ['6064', 'show-gg'],
+  ['7569', 'controller-boost']
+])
+
+function onGift(payload: LiveGiftPayload) {
+  const effect = effectByGiftId.get(String(payload.gift.id))
+  if (!effect || !payload.repeat_end) return
+  runEffect(effect, payload)
+}
+```
+
+Do not match by `gift.name`: names may be localized and different IDs can have the same name. Do not match by `diamond_count` either, because value and availability can change. Treat the catalog as an authoring snapshot and the incoming event as the runtime source of truth.
+
+For immediate, combo-end, and per-unit trigger policies, see [Gift Catalog: Choose a trigger policy](/reference/gift-catalog#choose-a-trigger-policy).
+

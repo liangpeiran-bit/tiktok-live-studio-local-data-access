@@ -74,6 +74,8 @@ Gift object:
 
 All gift count fields documented as strings must remain strings at the protocol boundary. Use `repeat_end` when the application needs to finalize combo presentation.
 
+For gift selection and effect dispatch, read [gift-triggers.md](gift-triggers.md). Match configuration by the string `gift.id`; do not use name, price, image URL, or catalog position as identity. The bundled catalog at `../assets/gifts.json` is an authoring snapshot, while each live event is the runtime source of truth.
+
 ## `live.chat`
 
 | Payload field | Type | Required | Notes |

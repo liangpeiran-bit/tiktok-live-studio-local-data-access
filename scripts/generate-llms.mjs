@@ -11,6 +11,7 @@ const agentSkillDocuments = [
   '.agents/skills/tiktok-live-studio-local-data-access/SKILL.md',
   '.agents/skills/tiktok-live-studio-local-data-access/references/protocol.md',
   '.agents/skills/tiktok-live-studio-local-data-access/references/events.md',
+  '.agents/skills/tiktok-live-studio-local-data-access/references/gift-triggers.md',
   '.agents/skills/tiktok-live-studio-local-data-access/references/stack-adaptation.md',
   '.agents/skills/tiktok-live-studio-local-data-access/references/verification.md',
 ]
@@ -25,6 +26,7 @@ const englishDocuments = [
   'docs/protocol/errors.md',
   'docs/events/live-like.md',
   'docs/events/live-gift.md',
+  'docs/reference/gift-catalog.md',
   'docs/events/live-chat.md',
   'docs/guide/agent-skill.md',
   'docs/guide/troubleshooting.md',
@@ -44,6 +46,7 @@ const chineseDocuments = [
   'docs/zh/protocol/errors.md',
   'docs/zh/events/live-like.md',
   'docs/zh/events/live-gift.md',
+  'docs/zh/reference/gift-catalog.md',
   'docs/zh/events/live-chat.md',
   'docs/zh/guide/agent-skill.md',
   'docs/zh/guide/troubleshooting.md',

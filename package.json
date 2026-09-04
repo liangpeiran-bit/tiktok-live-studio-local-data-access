@@ -8,6 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "gifts:extract": "node scripts/extract-gifts.mjs",
     "docs:llms": "node scripts/generate-llms.mjs",
     "docs:dev": "node scripts/generate-llms.mjs && vitepress dev docs",
     "docs:build": "node scripts/generate-llms.mjs && vitepress build docs",

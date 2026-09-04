@@ -102,6 +102,10 @@ WebSocket 建立后，服务端会立即发送 `SERVER_HELLO`：
 
 有 `message_id` 时用它做去重。
 
-## 6. 安全重连
+## 6. 配置礼物触发效果
+
+处理 `live.gift` 时，打开[礼物目录](/zh/reference/gift-catalog)，复制需要的 `gift.id`，并用这个字符串作为效果配置的键。不要按名称或钻石价值匹配。同时明确选择即时触发、在 `repeat_end=true` 时只触发一次，或者按计数增量逐个触发。
+
+## 7. 安全重连
 
 Socket 关闭后，从服务发现重新开始。新的 WebSocket 必须再次完成 `SERVER_HELLO` 校验和 `AUTH`。

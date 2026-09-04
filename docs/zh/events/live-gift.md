@@ -64,3 +64,25 @@
 - 容忍未知的礼物 `type` 值。
 - 需要收尾 combo 展示时，使用 `repeat_end`。
 - `user` 对象可能不存在。
+
+## 选择礼物并触发效果
+
+可以通过可搜索的[礼物目录](/zh/reference/gift-catalog)或[机器可读 JSON](/data/gifts.json)查找礼物 ID。把“礼物 → 效果”规则放在业务配置中，并使用 `payload.gift.id` 的字符串值进行匹配。
+
+```ts
+const effectByGiftId = new Map([
+  ['5655', 'drop-rose'],
+  ['6064', 'show-gg'],
+  ['7569', 'controller-boost']
+])
+
+function onGift(payload: LiveGiftPayload) {
+  const effect = effectByGiftId.get(String(payload.gift.id))
+  if (!effect || !payload.repeat_end) return
+  runEffect(effect, payload)
+}
+```
+
+不要按 `gift.name` 匹配：名称可能被本地化，不同 ID 也可能重名。也不要按 `diamond_count` 匹配，因为价值和可用性可能变化。礼物目录只是编写配置时的快照，收到的实时事件才是运行时最终事实。
+
+即时触发、连击结束触发和逐个礼物触发的差异，见[礼物目录：明确选择触发策略](/zh/reference/gift-catalog#明确选择触发策略)。

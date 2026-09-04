@@ -22,6 +22,8 @@ Protocol version: `1.0.0`. The endpoint is loopback-only at `ws://127.0.0.1:3000
 
 - [live.like](https://tiktok-live-studio-local-data-access.pages.dev/events/live-like): Like payload and string count fields
 - [live.gift](https://tiktok-live-studio-local-data-access.pages.dev/events/live-gift): Gift payload, combo fields, and gift object
+- [Gift Catalog](https://tiktok-live-studio-local-data-access.pages.dev/reference/gift-catalog): Search and select gift IDs, then map them to application or game effects
+- [Gift Catalog JSON](https://tiktok-live-studio-local-data-access.pages.dev/data/gifts.json): Machine-readable regional snapshot; match events by `gift.id`, never by name or price
 - [live.chat](https://tiktok-live-studio-local-data-access.pages.dev/events/live-chat): Plain-text chat payload
 
 ## Agent Resources

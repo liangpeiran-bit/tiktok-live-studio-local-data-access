@@ -6,9 +6,11 @@ This repository ships a reusable coding-agent skill for implementing LIVE Studio
 .agents/skills/tiktok-live-studio-local-data-access/
 ├── SKILL.md
 ├── agents/openai.yaml
+├── assets/gifts.json
 └── references/
     ├── protocol.md
     ├── events.md
+    ├── gift-triggers.md
     ├── stack-adaptation.md
     └── verification.md
 ```
@@ -23,6 +25,7 @@ The skill covers:
 - port discovery and strict `SERVER_HELLO` validation;
 - secure `AUTH` ordering and credential handling;
 - event DTOs, optional fields, deduplication, and plain-text safety;
+- gift catalog lookup, ID-based effect rules, and combo-safe triggering;
 - connection ownership, cancellation, backoff, and reason `510` handling;
 - stack-specific lifecycle and threading adaptation;
 - mock-server tests, security review, and live smoke-test boundaries.

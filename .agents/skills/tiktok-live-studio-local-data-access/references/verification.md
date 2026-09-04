@@ -12,6 +12,8 @@ At minimum, verify:
 - Events are not delivered to application handlers before `AUTH_RESULT.success=true`.
 - Each documented auth error reaches the intended retry or intervention branch.
 - `live.like`, `live.gift`, and `live.chat` preserve documented field types.
+- Gift rules match by the string `gift.id`; same-name IDs remain distinguishable and unknown IDs take the intended fallback path.
+- Combo-sensitive effects do not replay a cumulative count on every update, and per-group state is cleared at `repeat_end=true`.
 - Missing `user` and missing optional user fields are accepted.
 - Unknown events and unknown gift type values do not close the connection.
 - Duplicate `{event}:{message_id}` values are suppressed within the cache window.

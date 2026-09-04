@@ -70,6 +70,32 @@ void HandleEvent(EventEnvelope envelope)
 }
 ```
 
+## Map gifts to gameplay effects
+
+Choose IDs in the [Gift Catalog](/reference/gift-catalog) and store them as strings in configuration. Resolve the rule before dispatching the actual gameplay work to Unity's main thread.
+
+```csharp
+readonly Dictionary<string, Action<int>> giftEffects = new()
+{
+    ["5655"] = count => SpawnRoses(count),
+    ["6064"] = _ => ShowBanner("GG!"),
+    ["7569"] = _ => ActivateControllerBoost(),
+};
+
+void HandleGift(LiveGiftPayload payload)
+{
+    if (!giftEffects.TryGetValue(payload.Gift.Id, out var effect)) return;
+    if (!payload.RepeatEnd) return;
+
+    var count = int.TryParse(payload.RepeatCount, out var parsed) && parsed > 0
+        ? parsed
+        : 1;
+    mainThreadQueue.Enqueue(() => effect(count));
+}
+```
+
+The catalog is only an authoring snapshot. Unknown IDs should be ignored or routed to a generic fallback without interrupting the receive loop.
+
 ## Unity-specific notes
 
 - Dispatch gameplay changes back to Unity's main thread.

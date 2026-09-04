@@ -102,7 +102,11 @@ When authentication fails, inspect `error_code` and stop using that connection.
 
 Use `message_id` for deduplication when available.
 
-## 6. Reconnect safely
+## 6. Select gift-driven effects
+
+When handling `live.gift`, open the [Gift Catalog](/reference/gift-catalog), copy the desired `gift.id`, and use that string as the key in your effect configuration. Do not match names or diamond values. Decide whether the effect should run immediately, once at `repeat_end=true`, or once per calculated count delta.
+
+## 7. Reconnect safely
 
 When the socket closes, start from service discovery again. A new WebSocket connection must repeat `SERVER_HELLO` validation and `AUTH`.
 

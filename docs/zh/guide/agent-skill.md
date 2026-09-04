@@ -6,9 +6,11 @@
 .agents/skills/tiktok-live-studio-local-data-access/
 ├── SKILL.md
 ├── agents/openai.yaml
+├── assets/gifts.json
 └── references/
     ├── protocol.md
     ├── events.md
+    ├── gift-triggers.md
     ├── stack-adaptation.md
     └── verification.md
 ```
@@ -23,6 +25,7 @@ Skill 覆盖以下完整流程：
 - 扫描端口并严格校验 `SERVER_HELLO`；
 - 按正确顺序发送 `AUTH`，安全管理凭证；
 - 处理事件 DTO、可选字段、去重和纯文本安全；
+- 检索礼物目录、按 ID 配置效果并安全处理连击触发；
 - 管理长连接、取消、退避重连以及断开原因 `510`；
 - 适配不同技术栈的生命周期、线程和事件循环；
 - 使用模拟 WebSocket 服务测试、安全审查，并明确真实联调边界。

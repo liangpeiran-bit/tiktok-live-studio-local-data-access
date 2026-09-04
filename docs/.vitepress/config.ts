@@ -75,6 +75,7 @@ export default defineConfig({
           { text: 'Agent Skill', link: '/guide/agent-skill' },
           { text: 'Protocol', link: '/protocol/connection' },
           { text: 'Events', link: '/events/live-like' },
+          { text: 'Gift Catalog', link: '/reference/gift-catalog' },
           { text: 'Samples', link: '/samples/javascript' },
         ],
         sidebar: [
@@ -102,6 +103,7 @@ export default defineConfig({
             items: [
               { text: 'live.like', link: '/events/live-like' },
               { text: 'live.gift', link: '/events/live-gift' },
+              { text: 'Gift Catalog', link: '/reference/gift-catalog' },
               { text: 'live.chat', link: '/events/live-chat' },
             ],
           },
@@ -129,6 +131,7 @@ export default defineConfig({
           { text: 'Agent Skill', link: '/zh/guide/agent-skill' },
           { text: '协议', link: '/zh/protocol/connection' },
           { text: '事件', link: '/zh/events/live-like' },
+          { text: '礼物目录', link: '/zh/reference/gift-catalog' },
           { text: '示例', link: '/zh/samples/javascript' },
         ],
         sidebar: [
@@ -156,6 +159,7 @@ export default defineConfig({
             items: [
               { text: 'live.like', link: '/zh/events/live-like' },
               { text: 'live.gift', link: '/zh/events/live-gift' },
+              { text: '礼物目录', link: '/zh/reference/gift-catalog' },
               { text: 'live.chat', link: '/zh/events/live-chat' },
             ],
           },

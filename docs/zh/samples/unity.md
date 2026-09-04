@@ -70,6 +70,32 @@ void HandleEvent(EventEnvelope envelope)
 }
 ```
 
+## 把礼物映射为玩法效果
+
+先在[礼物目录](/zh/reference/gift-catalog)中选择 ID，并在配置中以字符串保存。解析规则后，再把真正的玩法操作派发到 Unity 主线程。
+
+```csharp
+readonly Dictionary<string, Action<int>> giftEffects = new()
+{
+    ["5655"] = count => SpawnRoses(count),
+    ["6064"] = _ => ShowBanner("GG!"),
+    ["7569"] = _ => ActivateControllerBoost(),
+};
+
+void HandleGift(LiveGiftPayload payload)
+{
+    if (!giftEffects.TryGetValue(payload.Gift.Id, out var effect)) return;
+    if (!payload.RepeatEnd) return;
+
+    var count = int.TryParse(payload.RepeatCount, out var parsed) && parsed > 0
+        ? parsed
+        : 1;
+    mainThreadQueue.Enqueue(() => effect(count));
+}
+```
+
+礼物目录只是编写配置时的快照。遇到未知 ID 时应忽略或进入通用兜底，不能中断接收循环。
+
 ## Unity 注意
 
 - 把玩法侧变更派发回 Unity 主线程。

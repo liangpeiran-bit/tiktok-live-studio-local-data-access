@@ -10,6 +10,7 @@ The protocol is stack-independent. Adapt its state machine to the project's exis
 4. Marshal domain/UI work onto the framework's required main thread.
 5. Make shutdown explicit and idempotent.
 6. Use the project's dependency manager and quality commands. Do not introduce a second package manager.
+7. Keep gift-to-effect rules in domain configuration keyed by `gift.id`; do not put gift names, prices, or effect execution into the transport layer.
 
 ## Browser and H5 overlays
 

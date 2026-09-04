@@ -22,6 +22,16 @@ npm run docs:build
 
 Output directory: `docs/.vitepress/dist`
 
+## Refresh the gift catalog
+
+The repository publishes a curated gift snapshot for search and gift-to-effect configuration. Refresh it from a captured gift-panel response without committing the raw response:
+
+```bash
+npm run gifts:extract -- /path/to/gifts.json
+```
+
+This generates the public JSON/CSV catalog and the Agent Skill's offline catalog asset. The generated metadata intentionally describes the result as a point-in-time regional snapshot; applications must still use each `live.gift` event as the runtime source of truth.
+
 ## Agent Skill
 
 This repository includes a technology-stack-independent Agent Skill at:

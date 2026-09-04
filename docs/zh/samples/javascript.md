@@ -152,6 +152,38 @@ socket.addEventListener('message', (event) => {
 })
 ```
 
+## 把礼物 ID 映射为效果
+
+先在[礼物目录](/zh/reference/gift-catalog)中选择 ID，再把映射放进业务配置，而不是写进 WebSocket 客户端。下面使用更安全的“连击结束触发”策略。
+
+```ts
+type LiveGiftPayload = {
+  message_id: string
+  gift: { id: string; name: string; diamond_count: number }
+  repeat_count: string
+  repeat_end: boolean
+}
+
+const giftEffects: Record<string, (count: number) => void> = {
+  '5655': (count) => dropRoses(count),
+  '6064': () => showBanner('GG!'),
+  '7569': () => activateControllerBoost()
+}
+
+function parsePositiveCount(value: string): number {
+  const count = Number(value)
+  return Number.isSafeInteger(count) && count > 0 ? count : 1
+}
+
+function handleGift(payload: LiveGiftPayload) {
+  const effect = giftEffects[String(payload.gift.id)]
+  if (!effect || !payload.repeat_end) return
+  effect(parsePositiveCount(payload.repeat_count))
+}
+```
+
+不要按名称或价格配置规则。为未知 ID 保留忽略或通用兜底，并在调用处理器前用 `message_id` 去重。
+
 ## 生产注意
 
 - 增加重连退避。

@@ -22,6 +22,8 @@
 
 - [live.like](https://tiktok-live-studio-local-data-access.pages.dev/zh/events/live-like)：点赞事件及字符串计数字段
 - [live.gift](https://tiktok-live-studio-local-data-access.pages.dev/zh/events/live-gift)：礼物、连击字段和礼物对象
+- [礼物目录](https://tiktok-live-studio-local-data-access.pages.dev/zh/reference/gift-catalog)：搜索并选择礼物 ID，再映射为应用或游戏效果
+- [礼物目录 JSON](https://tiktok-live-studio-local-data-access.pages.dev/data/gifts.json)：机器可读的地区快照；必须按 `gift.id` 匹配，不能按名称或价格匹配
 - [live.chat](https://tiktok-live-studio-local-data-access.pages.dev/zh/events/live-chat)：纯文本聊天事件
 
 ## Agent 资源

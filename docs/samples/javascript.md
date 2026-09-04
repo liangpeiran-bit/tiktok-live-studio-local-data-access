@@ -152,6 +152,38 @@ socket.addEventListener('message', (event) => {
 })
 ```
 
+## Map gift IDs to effects
+
+Choose IDs in the [Gift Catalog](/reference/gift-catalog), then keep the mapping in domain configuration rather than in the WebSocket client. This example uses the safe combo-end policy.
+
+```ts
+type LiveGiftPayload = {
+  message_id: string
+  gift: { id: string; name: string; diamond_count: number }
+  repeat_count: string
+  repeat_end: boolean
+}
+
+const giftEffects: Record<string, (count: number) => void> = {
+  '5655': (count) => dropRoses(count),
+  '6064': () => showBanner('GG!'),
+  '7569': () => activateControllerBoost()
+}
+
+function parsePositiveCount(value: string): number {
+  const count = Number(value)
+  return Number.isSafeInteger(count) && count > 0 ? count : 1
+}
+
+function handleGift(payload: LiveGiftPayload) {
+  const effect = giftEffects[String(payload.gift.id)]
+  if (!effect || !payload.repeat_end) return
+  effect(parsePositiveCount(payload.repeat_count))
+}
+```
+
+Do not key rules by name or price. Keep an ignore or generic fallback for unknown IDs, and deduplicate `message_id` before calling the handler.
+
 ## Production notes
 
 - Add reconnect backoff.

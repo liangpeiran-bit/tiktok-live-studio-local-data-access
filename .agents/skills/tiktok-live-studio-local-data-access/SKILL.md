@@ -1,6 +1,6 @@
 ---
 name: tiktok-live-studio-local-data-access
-description: Guides agents to implement, review, or troubleshoot TikTok LIVE Studio Local Data Access clients in any technology stack. Use when a project needs local live.like, live.gift, or live.chat events; WebSocket discovery and authentication; reconnect behavior; or protocol-compliance debugging.
+description: Guides agents to implement, review, or troubleshoot TikTok LIVE Studio Local Data Access clients in any technology stack. Use when a project needs local live.like, live.gift, or live.chat events; gift-to-effect selection; WebSocket discovery and authentication; reconnect behavior; or protocol-compliance debugging.
 ---
 
 # TikTok LIVE Studio Local Data Access
@@ -20,6 +20,7 @@ Before implementing or diagnosing a connection, read [references/protocol.md](re
 Also read the files that match the task:
 
 - Event models, dispatch, or deduplication: [references/events.md](references/events.md)
+- Gift catalog lookup or gift-to-effect mapping: [references/gift-triggers.md](references/gift-triggers.md)
 - Language, framework, runtime, or game-engine adaptation: [references/stack-adaptation.md](references/stack-adaptation.md)
 - Tests, review, or completion checks: [references/verification.md](references/verification.md)
 
@@ -96,6 +97,7 @@ Required behavior:
 - Treat chat `content` as untrusted plain text; escape it before rendering into HTML or rich UI.
 - Ignore unknown event names and tolerate unknown enum values.
 - Isolate malformed or unsupported events; one bad payload must not terminate an otherwise healthy connection.
+- For gift-driven behavior, key rules by the string `gift.id`, not by localized name or diamond value. Read [references/gift-triggers.md](references/gift-triggers.md) before implementing combo-sensitive effects.
 
 ### 6. Apply security and retry rules
 
