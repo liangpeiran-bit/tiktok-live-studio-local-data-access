@@ -9,7 +9,7 @@ The service is local to the creator machine.
 | Setting | Value |
 | --- | --- |
 | Host | `127.0.0.1` |
-| Port range | `30000` through `30015`, inclusive |
+| Port range | `49152` through `65535`, inclusive |
 | Path | `/v1/third-party` |
 | URL | `ws://127.0.0.1:{port}/v1/third-party` |
 | Protocol version | `1.0.0` |
@@ -20,13 +20,15 @@ Do not replace `127.0.0.1` with a LAN address, public hostname, or cloud endpoin
 
 ## Discovery and message order
 
-For each candidate port:
+LIVE Studio probes this range from low to high and binds the first available port. The selected port is not stable across launches and must not be hard-coded or treated as permanent discovery state.
+
+Because the range contains 16,384 candidates, scan it in small, bounded parallel batches. Do not scan one port at a time with a long timeout, and do not open the entire range at once. For each candidate in the current batch:
 
 1. Open the candidate WebSocket with a bounded timeout.
 2. Wait for the first server text message with a bounded timeout.
 3. Parse it as JSON and validate all `SERVER_HELLO` identity fields.
 4. If connection, timeout, parsing, or validation fails, close that socket and continue scanning.
-5. Stop scanning only after a valid hello.
+5. When one candidate returns a valid hello, keep that socket, close every losing candidate socket, and stop scanning.
 6. Send `AUTH` as the first client JSON message.
 7. Wait for `AUTH_RESULT` before accepting events.
 

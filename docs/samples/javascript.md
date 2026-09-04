@@ -41,8 +41,10 @@ type Credentials = {
   secret: string
 }
 
-const PORT_START = 30000
-const PORT_END = 30015
+const PORT_START = 49152
+const PORT_END = 65535
+const SCAN_BATCH_SIZE = 128
+const HELLO_TIMEOUT_MS = 500
 const PATH = '/v1/third-party'
 
 function isValidHello(value: unknown): value is ServerHello {
@@ -51,28 +53,37 @@ function isValidHello(value: unknown): value is ServerHello {
     hello.type === 'SERVER_HELLO' &&
     hello.product === 'tiktok_live_studio' &&
     hello.channel === 'third-party-im' &&
-    typeof hello.version === 'string'
+    hello.version === '1.0.0'
   )
 }
 
-function waitForFirstMessage(socket: WebSocket, timeoutMs = 3000): Promise<unknown> {
+function waitForFirstMessage(socket: WebSocket, timeoutMs = HELLO_TIMEOUT_MS): Promise<unknown> {
   return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error('SERVER_HELLO timeout')), timeoutMs)
+    let timer: ReturnType<typeof setTimeout>
+    const cleanup = () => {
+      clearTimeout(timer)
+      socket.removeEventListener('message', onMessage)
+      socket.removeEventListener('error', onError)
+    }
+    const onMessage = (event: MessageEvent) => {
+      cleanup()
+      try {
+        resolve(JSON.parse(String(event.data)))
+      } catch (error) {
+        reject(error)
+      }
+    }
+    const onError = () => {
+      cleanup()
+      reject(new Error('WebSocket error'))
+    }
 
-    socket.addEventListener(
-      'message',
-      (event) => {
-        clearTimeout(timer)
-        try {
-          resolve(JSON.parse(String(event.data)))
-        } catch (error) {
-          reject(error)
-        }
-      },
-      { once: true }
-    )
-
-    socket.addEventListener('error', () => reject(new Error('WebSocket error')), { once: true })
+    timer = setTimeout(() => {
+      cleanup()
+      reject(new Error('SERVER_HELLO timeout'))
+    }, timeoutMs)
+    socket.addEventListener('message', onMessage, { once: true })
+    socket.addEventListener('error', onError, { once: true })
   })
 }
 
@@ -92,9 +103,22 @@ async function connectCandidate(port: number): Promise<WebSocket | null> {
   }
 }
 
+async function scanBatch(startPort: number): Promise<WebSocket | null> {
+  const endPort = Math.min(startPort + SCAN_BATCH_SIZE - 1, PORT_END)
+  const candidates = await Promise.all(
+    Array.from({ length: endPort - startPort + 1 }, (_, index) => connectCandidate(startPort + index))
+  )
+  const winner = candidates.find((socket): socket is WebSocket => socket !== null) ?? null
+
+  for (const socket of candidates) {
+    if (socket && socket !== winner) socket.close()
+  }
+  return winner
+}
+
 export async function connectLiveStudio(credentials: Credentials): Promise<WebSocket> {
-  for (let port = PORT_START; port <= PORT_END; port += 1) {
-    const socket = await connectCandidate(port)
+  for (let batchStart = PORT_START; batchStart <= PORT_END; batchStart += SCAN_BATCH_SIZE) {
+    const socket = await scanBatch(batchStart)
     if (!socket) continue
 
     socket.send(

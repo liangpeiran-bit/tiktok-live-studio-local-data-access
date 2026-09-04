@@ -2,7 +2,7 @@
 
 > A local WebSocket protocol that allows approved third-party applications on the creator machine to receive TikTok LIVE Studio likes, gifts, and chat events.
 
-Protocol version: `1.0.0`. The endpoint is loopback-only at `ws://127.0.0.1:30000-30015/v1/third-party`. A client must validate `SERVER_HELLO` before sending credentials. The public documentation is the source of truth.
+Protocol version: `1.0.0`. The endpoint is loopback-only at `ws://127.0.0.1:49152-65535/v1/third-party`. The port is selected dynamically and may change after restart; discover it with bounded parallel scanning and validate `SERVER_HELLO` before sending credentials. The public documentation is the source of truth.
 
 ## Start Here
 

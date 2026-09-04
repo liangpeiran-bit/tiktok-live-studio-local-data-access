@@ -6,7 +6,7 @@ Use this page when a local client cannot discover, authenticate, or receive even
 
 Symptoms:
 
-- All ports from `30000` to `30015` fail.
+- No candidate from `49152` to `65535` returns a valid `SERVER_HELLO`.
 - The WebSocket never opens.
 
 Check:
@@ -16,6 +16,8 @@ Check:
 - The path is exactly `/v1/third-party`.
 - Local data access is enabled for the current environment.
 - No local firewall or security tool blocks loopback WebSocket connections.
+- The scanner uses bounded parallel batches; a serial scan with a long per-port timeout can appear stuck across this range.
+- The client does not assume the previous launch's port is still valid.
 
 ## Connected but no valid `SERVER_HELLO`
 

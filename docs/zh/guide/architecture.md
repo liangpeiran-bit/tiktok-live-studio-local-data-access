@@ -11,7 +11,7 @@ flowchart LR
     Client[第三方客户端]
   end
 
-  Studio -->|"ws://127.0.0.1:30000-30015/v1/third-party"| Client
+  Studio -->|"ws://127.0.0.1:49152-65535/v1/third-party"| Client
 ```
 
 服务只接受回环连接。客户端必须连接 `127.0.0.1`。远程主机无法访问该端点。
@@ -20,7 +20,7 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-  Scan[扫描 127.0.0.1:30000-30015]
+  Scan[有界并发扫描<br/>127.0.0.1:49152-65535]
   Hello[校验 SERVER_HELLO]
   Auth[发送 AUTH]
   Result{AUTH_RESULT}
@@ -43,11 +43,11 @@ flowchart TD
 | 字段 | 值 |
 | --- | --- |
 | Host | `127.0.0.1` |
-| 端口范围 | `30000` 到 `30015` |
+| 端口范围 | `49152` 到 `65535` |
 | Path | `/v1/third-party` |
 | 协议版本 | `1.0.0` |
 
-LIVE Studio 会在该范围内绑定一个端口。依次尝试候选 URL，直到收到合法的 `SERVER_HELLO`。
+LIVE Studio 会从 `49152` 向上探测并绑定第一个空闲端口，重启后实际端口可能变化。请有界并发扫描候选 URL，直到收到合法的 `SERVER_HELLO`；不要写死端口，也不要一次打开整个范围。
 
 ## 接入规则
 

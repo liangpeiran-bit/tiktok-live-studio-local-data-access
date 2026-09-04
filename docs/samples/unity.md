@@ -2,7 +2,7 @@
 
 Unity clients should follow the same protocol flow as JavaScript clients:
 
-1. Scan `127.0.0.1:30000-30015`.
+1. Scan `127.0.0.1:49152-65535` in bounded parallel batches.
 2. Connect to `/v1/third-party`.
 3. Validate `SERVER_HELLO`.
 4. Send `AUTH`.
@@ -22,19 +22,23 @@ LiveStudioGatewayClient
 ## Pseudocode
 
 ```csharp
-for (var port = 30000; port <= 30015; port++)
+const int PortStart = 49152;
+const int PortEnd = 65535;
+const int ScanBatchSize = 128;
+
+for (var batchStart = PortStart; batchStart <= PortEnd; batchStart += ScanBatchSize)
 {
-    var url = $"ws://127.0.0.1:{port}/v1/third-party";
-    var socket = new WebSocket(url);
+    var batchEnd = Math.Min(batchStart + ScanBatchSize - 1, PortEnd);
+    var attempts = Enumerable.Range(batchStart, batchEnd - batchStart + 1)
+        .Select(port => ConnectAndValidateHello(
+            $"ws://127.0.0.1:{port}/v1/third-party",
+            timeoutMs: 500));
+    var candidates = await Task.WhenAll(attempts);
+    var socket = candidates.FirstOrDefault(candidate => candidate != null);
+    if (socket == null) continue;
 
-    await socket.Connect();
-
-    var firstMessage = await socket.ReceiveJson(timeoutMs: 3000);
-    if (!IsValidServerHello(firstMessage))
-    {
-        await socket.Close();
-        continue;
-    }
+    foreach (var candidate in candidates.Where(candidate => candidate != null && candidate != socket))
+        await candidate.Close();
 
     await socket.SendJson(new
     {
@@ -49,6 +53,8 @@ for (var port = 30000; port <= 30015; port++)
     break;
 }
 ```
+
+`ConnectAndValidateHello` returns a socket only when the first message is the supported `SERVER_HELLO`; it closes failures, timeouts, malformed messages, and incompatible versions. Keep concurrency bounded and never open all 16,384 candidates at once.
 
 ## Event dispatch
 

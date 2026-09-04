@@ -2,7 +2,7 @@
 
 Unity 客户端应遵循与 JavaScript 客户端相同的协议流程：
 
-1. 扫描 `127.0.0.1:30000-30015`。
+1. 有界并发扫描 `127.0.0.1:49152-65535`。
 2. 连接到 `/v1/third-party`。
 3. 校验 `SERVER_HELLO`。
 4. 发送 `AUTH`。
@@ -22,19 +22,23 @@ LiveStudioGatewayClient
 ## 伪代码
 
 ```csharp
-for (var port = 30000; port <= 30015; port++)
+const int PortStart = 49152;
+const int PortEnd = 65535;
+const int ScanBatchSize = 128;
+
+for (var batchStart = PortStart; batchStart <= PortEnd; batchStart += ScanBatchSize)
 {
-    var url = $"ws://127.0.0.1:{port}/v1/third-party";
-    var socket = new WebSocket(url);
+    var batchEnd = Math.Min(batchStart + ScanBatchSize - 1, PortEnd);
+    var attempts = Enumerable.Range(batchStart, batchEnd - batchStart + 1)
+        .Select(port => ConnectAndValidateHello(
+            $"ws://127.0.0.1:{port}/v1/third-party",
+            timeoutMs: 500));
+    var candidates = await Task.WhenAll(attempts);
+    var socket = candidates.FirstOrDefault(candidate => candidate != null);
+    if (socket == null) continue;
 
-    await socket.Connect();
-
-    var firstMessage = await socket.ReceiveJson(timeoutMs: 3000);
-    if (!IsValidServerHello(firstMessage))
-    {
-        await socket.Close();
-        continue;
-    }
+    foreach (var candidate in candidates.Where(candidate => candidate != null && candidate != socket))
+        await candidate.Close();
 
     await socket.SendJson(new
     {
@@ -49,6 +53,8 @@ for (var port = 30000; port <= 30015; port++)
     break;
 }
 ```
+
+`ConnectAndValidateHello` 只有在首条消息是当前客户端支持的 `SERVER_HELLO` 时才返回 Socket；连接失败、超时、消息格式错误或版本不兼容时都应主动关闭。并发数量必须有上限，不能一次打开全部 16384 个候选端口。
 
 ## 事件分发
 

@@ -7,7 +7,7 @@
 | 字段 | 值 |
 | --- | --- |
 | Host | `127.0.0.1` |
-| 端口范围 | `30000` 到 `30015` |
+| 端口范围 | `49152` 到 `65535` |
 | Path | `/v1/third-party` |
 | 协议版本 | `1.0.0` |
 
@@ -22,25 +22,24 @@ ws://127.0.0.1:{port}/v1/third-party
 ```mermaid
 sequenceDiagram
   participant C as 客户端
-  participant E as 候选端点
+  participant B as 候选端点批次
 
-  loop 30000 到 30015
-    C->>E: 打开 WebSocket /v1/third-party
-    alt 连接失败或超时
-      C->>C: 尝试下一个端口
-    else 已连接
-      E-->>C: SERVER_HELLO
-      alt hello 合法
-        C->>C: 停止扫描
-      else hello 不合法
-        C->>E: 关闭连接
-        C->>C: 尝试下一个端口
-      end
+  loop 49152 到 65535，分批扫描
+    C->>B: 小批量并发打开 WebSocket
+    B-->>C: 失败、超时或返回首条消息
+    C->>C: 校验每个 SERVER_HELLO
+    alt 找到合法 hello
+      C->>B: 关闭其他候选 Socket
+      C->>C: 保留已验证连接并停止
+    else 本批没有合法 hello
+      C->>C: 扫描下一批
     end
   end
 ```
 
-发送凭证前必须先校验 `SERVER_HELLO`。没有返回合法 hello 的端口应视为无关服务。
+LIVE Studio 会从低到高探测该范围，并绑定第一个空闲端口。实际端口可能在重启后变化，客户端必须动态发现，不能写死或长期缓存。
+
+该范围包含 16384 个候选端口。应小批量、有上限地并发扫描，选中合法端点后关闭其他候选连接；发送凭证前必须先校验 `SERVER_HELLO`。没有返回合法 hello 的端口应视为无关服务。不要一次打开整个端口范围。
 
 ## 状态机
 

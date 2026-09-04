@@ -7,7 +7,7 @@ Third-party clients connect to LIVE Studio through a local WebSocket endpoint.
 | Field | Value |
 | --- | --- |
 | Host | `127.0.0.1` |
-| Port range | `30000` to `30015` |
+| Port range | `49152` to `65535` |
 | Path | `/v1/third-party` |
 | Protocol version | `1.0.0` |
 
@@ -22,25 +22,24 @@ ws://127.0.0.1:{port}/v1/third-party
 ```mermaid
 sequenceDiagram
   participant C as Client
-  participant E as Candidate endpoint
+  participant B as Candidate batch
 
-  loop 30000 to 30015
-    C->>E: Open WebSocket /v1/third-party
-    alt connect failed or timed out
-      C->>C: Try next port
-    else connected
-      E-->>C: SERVER_HELLO
-      alt hello is valid
-        C->>C: Stop scanning
-      else hello is invalid
-        C->>E: Close connection
-        C->>C: Try next port
-      end
+  loop 49152 to 65535 in bounded batches
+    C->>B: Open a small parallel batch
+    B-->>C: Failure, timeout, or first message
+    C->>C: Validate every SERVER_HELLO
+    alt a valid hello is found
+      C->>B: Close all losing sockets
+      C->>C: Keep the verified socket and stop
+    else no valid hello
+      C->>C: Scan the next batch
     end
   end
 ```
 
-Clients should validate `SERVER_HELLO` before sending credentials. A port that does not return a valid hello must be treated as unrelated.
+LIVE Studio probes this range from low to high and binds the first available port. The selected port can change after restart, so clients must discover it rather than hard-code or permanently cache it.
+
+The range contains 16,384 candidates. Scan in small, bounded parallel batches, close losing sockets, and validate `SERVER_HELLO` before sending credentials. A port that does not return a valid hello must be treated as unrelated. Never open the entire range at once.
 
 ## State machine
 

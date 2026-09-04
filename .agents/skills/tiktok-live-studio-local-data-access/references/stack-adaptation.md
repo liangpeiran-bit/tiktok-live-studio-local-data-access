@@ -11,6 +11,7 @@ The protocol is stack-independent. Adapt its state machine to the project's exis
 5. Make shutdown explicit and idempotent.
 6. Use the project's dependency manager and quality commands. Do not introduce a second package manager.
 7. Keep gift-to-effect rules in domain configuration keyed by `gift.id`; do not put gift names, prices, or effect execution into the transport layer.
+8. Discover the dynamic `49152-65535` endpoint with cancellable, bounded-concurrency batches. Never open the full range at once.
 
 ## Browser and H5 overlays
 
@@ -79,7 +80,7 @@ For any other runtime, map the same responsibilities:
 
 | Protocol concern | Runtime capability needed |
 | --- | --- |
-| Port discovery | Cancellable sequential or bounded-concurrency connection attempts |
+| Port discovery | Cancellable bounded-concurrency batches with short connect/hello deadlines |
 | Hello validation | Text frame reception, JSON parsing, deadline |
 | Authentication | Ordered text send after validation |
 | Event loop | Long-lived receive callback/stream/task |

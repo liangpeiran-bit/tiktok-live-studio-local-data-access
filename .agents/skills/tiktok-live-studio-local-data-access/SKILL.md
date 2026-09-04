@@ -55,7 +55,7 @@ Do not migrate frameworks or add a large dependency merely to open one WebSocket
 
 Keep these responsibilities separable even when the project uses a small single-file implementation:
 
-- **Discovery** scans `127.0.0.1:30000-30015` and accepts only a verified server hello.
+- **Discovery** scans `127.0.0.1:49152-65535` in small, bounded parallel batches and accepts only a verified server hello.
 - **Transport** owns exactly one active socket, text-message decoding, close handling, and cancellation.
 - **Authentication** sends `AUTH` only after hello validation and waits for `AUTH_RESULT`.
 - **Dispatcher** validates the envelope, routes known event names, and ignores unknown events safely.
@@ -79,7 +79,7 @@ authenticated -> closed -> backoff -> scanning
 
 Required behavior:
 
-1. Scan candidate ports and apply short, cancellable connect/hello timeouts.
+1. Scan candidate ports in ascending, bounded parallel batches and apply short, cancellable connect/hello timeouts. Never open the entire range at once.
 2. Inspect the first server JSON message.
 3. Accept the endpoint only when `type`, `product`, `channel`, and supported `version` match the protocol.
 4. Send credentials only to that verified endpoint.

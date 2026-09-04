@@ -11,7 +11,7 @@ flowchart LR
     Client[Third-party client]
   end
 
-  Studio -->|"ws://127.0.0.1:30000-30015/v1/third-party"| Client
+  Studio -->|"ws://127.0.0.1:49152-65535/v1/third-party"| Client
 ```
 
 The service accepts connections on loopback only. Clients must connect to `127.0.0.1`. Remote hosts cannot reach this endpoint.
@@ -20,7 +20,7 @@ The service accepts connections on loopback only. Clients must connect to `127.0
 
 ```mermaid
 flowchart TD
-  Scan[Scan 127.0.0.1:30000-30015]
+  Scan[Bounded parallel scan<br/>127.0.0.1:49152-65535]
   Hello[Validate SERVER_HELLO]
   Auth[Send AUTH]
   Result{AUTH_RESULT}
@@ -43,11 +43,11 @@ After a disconnect, authentication state is gone. A new connection must repeat d
 | Field | Value |
 | --- | --- |
 | Host | `127.0.0.1` |
-| Port range | `30000` to `30015` |
+| Port range | `49152` to `65535` |
 | Path | `/v1/third-party` |
 | Protocol version | `1.0.0` |
 
-LIVE Studio binds one port in this range. Scan candidate URLs until one returns a valid `SERVER_HELLO`.
+LIVE Studio probes from `49152` upward and binds the first available port. The actual port may change after restart. Scan candidate URLs in bounded parallel batches until one returns a valid `SERVER_HELLO`; do not hard-code a port or open the entire range at once.
 
 ## Access rules
 

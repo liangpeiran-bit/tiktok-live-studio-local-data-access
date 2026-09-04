@@ -13,15 +13,15 @@ This guide shows the shortest path to connect a local client to LIVE Studio Loca
 Do not print, persist, or upload the raw `secret`. It is only used locally to authenticate the client.
 :::
 
-## 1. Scan the local ports
+## 1. Discover the local port
 
-LIVE Studio binds one port in the reserved range:
+LIVE Studio binds one port in the agreed dynamic range:
 
 ```txt
-127.0.0.1:30000-30015
+127.0.0.1:49152-65535
 ```
 
-Try each candidate endpoint until one returns a valid `SERVER_HELLO`:
+LIVE Studio probes upward from `49152` and binds the first available port. The chosen port may change after restart. Scan candidate endpoints in small, bounded parallel batches until one returns a valid `SERVER_HELLO`:
 
 ```txt
 ws://127.0.0.1:{port}/v1/third-party
@@ -33,6 +33,8 @@ Close the candidate connection and continue scanning when:
 - The connection times out.
 - The first message is not a valid `SERVER_HELLO`.
 - The `product`, `channel`, or `version` does not match this protocol.
+
+Do not scan the 16,384-port range serially with a long timeout, and do not open it all at once. The samples use bounded concurrency and close every losing candidate socket as soon as a verified endpoint is selected.
 
 ## 2. Validate `SERVER_HELLO`
 
