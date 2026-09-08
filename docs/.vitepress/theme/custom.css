@@ -1,10 +1,11 @@
 .VPNavBar {
   --tt-cta-cyan: #25f4ee;
   --tt-cta-pink: #fe2c55;
-  --tt-cta-pink-active: #e6254d;
+  --tt-cta-bg: #08090d;
+  --tt-cta-bg-hover: #111218;
   --tt-cta-text: #ffffff;
   --tt-cta-focus: rgba(37, 244, 238, 0.72);
-  --tt-cta-shadow: rgba(254, 44, 85, 0.24);
+  --tt-cta-shadow: rgba(0, 0, 0, 0.32);
 }
 
 .VPNavBarTitle .logo {
@@ -41,12 +42,17 @@
   font-weight: 700;
   line-height: 30px;
   letter-spacing: 0.01em;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid transparent;
   border-radius: 6px;
-  background: var(--tt-cta-pink);
-  box-shadow: -3px 3px 0 var(--tt-cta-cyan), 0 7px 18px var(--tt-cta-shadow);
+  background:
+    linear-gradient(var(--tt-cta-bg), var(--tt-cta-bg)) padding-box,
+    linear-gradient(110deg, var(--tt-cta-cyan) 0 44%, var(--tt-cta-pink) 56% 100%) border-box;
+  box-shadow:
+    -3px 3px 0 var(--tt-cta-cyan),
+    3px -3px 0 var(--tt-cta-pink),
+    0 7px 18px var(--tt-cta-shadow);
   transform: translate3d(0, -1px, 0);
-  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
 .VPNavBarMenuLink:is([href$="/apply"], [href$="/apply.html"])::before {
@@ -61,13 +67,24 @@
 .VPNavBarMenuLink:is([href$="/apply"], [href$="/apply.html"]):hover {
   color: var(--tt-cta-text) !important;
   text-decoration: none;
-  box-shadow: -5px 5px 0 var(--tt-cta-cyan), 0 10px 24px var(--tt-cta-shadow);
+  background:
+    linear-gradient(var(--tt-cta-bg-hover), var(--tt-cta-bg)) padding-box,
+    linear-gradient(110deg, var(--tt-cta-cyan) 0 44%, var(--tt-cta-pink) 56% 100%) border-box;
+  box-shadow:
+    -5px 5px 0 var(--tt-cta-cyan),
+    5px -5px 0 var(--tt-cta-pink),
+    0 10px 24px var(--tt-cta-shadow);
   transform: translate3d(2px, -2px, 0);
 }
 
 .VPNavBarMenuLink:is([href$="/apply"], [href$="/apply.html"]):active {
-  background: var(--tt-cta-pink-active);
-  box-shadow: -1px 1px 0 var(--tt-cta-cyan), 0 4px 12px var(--tt-cta-shadow);
+  background:
+    linear-gradient(var(--tt-cta-bg), var(--tt-cta-bg)) padding-box,
+    linear-gradient(110deg, var(--tt-cta-cyan) 0 44%, var(--tt-cta-pink) 56% 100%) border-box;
+  box-shadow:
+    -1px 1px 0 var(--tt-cta-cyan),
+    1px -1px 0 var(--tt-cta-pink),
+    0 4px 12px var(--tt-cta-shadow);
   transform: translate3d(-1px, 1px, 0);
 }
 

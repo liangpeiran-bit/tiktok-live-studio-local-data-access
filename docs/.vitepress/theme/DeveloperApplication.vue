@@ -372,11 +372,34 @@ onMounted(() => {
 .apply-button:focus-visible { outline: 3px solid rgba(37, 244, 238, 0.72); outline-offset: 3px; }
 
 .apply-button--primary {
-  background: var(--tt-pink);
-  box-shadow: -5px 5px 0 var(--tt-cyan);
+  color: #fff;
+  border-color: transparent;
+  background:
+    linear-gradient(#08090d, #08090d) padding-box,
+    linear-gradient(110deg, var(--tt-cyan) 0 44%, var(--tt-pink) 56% 100%) border-box;
+  box-shadow:
+    -5px 5px 0 var(--tt-cyan),
+    5px -5px 0 var(--tt-pink),
+    0 12px 28px rgba(0, 0, 0, 0.32);
 }
 
-.apply-button--primary:hover { box-shadow: -7px 7px 0 var(--tt-cyan); }
+.apply-button--primary:hover {
+  background:
+    linear-gradient(#111218, #08090d) padding-box,
+    linear-gradient(110deg, var(--tt-cyan) 0 44%, var(--tt-pink) 56% 100%) border-box;
+  box-shadow:
+    -7px 7px 0 var(--tt-cyan),
+    7px -7px 0 var(--tt-pink),
+    0 16px 34px rgba(0, 0, 0, 0.4);
+}
+
+.apply-button--primary:active {
+  transform: translateY(1px);
+  box-shadow:
+    -3px 3px 0 var(--tt-cyan),
+    3px -3px 0 var(--tt-pink),
+    0 8px 18px rgba(0, 0, 0, 0.3);
+}
 
 .apply-button--secondary {
   border-color: rgba(255, 255, 255, 0.2);
