@@ -59,7 +59,7 @@ onMounted(() => {
       <div class="apply-copy">
         <div class="apply-badge"><span></span> DEVELOPER EARLY ACCESS</div>
         <p class="apply-kicker">LIVE INTERACTIONS. REAL GAMEPLAY.</p>
-        <h1>Build for the moment<br /><em>the chat changes the game.</em></h1>
+        <h1>Build for the moment<br /><em data-text="the chat changes the game.">the chat changes the game.</em></h1>
         <p class="apply-lede">
           Use local, real-time likes, gifts, and chat events to build interactive games in H5,
           Unity, Unreal, or any stack you choose.
@@ -334,9 +334,50 @@ onMounted(() => {
 
 .apply-copy h1 em {
   display: inline-block;
+  position: relative;
+  isolation: isolate;
   color: #fff;
   font-style: normal;
-  text-shadow: -3px 0 rgba(37, 244, 238, 0.62), 3px 0 rgba(254, 44, 85, 0.56);
+  text-shadow:
+    -3px 0 rgba(37, 244, 238, 0.82),
+    3px 0 rgba(254, 44, 85, 0.78),
+    0 0 18px rgba(255, 255, 255, 0.16);
+  will-change: filter, transform;
+  animation: headline-impact 4.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+
+.apply-copy h1 em::before,
+.apply-copy h1 em::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: attr(data-text);
+  color: transparent;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: filter, opacity, transform;
+}
+
+.apply-copy h1 em::before {
+  opacity: 0.52;
+  text-shadow:
+    -12px 0 8px rgba(37, 244, 238, 0.92),
+    -30px 0 22px rgba(37, 244, 238, 0.46),
+    -52px 0 38px rgba(37, 244, 238, 0.2);
+  filter: blur(2px);
+  transform: translate3d(-3px, 0, 0);
+  animation: headline-smear-cyan 4.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+
+.apply-copy h1 em::after {
+  opacity: 0.48;
+  text-shadow:
+    12px 0 8px rgba(254, 44, 85, 0.92),
+    30px 0 22px rgba(254, 44, 85, 0.46),
+    52px 0 38px rgba(254, 44, 85, 0.2);
+  filter: blur(2px);
+  transform: translate3d(3px, 0, 0);
+  animation: headline-smear-pink 4.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
 }
 
 .apply-lede {
@@ -652,6 +693,27 @@ onMounted(() => {
 
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
+@keyframes headline-impact {
+  0%, 58%, 78%, 100% { filter: blur(0); transform: translate3d(0, 0, 0) skewX(0deg); }
+  63% { filter: blur(1.8px); transform: translate3d(-6px, 0, 0) skewX(-2deg); }
+  67% { filter: blur(0.4px); transform: translate3d(4px, 0, 0) skewX(1deg); }
+  71% { filter: blur(1px); transform: translate3d(-2px, 0, 0) skewX(-0.5deg); }
+}
+
+@keyframes headline-smear-cyan {
+  0%, 54%, 80%, 100% { opacity: 0.42; filter: blur(2px); transform: translate3d(-3px, 0, 0) scaleX(1); }
+  62% { opacity: 0.96; filter: blur(7px); transform: translate3d(-20px, 0, 0) scaleX(1.08); }
+  68% { opacity: 0.7; filter: blur(4px); transform: translate3d(-10px, 0, 0) scaleX(1.04); }
+  74% { opacity: 0.22; filter: blur(10px); transform: translate3d(-34px, 0, 0) scaleX(1.12); }
+}
+
+@keyframes headline-smear-pink {
+  0%, 54%, 80%, 100% { opacity: 0.38; filter: blur(2px); transform: translate3d(3px, 0, 0) scaleX(1); }
+  62% { opacity: 0.92; filter: blur(7px); transform: translate3d(20px, 0, 0) scaleX(1.08); }
+  68% { opacity: 0.66; filter: blur(4px); transform: translate3d(10px, 0, 0) scaleX(1.04); }
+  74% { opacity: 0.2; filter: blur(10px); transform: translate3d(34px, 0, 0) scaleX(1.12); }
+}
+
 @keyframes orbit-float {
   from { transform: translate3d(-20px, -12px, 0) scale(0.9); }
   to { transform: translate3d(38px, 28px, 0) scale(1.12); }
@@ -716,6 +778,9 @@ onMounted(() => {
   .ambient-events span,
   .demo-card,
   .demo-media::after,
+  .apply-copy h1 em,
+  .apply-copy h1 em::before,
+  .apply-copy h1 em::after,
   .apply-badge span,
   .open-status i { animation: none; }
 
