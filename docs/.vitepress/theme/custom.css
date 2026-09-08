@@ -13,6 +13,43 @@
   white-space: nowrap;
 }
 
+html:has(.developer-application-page),
+body:has(.developer-application-page),
+#app:has(.developer-application-page) {
+  min-height: 100%;
+  background: #0f1117;
+  color-scheme: dark;
+  scrollbar-color: rgba(205, 210, 221, 0.42) #0f1117;
+  scrollbar-width: thin;
+}
+
+html:has(.developer-application-page)::-webkit-scrollbar {
+  width: 12px;
+}
+
+html:has(.developer-application-page)::-webkit-scrollbar-track {
+  background: #0f1117;
+}
+
+html:has(.developer-application-page)::-webkit-scrollbar-thumb {
+  min-height: 48px;
+  border: 3px solid #0f1117;
+  border-radius: 999px;
+  background: rgba(205, 210, 221, 0.44);
+}
+
+html:has(.developer-application-page)::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 244, 238, 0.62);
+}
+
+.developer-application-page {
+  --vp-c-bg: #0f1117;
+  --vp-c-bg-alt: #171820;
+  --vp-c-bg-soft: #1f2029;
+  --vp-c-divider: rgba(255, 255, 255, 0.08);
+  background: #0f1117;
+}
+
 .developer-application-page .VPNav {
   --vp-c-bg: rgba(14, 15, 20, 0.88);
   --vp-c-bg-alt: #171820;
@@ -35,6 +72,17 @@
   content: '';
   background: linear-gradient(90deg, transparent, #25f4ee 30%, transparent 50%, #fe2c55 70%, transparent);
   opacity: 0.5;
+}
+
+.developer-application-page .VPLocalNav.empty,
+.developer-application-page .VPNavBar .divider,
+.developer-application-page .VPNavBar .divider-line {
+  border: 0;
+  background: transparent;
+}
+
+.developer-application-page .VPLocalNav.empty {
+  display: none;
 }
 
 .developer-application-page .VPNavBarTitle .title,

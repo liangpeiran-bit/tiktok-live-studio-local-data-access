@@ -8,6 +8,7 @@ const props = defineProps<{
 const demoVideo = ref<HTMLVideoElement | null>(null)
 const isVideoPlaying = ref(true)
 const isVideoMuted = ref(true)
+const isVideoExpanded = ref(false)
 
 const isConfigured = computed(() => props.formId && props.formId !== 'FORM_ID')
 const embedUrl = computed(
@@ -34,6 +35,10 @@ function toggleVideoSound() {
 
 function syncVideoMute(event: Event) {
   isVideoMuted.value = (event.target as HTMLVideoElement).muted
+}
+
+function toggleVideoSize() {
+  isVideoExpanded.value = !isVideoExpanded.value
 }
 
 onMounted(() => {
@@ -67,6 +72,16 @@ onMounted(() => {
     <div class="apply-noise" aria-hidden="true"></div>
     <div class="apply-orbit apply-orbit--cyan" aria-hidden="true"></div>
     <div class="apply-orbit apply-orbit--pink" aria-hidden="true"></div>
+    <div class="apply-ribbons" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="ambient-events" aria-hidden="true">
+      <span>LIKE +248</span>
+      <span>ROSE ×1</span>
+      <span>WAVE CLEARED</span>
+      <span>LIVE.CHAT</span>
+      <span>CONNECTED</span>
+    </div>
 
     <section class="apply-masthead">
       <div class="apply-copy">
@@ -90,7 +105,20 @@ onMounted(() => {
         </div>
       </div>
 
-      <article class="demo-card" aria-labelledby="demo-title">
+      <button
+        v-if="isVideoExpanded"
+        class="demo-backdrop"
+        type="button"
+        aria-label="Close expanded demo video"
+        @click="toggleVideoSize"
+      ></button>
+
+      <article
+        class="demo-card"
+        :class="{ 'demo-card--expanded': isVideoExpanded }"
+        aria-labelledby="demo-title"
+        @keydown.esc="isVideoExpanded = false"
+      >
         <header class="demo-card__topbar">
           <span class="demo-live"><i></i> LIVE</span>
           <span>INTERACTIVE GAME DEMO</span>
@@ -127,6 +155,14 @@ onMounted(() => {
             </button>
             <button type="button" :aria-label="isVideoMuted ? 'Turn demo sound on' : 'Mute demo video'" @click="toggleVideoSound">
               {{ isVideoMuted ? 'Sound on' : 'Mute' }}
+            </button>
+            <button
+              type="button"
+              :aria-label="isVideoExpanded ? 'Close expanded demo video' : 'Expand demo video'"
+              :aria-expanded="isVideoExpanded"
+              @click="toggleVideoSize"
+            >
+              {{ isVideoExpanded ? 'Close' : 'Expand' }}
             </button>
           </div>
         </div>
@@ -201,7 +237,7 @@ onMounted(() => {
   --tt-muted: #adb0bc;
   position: relative;
   isolation: isolate;
-  width: min(1280px, calc(100% - 48px));
+  width: min(1480px, calc(100% - 48px));
   margin: 0 auto;
   padding: clamp(56px, 7vw, 96px) 0 104px;
   color: var(--tt-text);
@@ -214,10 +250,12 @@ onMounted(() => {
   inset: 0;
   content: '';
   background:
-    radial-gradient(circle at 12% 12%, rgba(37, 244, 238, 0.18), transparent 30%),
-    radial-gradient(circle at 86% 20%, rgba(254, 44, 85, 0.15), transparent 28%),
-    radial-gradient(circle at 52% 80%, rgba(85, 72, 176, 0.18), transparent 36%),
+    radial-gradient(circle at 10% 12%, rgba(37, 244, 238, 0.23), transparent 32%),
+    radial-gradient(circle at 90% 18%, rgba(254, 44, 85, 0.21), transparent 31%),
+    radial-gradient(circle at 52% 80%, rgba(85, 72, 176, 0.22), transparent 38%),
     linear-gradient(135deg, #10202b 0%, #191923 44%, #2a1722 100%);
+  background-size: 115% 115%, 118% 118%, 120% 120%, auto;
+  animation: ambient-pan 16s ease-in-out infinite alternate;
 }
 
 .apply-page::after {
@@ -258,12 +296,73 @@ onMounted(() => {
 .apply-orbit--cyan { top: 6%; left: -12%; background: var(--tt-cyan); }
 .apply-orbit--pink { top: 28%; right: -10%; background: var(--tt-pink); animation-delay: -4s; }
 
+.apply-ribbons {
+  position: fixed;
+  z-index: -2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.apply-ribbons span {
+  position: absolute;
+  width: 72vw;
+  height: 12vw;
+  min-height: 100px;
+  border-radius: 50%;
+  filter: blur(48px);
+  opacity: 0.14;
+  transform: rotate(-18deg);
+  animation: ribbon-sweep 14s ease-in-out infinite alternate;
+}
+
+.apply-ribbons span:nth-child(1) {
+  top: 8%;
+  left: -30%;
+  background: linear-gradient(90deg, transparent, var(--tt-cyan), transparent);
+}
+
+.apply-ribbons span:nth-child(2) {
+  top: 36%;
+  right: -34%;
+  background: linear-gradient(90deg, transparent, var(--tt-pink), transparent);
+  animation-delay: -5s;
+}
+
+.apply-ribbons span:nth-child(3) {
+  bottom: 5%;
+  left: -8%;
+  background: linear-gradient(90deg, transparent, #8d7dff, transparent);
+  animation-delay: -9s;
+}
+
+.ambient-events span {
+  position: fixed;
+  z-index: -1;
+  padding: 7px 10px;
+  color: rgba(224, 255, 253, 0.42);
+  font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(37, 244, 238, 0.14);
+  border-radius: 6px;
+  background: rgba(11, 19, 25, 0.22);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  animation: event-drift 9s ease-in-out infinite alternate;
+}
+
+.ambient-events span:nth-child(1) { top: 20%; left: 2%; }
+.ambient-events span:nth-child(2) { top: 36%; right: 2%; color: rgba(255, 215, 223, 0.48); border-color: rgba(254, 44, 85, 0.16); animation-delay: -2s; }
+.ambient-events span:nth-child(3) { top: 64%; left: 3%; animation-delay: -4s; }
+.ambient-events span:nth-child(4) { right: 3%; bottom: 18%; color: rgba(255, 215, 223, 0.48); border-color: rgba(254, 44, 85, 0.16); animation-delay: -6s; }
+.ambient-events span:nth-child(5) { right: 10%; bottom: 4%; animation-delay: -8s; }
+
 .apply-masthead {
   display: grid;
-  grid-template-columns: minmax(360px, 0.82fr) minmax(520px, 1.18fr);
+  grid-template-columns: minmax(350px, 0.66fr) minmax(650px, 1.34fr);
   align-items: center;
-  gap: clamp(44px, 6vw, 84px);
-  min-height: min(720px, calc(100vh - 110px));
+  gap: clamp(42px, 5vw, 76px);
+  min-height: min(780px, calc(100vh - 90px));
 }
 
 .apply-copy { padding-block: 28px; }
@@ -393,16 +492,55 @@ onMounted(() => {
 .pulse--pink { background: var(--tt-pink); box-shadow: 0 0 8px var(--tt-pink); }
 .pulse--white { background: #fff; box-shadow: 0 0 8px rgba(255, 255, 255, 0.7); }
 
+:global(body:has(.demo-card--expanded)) { overflow: hidden; }
+
+.demo-backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(3, 4, 7, 0.82);
+  backdrop-filter: blur(18px);
+  cursor: zoom-out;
+  animation: backdrop-in 200ms ease-out both;
+}
+
 .demo-card {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
   background: rgba(12, 13, 17, 0.92);
   box-shadow:
-    -9px 9px 0 rgba(37, 244, 238, 0.7),
-    9px -9px 0 rgba(254, 44, 85, 0.62),
-    0 36px 90px rgba(0, 0, 0, 0.4);
-  transform: rotate(0.35deg);
+    -12px 12px 0 rgba(37, 244, 238, 0.72),
+    12px -12px 0 rgba(254, 44, 85, 0.66),
+    0 44px 120px rgba(0, 0, 0, 0.48);
+  transform: rotate(0.35deg) scale(1.025);
+  transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 350ms ease;
+  animation: demo-enter 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.demo-card:hover {
+  box-shadow:
+    -15px 15px 0 rgba(37, 244, 238, 0.78),
+    15px -15px 0 rgba(254, 44, 85, 0.72),
+    0 54px 140px rgba(0, 0, 0, 0.54);
+  transform: translateY(-6px) rotate(0deg) scale(1.04);
+}
+
+.demo-card--expanded,
+.demo-card--expanded:hover {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  width: min(1540px, calc(100vw - 72px), calc((100vh - 96px) * 1.777));
+  margin: 0;
+  animation: expanded-video-in 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  box-shadow:
+    -12px 12px 0 rgba(37, 244, 238, 0.88),
+    12px -12px 0 rgba(254, 44, 85, 0.82),
+    0 48px 140px rgba(0, 0, 0, 0.72);
 }
 
 .demo-card__topbar {
@@ -428,6 +566,21 @@ onMounted(() => {
   background: #050609;
 }
 
+.demo-media::after {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -32%;
+  width: 18%;
+  content: '';
+  opacity: 0.13;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  filter: blur(8px);
+  transform: skewX(-16deg);
+  pointer-events: none;
+  animation: media-scan 6s ease-in-out infinite;
+}
+
 .demo-media video {
   display: block;
   width: 100%;
@@ -445,7 +598,7 @@ onMounted(() => {
 .demo-story {
   position: absolute;
   left: clamp(18px, 4vw, 34px);
-  right: 160px;
+  right: 220px;
   bottom: clamp(18px, 3.5vw, 32px);
 }
 
@@ -624,12 +777,48 @@ onMounted(() => {
 
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
+@keyframes ambient-pan {
+  from { background-position: -8% -5%, 108% 0%, 46% 100%, 0 0; }
+  to { background-position: 8% 8%, 92% 12%, 56% 88%, 0 0; }
+}
+
 @keyframes orbit-float {
   from { transform: translate3d(-20px, -12px, 0) scale(0.9); }
   to { transform: translate3d(38px, 28px, 0) scale(1.12); }
 }
 
-@media (max-width: 980px) {
+@keyframes ribbon-sweep {
+  from { opacity: 0.08; transform: translate3d(-12vw, -3vh, 0) rotate(-18deg) scale(0.92); }
+  to { opacity: 0.2; transform: translate3d(28vw, 10vh, 0) rotate(-12deg) scale(1.18); }
+}
+
+@keyframes event-drift {
+  from { opacity: 0.25; transform: translate3d(0, -10px, 0); }
+  to { opacity: 0.7; transform: translate3d(18px, 16px, 0); }
+}
+
+@keyframes demo-enter {
+  from { opacity: 0; transform: translate3d(40px, 18px, 0) rotate(1.4deg) scale(0.97); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) rotate(0.35deg) scale(1.025); }
+}
+
+@keyframes media-scan {
+  0%, 18% { left: -32%; opacity: 0; }
+  32% { opacity: 0.16; }
+  58%, 100% { left: 118%; opacity: 0; }
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes expanded-video-in {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.94); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@media (max-width: 1120px) {
   .apply-page { width: min(760px, calc(100% - 32px)); padding-top: 44px; }
   .apply-masthead,
   .application-section { grid-template-columns: 1fr; }
@@ -638,6 +827,7 @@ onMounted(() => {
   .application-section { gap: 28px; margin-top: 112px; }
   .application-intro { position: static; max-width: 620px; padding-top: 0; }
   .apply-steps { grid-template-columns: repeat(3, 1fr); }
+  .ambient-events { display: none; }
 }
 
 @media (max-width: 620px) {
@@ -664,12 +854,20 @@ onMounted(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .apply-page::before,
   .apply-page::after,
   .apply-orbit,
+  .apply-ribbons span,
+  .ambient-events span,
+  .demo-card,
+  .demo-media::after,
   .apply-badge span,
   .demo-live i,
   .open-status i { animation: none; }
 
-  .apply-button { transition: none; }
+  .apply-button,
+  .demo-card { transition: none; }
+
+  .demo-card:hover { transform: rotate(0.35deg) scale(1.025); }
 }
 </style>
