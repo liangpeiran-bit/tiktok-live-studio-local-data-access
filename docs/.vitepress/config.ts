@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'LIVE Studio Local Data Access',
   description: 'Local real-time event access for LIVE Studio third-party clients',
+  appearance: true,
   lastUpdated: true,
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],

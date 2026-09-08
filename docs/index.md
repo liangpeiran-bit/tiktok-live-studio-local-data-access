@@ -2,9 +2,9 @@
 layout: home
 
 hero:
-  name: LIVE Studio Local Data Access
-  text: Local real-time event access
-  tagline: Open live room events to allowlisted third-party apps on the creator machine over WebSocket.
+  name: LIVE STUDIO · LOCAL DATA ACCESS
+  text: Turn live interactions into gameplay
+  tagline: Use a local WebSocket to transform likes, gifts, and chat into real-time experiences for H5, Unity, Unreal, or any game stack.
   actions:
     - theme: brand
       text: Quick Start
@@ -17,15 +17,21 @@ hero:
       link: /apply
 
 features:
-  - title: Local-only transport
-    details: The gateway listens on 127.0.0.1 and exposes events only to local trusted clients.
-  - title: Authorized access
-    details: Third-party clients authenticate with app_id, key_id, and secret before receiving events.
-  - title: Real-time live events
-    details: Receive live.like, live.gift, and live.chat events through a stable JSON protocol.
+  - title: Local WebSocket
+    details: The Gateway listens only on 127.0.0.1, keeping live data on the creator device with low-latency delivery.
+  - title: Controlled event access
+    details: After credential authentication, a client receives only the IM message types enabled for its application.
+  - title: Bring any game stack
+    details: Connect H5, Unity, Unreal, or any WebSocket-capable runtime through a stable JSON event protocol.
 ---
 
-# What is this?
+<div class="tt-event-ribbon" aria-label="Currently available live events">
+  <span><i></i>live.like</span>
+  <span><i></i>live.gift</span>
+  <span><i></i>live.chat</span>
+</div>
+
+## What is this?
 
 LIVE Studio Local Data Access is a local WebSocket gateway for trusted third-party tools running on the same machine as LIVE Studio. After authentication, a client can receive selected real-time live room events such as likes, gifts, and chat messages.
 
@@ -37,7 +43,19 @@ This is not a viewer-side overlay push API. It does not send personalized state 
 
 ## Start here
 
-- New integration: read [Quick Start](/guide/quick-start).
-- Implementing a client: start from [Connection Lifecycle](/protocol/connection) and [Authentication](/protocol/auth).
-- Handling event data: read [Event Envelope](/protocol/events) and the [Events](/events/live-like) reference.
-- Debugging failures: use [Troubleshooting](/guide/troubleshooting).
+<div class="tt-start-grid">
+  <a href="/guide/quick-start">
+    <b>01</b>
+    <span><strong>Make your first connection</strong><small>Discover a port, authenticate, and receive your first live event by following the shortest path.</small></span>
+  </a>
+  <a href="/protocol/connection">
+    <b>02</b>
+    <span><strong>Build a reliable client</strong><small>Understand the connection lifecycle, authentication messages, heartbeats, and safe reconnects.</small></span>
+  </a>
+  <a href="/events/live-like">
+    <b>03</b>
+    <span><strong>Turn events into gameplay</strong><small>Explore like, gift, and chat events, then map gifts to the effects you want.</small></span>
+  </a>
+</div>
+
+If a connection or event does not behave as expected, use the [Troubleshooting guide](/guide/troubleshooting).
