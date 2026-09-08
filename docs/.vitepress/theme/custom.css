@@ -58,31 +58,26 @@ html:has(.developer-application-page)::-webkit-scrollbar-thumb:hover {
 }
 
 .developer-application-page .VPNavBar {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom: 0 !important;
   background: linear-gradient(90deg, rgba(13, 19, 24, 0.96), rgba(24, 20, 28, 0.96));
+  box-shadow: none !important;
   backdrop-filter: blur(18px);
 }
 
 .developer-application-page .VPNavBar::after {
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  height: 1px;
-  content: '';
-  background: linear-gradient(90deg, transparent, #25f4ee 30%, transparent 50%, #fe2c55 70%, transparent);
-  opacity: 0.5;
+  display: none !important;
+  content: none !important;
 }
 
 .developer-application-page .VPLocalNav.empty,
 .developer-application-page .VPNavBar .divider,
 .developer-application-page .VPNavBar .divider-line {
-  border: 0;
-  background: transparent;
-}
-
-.developer-application-page .VPLocalNav.empty {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
 }
 
 .developer-application-page .VPNavBarTitle .title,
