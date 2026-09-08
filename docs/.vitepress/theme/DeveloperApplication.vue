@@ -78,12 +78,6 @@ onMounted(() => {
       </div>
 
       <article class="demo-card" aria-labelledby="demo-title">
-        <header class="demo-card__topbar">
-          <span class="demo-live"><i></i> LIVE</span>
-          <span>INTERACTIVE GAME DEMO</span>
-          <span>12 SEC</span>
-        </header>
-
         <div class="demo-media">
           <video
             ref="demoVideo"
@@ -327,7 +321,6 @@ onMounted(() => {
 }
 
 .apply-badge span,
-.demo-live i,
 .open-status i {
   width: 7px;
   height: 7px;
@@ -454,22 +447,6 @@ onMounted(() => {
     0 54px 140px rgba(0, 0, 0, 0.54);
   transform: translateY(-6px);
 }
-
-.demo-card__topbar {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  min-height: 42px;
-  padding: 0 14px;
-  color: #838690;
-  font: 720 10px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  letter-spacing: 0.12em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.demo-card__topbar > :last-child { justify-self: end; }
-.demo-live { display: inline-flex; align-items: center; gap: 7px; color: #fff; }
-.demo-live i { width: 6px; height: 6px; }
 
 .demo-media {
   position: relative;
@@ -716,8 +693,6 @@ onMounted(() => {
   .apply-actions { display: grid; }
   .apply-button { width: 100%; }
   .demo-card { border-radius: 11px; box-shadow: -5px 5px 0 rgba(37, 244, 238, 0.66), 5px -5px 0 rgba(254, 44, 85, 0.58), 0 24px 60px rgba(0, 0, 0, 0.4); }
-  .demo-card__topbar { grid-template-columns: 1fr auto; }
-  .demo-card__topbar > :nth-child(2) { display: none; }
   .demo-story { right: 16px; bottom: 16px; }
   .demo-story p { display: none; }
   .application-section { margin-top: 88px; }
@@ -739,7 +714,6 @@ onMounted(() => {
   .demo-card,
   .demo-media::after,
   .apply-badge span,
-  .demo-live i,
   .open-status i { animation: none; }
 
   .apply-button,
