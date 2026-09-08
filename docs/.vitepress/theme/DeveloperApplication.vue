@@ -177,20 +177,6 @@ onMounted(() => {
   font-family: 'TikTok Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.apply-page::before {
-  position: fixed;
-  z-index: -4;
-  inset: 0;
-  content: '';
-  background:
-    radial-gradient(circle at 10% 12%, rgba(37, 244, 238, 0.23), transparent 32%),
-    radial-gradient(circle at 90% 18%, rgba(254, 44, 85, 0.21), transparent 31%),
-    radial-gradient(circle at 52% 80%, rgba(85, 72, 176, 0.22), transparent 38%),
-    linear-gradient(135deg, #10202b 0%, #191923 44%, #2a1722 100%);
-  background-size: 115% 115%, 118% 118%, 120% 120%, auto;
-  animation: ambient-pan 16s ease-in-out infinite alternate;
-}
-
 .apply-page::after {
   position: fixed;
   z-index: -3;
@@ -643,11 +629,6 @@ onMounted(() => {
 
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
-@keyframes ambient-pan {
-  from { background-position: -8% -5%, 108% 0%, 46% 100%, 0 0; }
-  to { background-position: 8% 8%, 92% 12%, 56% 88%, 0 0; }
-}
-
 @keyframes orbit-float {
   from { transform: translate3d(-20px, -12px, 0) scale(0.9); }
   to { transform: translate3d(38px, 28px, 0) scale(1.12); }
@@ -706,7 +687,6 @@ onMounted(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .apply-page::before,
   .apply-page::after,
   .apply-orbit,
   .apply-ribbons span,
