@@ -95,7 +95,7 @@ onMounted(() => {
 
           <div class="demo-story">
             <span>GIFT EVENT → GAME ACTION</span>
-            <h2 id="demo-title">Tower Defense × LIVE</h2>
+            <h2 id="demo-title">Tower Defense × LIVE Studio</h2>
             <p>Watch a gift become a tower and reshape the round inside LIVE Studio.</p>
           </div>
         </div>
