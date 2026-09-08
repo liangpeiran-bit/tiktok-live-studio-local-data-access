@@ -170,7 +170,7 @@ onMounted(() => {
   --tt-muted: #adb0bc;
   position: relative;
   isolation: isolate;
-  width: min(1480px, calc(100% - 48px));
+  width: min(1540px, calc(100% - 48px));
   margin: 0 auto;
   padding: clamp(56px, 7vw, 96px) 0 104px;
   color: var(--tt-text);
@@ -292,7 +292,7 @@ onMounted(() => {
 
 .apply-masthead {
   display: grid;
-  grid-template-columns: minmax(350px, 0.66fr) minmax(650px, 1.34fr);
+  grid-template-columns: minmax(360px, 420px) minmax(620px, 1fr);
   align-items: center;
   gap: clamp(42px, 5vw, 76px);
   min-height: min(780px, calc(100vh - 90px));
@@ -424,8 +424,8 @@ onMounted(() => {
 .pulse--white { background: #fff; box-shadow: 0 0 8px rgba(255, 255, 255, 0.7); }
 
 .demo-card {
-  align-self: start;
-  width: calc(100% + max(0px, calc((100vw - 1480px) / 2 - 4px)));
+  align-self: center;
+  width: 100%;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
