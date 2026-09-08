@@ -12,6 +12,9 @@ hero:
     - theme: alt
       text: Protocol Reference
       link: /protocol/connection
+    - theme: alt
+      text: Apply for Access
+      link: /apply
 
 features:
   - title: Local-only transport

@@ -6,6 +6,7 @@
 
 ## 开始接入
 
+- [申请抢先体验](https://tiktok-live-studio-local-data-access.pages.dev/zh/apply)：海外开发者可提交团队、游戏、技术栈、所需事件类型和试点时间，供白名单审核
 - [能力概览](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/overview)：产品范围、前提条件和仅限本机的部署模型
 - [快速开始](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/quick-start)：最小发现、鉴权和事件接收流程
 - [架构](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/architecture)：推荐的客户端职责和生命周期

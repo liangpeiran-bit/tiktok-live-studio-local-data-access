@@ -77,6 +77,7 @@ export default defineConfig({
           { text: 'Events', link: '/events/live-like' },
           { text: 'Gift Catalog', link: '/reference/gift-catalog' },
           { text: 'Samples', link: '/samples/javascript' },
+          { text: 'Apply', link: '/apply' },
         ],
         sidebar: [
           {
@@ -133,6 +134,7 @@ export default defineConfig({
           { text: '事件', link: '/zh/events/live-like' },
           { text: '礼物目录', link: '/zh/reference/gift-catalog' },
           { text: '示例', link: '/zh/samples/javascript' },
+          { text: '申请接入', link: '/zh/apply' },
         ],
         sidebar: [
           {

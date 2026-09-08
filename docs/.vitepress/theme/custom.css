@@ -12,3 +12,37 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.developer-application-page .VPNav {
+  --vp-c-bg: rgba(17, 35, 65, 0.84);
+  --vp-c-bg-alt: #122b50;
+  --vp-c-divider: rgba(255, 255, 255, 0.08);
+  --vp-nav-bg-color: rgba(17, 35, 65, 0.84);
+}
+
+.developer-application-page .VPNavBar {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, rgba(17, 35, 65, 0.88), rgba(48, 37, 78, 0.86));
+  backdrop-filter: blur(18px);
+}
+
+.developer-application-page .VPNavBarTitle .title,
+.developer-application-page .VPNavBarMenuLink,
+.developer-application-page .VPNavBarTranslations button,
+.developer-application-page .VPSocialLink {
+  color: #f7f8fb;
+}
+
+.developer-application-page .VPContent {
+  padding-top: var(--vp-nav-height);
+}
+
+.developer-application-page .VPPage {
+  min-height: calc(100vh - var(--vp-nav-height));
+  overflow: clip;
+  background: linear-gradient(135deg, #122b50, #342754 68%, #143a47);
+}
+
+.developer-application-page .VPFooter {
+  display: none;
+}

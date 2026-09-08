@@ -12,6 +12,9 @@ hero:
     - theme: alt
       text: 协议参考
       link: /zh/protocol/connection
+    - theme: alt
+      text: 申请接入
+      link: /zh/apply
 
 features:
   - title: 仅本机传输

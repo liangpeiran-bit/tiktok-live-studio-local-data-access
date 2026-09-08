@@ -6,6 +6,7 @@ Protocol version: `1.0.0`. The endpoint is loopback-only at `ws://127.0.0.1:4915
 
 ## Start Here
 
+- [Apply for Early Access](https://tiktok-live-studio-local-data-access.pages.dev/apply): International developers can submit their team, game, technology stack, requested event types, and pilot timeline for allowlist review
 - [Overview](https://tiktok-live-studio-local-data-access.pages.dev/guide/overview): Product scope, prerequisites, and local-only deployment model
 - [Quick Start](https://tiktok-live-studio-local-data-access.pages.dev/guide/quick-start): Minimum discovery, authentication, and event-receive flow
 - [Architecture](https://tiktok-live-studio-local-data-access.pages.dev/guide/architecture): Recommended client boundaries and lifecycle
