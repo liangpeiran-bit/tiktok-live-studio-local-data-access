@@ -6,9 +6,6 @@ const props = defineProps<{
 }>()
 
 const demoVideo = ref<HTMLVideoElement | null>(null)
-const isVideoPlaying = ref(true)
-const isVideoMuted = ref(true)
-const isVideoExpanded = ref(false)
 
 const isConfigured = computed(() => props.formId && props.formId !== 'FORM_ID')
 const embedUrl = computed(
@@ -17,34 +14,9 @@ const embedUrl = computed(
 )
 const publicUrl = computed(() => `https://tally.so/r/${props.formId}`)
 
-async function toggleVideoPlayback() {
-  if (!demoVideo.value) return
-
-  if (demoVideo.value.paused) {
-    await demoVideo.value.play()
-  } else {
-    demoVideo.value.pause()
-  }
-}
-
-function toggleVideoSound() {
-  if (!demoVideo.value) return
-  demoVideo.value.muted = !demoVideo.value.muted
-  isVideoMuted.value = demoVideo.value.muted
-}
-
-function syncVideoMute(event: Event) {
-  isVideoMuted.value = (event.target as HTMLVideoElement).muted
-}
-
-function toggleVideoSize() {
-  isVideoExpanded.value = !isVideoExpanded.value
-}
-
 onMounted(() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     demoVideo.value?.pause()
-    isVideoPlaying.value = false
   }
 
   if (!isConfigured.value) return
@@ -105,20 +77,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <button
-        v-if="isVideoExpanded"
-        class="demo-backdrop"
-        type="button"
-        aria-label="Close expanded demo video"
-        @click="toggleVideoSize"
-      ></button>
-
-      <article
-        class="demo-card"
-        :class="{ 'demo-card--expanded': isVideoExpanded }"
-        aria-labelledby="demo-title"
-        @keydown.esc="isVideoExpanded = false"
-      >
+      <article class="demo-card" aria-labelledby="demo-title">
         <header class="demo-card__topbar">
           <span class="demo-live"><i></i> LIVE</span>
           <span>INTERACTIVE GAME DEMO</span>
@@ -135,9 +94,6 @@ onMounted(() => {
             preload="metadata"
             poster="/media/interactive-tower-defense-demo.webp"
             aria-label="Tower Defense interactive game running inside LIVE Studio"
-            @play="isVideoPlaying = true"
-            @pause="isVideoPlaying = false"
-            @volumechange="syncVideoMute"
           >
             <source src="/media/interactive-tower-defense-demo.mp4" type="video/mp4" />
           </video>
@@ -147,23 +103,6 @@ onMounted(() => {
             <span>GIFT EVENT → GAME ACTION</span>
             <h2 id="demo-title">Tower Defense × LIVE</h2>
             <p>Watch a gift become a tower and reshape the round inside LIVE Studio.</p>
-          </div>
-
-          <div class="demo-controls" aria-label="Video controls">
-            <button type="button" :aria-label="isVideoPlaying ? 'Pause demo video' : 'Play demo video'" @click="toggleVideoPlayback">
-              {{ isVideoPlaying ? 'Pause' : 'Play' }}
-            </button>
-            <button type="button" :aria-label="isVideoMuted ? 'Turn demo sound on' : 'Mute demo video'" @click="toggleVideoSound">
-              {{ isVideoMuted ? 'Sound on' : 'Mute' }}
-            </button>
-            <button
-              type="button"
-              :aria-label="isVideoExpanded ? 'Close expanded demo video' : 'Expand demo video'"
-              :aria-expanded="isVideoExpanded"
-              @click="toggleVideoSize"
-            >
-              {{ isVideoExpanded ? 'Close' : 'Expand' }}
-            </button>
           </div>
         </div>
       </article>
@@ -451,8 +390,7 @@ onMounted(() => {
 }
 
 .apply-button:hover { color: #fff; text-decoration: none; transform: translateY(-2px); }
-.apply-button:focus-visible,
-.demo-controls button:focus-visible { outline: 3px solid rgba(37, 244, 238, 0.72); outline-offset: 3px; }
+.apply-button:focus-visible { outline: 3px solid rgba(37, 244, 238, 0.72); outline-offset: 3px; }
 
 .apply-button--primary {
   background: var(--tt-pink);
@@ -492,21 +430,9 @@ onMounted(() => {
 .pulse--pink { background: var(--tt-pink); box-shadow: 0 0 8px var(--tt-pink); }
 .pulse--white { background: #fff; box-shadow: 0 0 8px rgba(255, 255, 255, 0.7); }
 
-:global(body:has(.demo-card--expanded)) { overflow: hidden; }
-
-.demo-backdrop {
-  position: fixed;
-  z-index: 1000;
-  inset: 0;
-  padding: 0;
-  border: 0;
-  background: rgba(3, 4, 7, 0.82);
-  backdrop-filter: blur(18px);
-  cursor: zoom-out;
-  animation: backdrop-in 200ms ease-out both;
-}
-
 .demo-card {
+  align-self: start;
+  width: calc(100% + max(0px, calc((100vw - 1480px) / 2 - 4px)));
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
@@ -515,7 +441,8 @@ onMounted(() => {
     -12px 12px 0 rgba(37, 244, 238, 0.72),
     12px -12px 0 rgba(254, 44, 85, 0.66),
     0 44px 120px rgba(0, 0, 0, 0.48);
-  transform: rotate(0.35deg) scale(1.025);
+  transform: none;
+  transform-origin: left center;
   transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 350ms ease;
   animation: demo-enter 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
@@ -525,22 +452,7 @@ onMounted(() => {
     -15px 15px 0 rgba(37, 244, 238, 0.78),
     15px -15px 0 rgba(254, 44, 85, 0.72),
     0 54px 140px rgba(0, 0, 0, 0.54);
-  transform: translateY(-6px) rotate(0deg) scale(1.04);
-}
-
-.demo-card--expanded,
-.demo-card--expanded:hover {
-  position: fixed;
-  z-index: 1001;
-  top: 50%;
-  left: 50%;
-  width: min(1540px, calc(100vw - 72px), calc((100vh - 96px) * 1.777));
-  margin: 0;
-  animation: expanded-video-in 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  box-shadow:
-    -12px 12px 0 rgba(37, 244, 238, 0.88),
-    12px -12px 0 rgba(254, 44, 85, 0.82),
-    0 48px 140px rgba(0, 0, 0, 0.72);
+  transform: translateY(-6px);
 }
 
 .demo-card__topbar {
@@ -598,7 +510,7 @@ onMounted(() => {
 .demo-story {
   position: absolute;
   left: clamp(18px, 4vw, 34px);
-  right: 220px;
+  right: 34px;
   bottom: clamp(18px, 3.5vw, 32px);
 }
 
@@ -618,29 +530,6 @@ onMounted(() => {
 }
 
 .demo-story p { max-width: 430px; margin: 0; color: #c9cbd2; font-size: 12px; line-height: 1.45; }
-
-.demo-controls {
-  position: absolute;
-  right: 18px;
-  bottom: 20px;
-  display: flex;
-  gap: 7px;
-}
-
-.demo-controls button {
-  min-height: 34px;
-  padding: 0 11px;
-  color: #fff;
-  font: 700 11px/1 inherit;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 8px;
-  background: rgba(11, 11, 14, 0.68);
-  backdrop-filter: blur(10px);
-  cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease;
-}
-
-.demo-controls button:hover { border-color: var(--tt-cyan); background: rgba(20, 22, 27, 0.9); }
 
 .application-section {
   display: grid;
@@ -799,23 +688,13 @@ onMounted(() => {
 
 @keyframes demo-enter {
   from { opacity: 0; transform: translate3d(40px, 18px, 0) rotate(1.4deg) scale(0.97); }
-  to { opacity: 1; transform: translate3d(0, 0, 0) rotate(0.35deg) scale(1.025); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) rotate(0) scale(1); }
 }
 
 @keyframes media-scan {
   0%, 18% { left: -32%; opacity: 0; }
   32% { opacity: 0.16; }
   58%, 100% { left: 118%; opacity: 0; }
-}
-
-@keyframes backdrop-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes expanded-video-in {
-  from { opacity: 0; transform: translate(-50%, -48%) scale(0.94); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
 @media (max-width: 1120px) {
@@ -839,10 +718,8 @@ onMounted(() => {
   .demo-card { border-radius: 11px; box-shadow: -5px 5px 0 rgba(37, 244, 238, 0.66), 5px -5px 0 rgba(254, 44, 85, 0.58), 0 24px 60px rgba(0, 0, 0, 0.4); }
   .demo-card__topbar { grid-template-columns: 1fr auto; }
   .demo-card__topbar > :nth-child(2) { display: none; }
-  .demo-story { right: 16px; bottom: 62px; }
+  .demo-story { right: 16px; bottom: 16px; }
   .demo-story p { display: none; }
-  .demo-controls { right: 13px; bottom: 13px; left: 13px; }
-  .demo-controls button { flex: 1; }
   .application-section { margin-top: 88px; }
   .apply-steps { gap: 7px; }
   .apply-steps li { display: grid; gap: 7px; padding: 10px 8px; }
@@ -868,6 +745,6 @@ onMounted(() => {
   .apply-button,
   .demo-card { transition: none; }
 
-  .demo-card:hover { transform: rotate(0.35deg) scale(1.025); }
+  .demo-card:hover { transform: none; }
 }
 </style>
