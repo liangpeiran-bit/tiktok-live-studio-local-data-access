@@ -203,6 +203,7 @@ onBeforeUnmount(() => {
         <h1 class="apply-headline">
           <span class="apply-headline__lead">{{ copy.headlineLead }}</span>
           <em :data-text="copy.headlineAccent">
+            <span class="headline-tiktok-echo" :data-text="copy.headlineAccent" aria-hidden="true"></span>
             <span class="headline-short-circuit" aria-hidden="true"></span>
             {{ copy.headlineAccent }}
           </em>
@@ -328,8 +329,8 @@ onBeforeUnmount(() => {
   --tt-surface-raised: #20212b;
   --tt-text: #f8f8fa;
   --tt-muted: #adb0bc;
-  --tt-ray-cyan: rgba(134, 198, 200, 0.78);
-  --tt-ray-pink: rgba(192, 117, 139, 0.68);
+  --tt-ray-cyan: rgba(62, 188, 188, 0.62);
+  --tt-ray-pink: rgba(172, 74, 98, 0.5);
   --apply-layout-width: 1600px;
   --apply-copy-width: 560px;
   --apply-type-display: clamp(52px, 4.25vw, 68px);
@@ -391,57 +392,56 @@ onBeforeUnmount(() => {
   z-index: -1;
   top: 48px;
   left: 0;
-  width: min(64vw, 1060px);
-  height: min(82vh, 920px);
+  width: min(56vw, 920px);
+  height: min(74vh, 780px);
   overflow: hidden;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 96% 92% at 0 0, #000 0 46%, rgba(0, 0, 0, 0.9) 70%, transparent 98%);
-  mask-image: radial-gradient(ellipse 96% 92% at 0 0, #000 0 46%, rgba(0, 0, 0, 0.9) 70%, transparent 98%);
+  -webkit-mask-image: radial-gradient(ellipse 94% 90% at 0 0, #000 0 38%, rgba(0, 0, 0, 0.82) 62%, transparent 92%);
+  mask-image: radial-gradient(ellipse 94% 90% at 0 0, #000 0 38%, rgba(0, 0, 0, 0.82) 62%, transparent 92%);
 }
 
 .radial-light-columns::before {
   position: absolute;
-  top: -150px;
-  left: -170px;
-  width: 430px;
-  height: 430px;
+  top: -180px;
+  left: -210px;
+  width: 500px;
+  height: 500px;
   content: '';
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(134, 198, 200, 0.2), rgba(192, 117, 139, 0.09) 38%, transparent 72%);
-  filter: blur(22px);
+  background: radial-gradient(circle, rgba(62, 188, 188, 0.2), rgba(172, 74, 98, 0.08) 38%, transparent 72%);
+  filter: blur(42px);
 }
 
 .radial-light-columns span {
   --ray-angle: 12deg;
   --ray-length: min(42vw, 680px);
-  --ray-width: 28px;
+  --ray-width: 72px;
   --ray-color: var(--tt-ray-cyan);
-  --ray-opacity-low: 0.2;
-  --ray-opacity-high: 0.38;
+  --ray-opacity-low: 0.11;
+  --ray-opacity-high: 0.22;
   position: absolute;
   top: -10px;
-  left: -34px;
+  left: -46px;
   width: var(--ray-length);
   height: var(--ray-width);
   border-radius: 0 999px 999px 0;
-  background: linear-gradient(90deg, var(--ray-color), var(--ray-color) 26%, transparent 94%);
-  clip-path: polygon(0 42%, 100% 0, 100% 100%, 0 58%);
-  filter: blur(5px);
-  box-shadow: 0 0 24px var(--ray-color);
+  background: linear-gradient(90deg, var(--ray-color), var(--ray-color) 22%, transparent 88%);
+  clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 60%);
+  filter: blur(14px);
   mix-blend-mode: screen;
   transform-origin: 0 50%;
   will-change: opacity, transform;
   animation: radial-column-breathe 10s ease-in-out infinite;
 }
 
-.radial-light-columns span:nth-child(1) { --ray-angle: 7deg; --ray-length: min(36vw, 600px); --ray-width: 20px; --ray-opacity-low: 0.17; --ray-opacity-high: 0.3; animation-delay: -2s; }
-.radial-light-columns span:nth-child(2) { --ray-angle: 16deg; --ray-length: min(48vw, 790px); --ray-width: 30px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.15; --ray-opacity-high: 0.28; animation-delay: -7s; animation-duration: 12s; }
-.radial-light-columns span:nth-child(3) { --ray-angle: 25deg; --ray-length: min(45vw, 740px); --ray-width: 40px; --ray-opacity-low: 0.22; --ray-opacity-high: 0.42; animation-delay: -4s; animation-duration: 11s; }
-.radial-light-columns span:nth-child(4) { --ray-angle: 34deg; --ray-length: min(50vw, 830px); --ray-width: 28px; --ray-opacity-low: 0.17; --ray-opacity-high: 0.32; animation-delay: -9s; animation-duration: 13s; }
-.radial-light-columns span:nth-child(5) { --ray-angle: 43deg; --ray-length: min(43vw, 710px); --ray-width: 36px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.14; --ray-opacity-high: 0.27; animation-delay: -5s; animation-duration: 11.5s; }
-.radial-light-columns span:nth-child(6) { --ray-angle: 52deg; --ray-length: min(47vw, 770px); --ray-width: 27px; --ray-opacity-low: 0.18; --ray-opacity-high: 0.35; animation-delay: -1s; animation-duration: 12.5s; }
-.radial-light-columns span:nth-child(7) { --ray-angle: 62deg; --ray-length: min(39vw, 640px); --ray-width: 31px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.13; --ray-opacity-high: 0.25; animation-delay: -8s; animation-duration: 14s; }
-.radial-light-columns span:nth-child(8) { --ray-angle: 72deg; --ray-length: min(34vw, 560px); --ray-width: 19px; --ray-opacity-low: 0.14; --ray-opacity-high: 0.28; animation-delay: -3s; animation-duration: 13.5s; }
+.radial-light-columns span:nth-child(1) { --ray-angle: 5deg; --ray-length: min(34vw, 560px); --ray-width: 52px; --ray-opacity-low: 0.11; --ray-opacity-high: 0.2; animation-delay: -2s; }
+.radial-light-columns span:nth-child(2) { --ray-angle: 14deg; --ray-length: min(44vw, 720px); --ray-width: 82px; --ray-opacity-low: 0.12; --ray-opacity-high: 0.23; animation-delay: -7s; animation-duration: 12s; }
+.radial-light-columns span:nth-child(3) { --ray-angle: 24deg; --ray-length: min(40vw, 660px); --ray-width: 70px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.1; --ray-opacity-high: 0.2; animation-delay: -4s; animation-duration: 11s; }
+.radial-light-columns span:nth-child(4) { --ray-angle: 35deg; --ray-length: min(46vw, 760px); --ray-width: 96px; --ray-opacity-low: 0.14; --ray-opacity-high: 0.27; animation-delay: -9s; animation-duration: 13s; }
+.radial-light-columns span:nth-child(5) { --ray-angle: 47deg; --ray-length: min(40vw, 650px); --ray-width: 78px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.1; --ray-opacity-high: 0.2; animation-delay: -5s; animation-duration: 11.5s; }
+.radial-light-columns span:nth-child(6) { --ray-angle: 59deg; --ray-length: min(42vw, 690px); --ray-width: 88px; --ray-opacity-low: 0.12; --ray-opacity-high: 0.24; animation-delay: -1s; animation-duration: 12.5s; }
+.radial-light-columns span:nth-child(7) { --ray-angle: 70deg; --ray-length: min(34vw, 560px); --ray-width: 64px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.08; --ray-opacity-high: 0.16; animation-delay: -8s; animation-duration: 14s; }
+.radial-light-columns span:nth-child(8) { --ray-angle: 80deg; --ray-length: min(29vw, 480px); --ray-width: 52px; --ray-opacity-low: 0.08; --ray-opacity-high: 0.16; animation-delay: -3s; animation-duration: 13.5s; }
 
 .apply-ribbons {
   position: fixed;
@@ -577,8 +577,9 @@ onBeforeUnmount(() => {
   color: #fff;
   font-style: normal;
   text-shadow:
-    -2px 0 rgba(37, 244, 238, 0.88),
-    2px 0 rgba(254, 44, 85, 0.84);
+    -3px 0 rgba(37, 244, 238, 0.82),
+    3px 0 rgba(254, 44, 85, 0.78),
+    0 0 18px rgba(255, 255, 255, 0.16);
   transform-origin: left center;
   will-change: filter, opacity, transform;
   animation: headline-short-circuit 5s linear 420ms infinite both;
@@ -617,6 +618,39 @@ onBeforeUnmount(() => {
 .apply-headline em::after {
   text-shadow: 5px 0 var(--tt-pink), 14px 0 rgba(254, 44, 85, 0.5);
   animation: headline-glitch-pink 5s steps(1, end) 420ms infinite both;
+}
+
+.headline-tiktok-echo {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.headline-tiktok-echo::before,
+.headline-tiktok-echo::after {
+  position: absolute;
+  inset: 0;
+  content: attr(data-text);
+  color: transparent;
+  mix-blend-mode: screen;
+  will-change: filter, opacity, transform;
+}
+
+.headline-tiktok-echo::before {
+  text-shadow:
+    -12px 0 8px rgba(37, 244, 238, 0.92),
+    -30px 0 22px rgba(37, 244, 238, 0.46),
+    -52px 0 38px rgba(37, 244, 238, 0.2);
+  animation: headline-tiktok-smear-cyan 5s cubic-bezier(0.42, 0, 0.58, 1) 420ms infinite both;
+}
+
+.headline-tiktok-echo::after {
+  text-shadow:
+    12px 0 8px rgba(254, 44, 85, 0.92),
+    30px 0 22px rgba(254, 44, 85, 0.46),
+    52px 0 38px rgba(254, 44, 85, 0.2);
+  animation: headline-tiktok-smear-pink 5s cubic-bezier(0.42, 0, 0.58, 1) 420ms infinite both;
 }
 
 .headline-short-circuit {
@@ -1164,6 +1198,16 @@ onBeforeUnmount(() => {
   4%, 100% { opacity: 0; transform: translate3d(28%, 0, 0) scaleX(0.12); }
 }
 
+@keyframes headline-tiktok-smear-cyan {
+  0%, 46%, 72%, 100% { opacity: 0.42; filter: blur(2px); transform: translate3d(-3px, 0, 0) scaleX(1); }
+  58% { opacity: 0.96; filter: blur(7px); transform: translate3d(-20px, 0, 0) scaleX(1.08); }
+}
+
+@keyframes headline-tiktok-smear-pink {
+  0%, 46%, 72%, 100% { opacity: 0.38; filter: blur(2px); transform: translate3d(3px, 0, 0) scaleX(1); }
+  58% { opacity: 0.92; filter: blur(7px); transform: translate3d(20px, 0, 0) scaleX(1.08); }
+}
+
 @keyframes orbit-float {
   from { transform: translate3d(-20px, -12px, 0) scale(0.9); }
   to { transform: translate3d(38px, 28px, 0) scale(1.12); }
@@ -1243,6 +1287,8 @@ onBeforeUnmount(() => {
   .apply-headline em,
   .apply-headline em::before,
   .apply-headline em::after,
+  .headline-tiktok-echo::before,
+  .headline-tiktok-echo::after,
   .headline-short-circuit,
   .apply-badge span,
   .open-status i,
