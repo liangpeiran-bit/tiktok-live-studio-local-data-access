@@ -77,6 +77,7 @@ export default defineConfig({
           { text: 'Protocol', link: '/protocol/connection' },
           { text: 'Events', link: '/events/live-like' },
           { text: 'Gift Catalog', link: '/reference/gift-catalog' },
+          { text: 'Demos', link: '/demos/' },
           { text: 'Samples', link: '/samples/javascript' },
           { text: 'Apply', link: '/apply' },
         ],
@@ -110,6 +111,14 @@ export default defineConfig({
             ],
           },
           {
+            text: 'Playable Demos',
+            items: [
+              { text: 'All Demos', link: '/demos/' },
+              { text: 'Tug of Trap', link: '/demos/tug-of-trap' },
+              { text: 'Candy Arena', link: '/demos/candy-arena-duel' },
+            ],
+          },
+          {
             text: 'Samples',
             items: [
               { text: 'JavaScript / TypeScript', link: '/samples/javascript' },
@@ -134,6 +143,7 @@ export default defineConfig({
           { text: '协议', link: '/zh/protocol/connection' },
           { text: '事件', link: '/zh/events/live-like' },
           { text: '礼物目录', link: '/zh/reference/gift-catalog' },
+          { text: 'Demo', link: '/zh/demos/' },
           { text: '示例', link: '/zh/samples/javascript' },
           { text: '申请接入', link: '/zh/apply' },
         ],
@@ -164,6 +174,14 @@ export default defineConfig({
               { text: 'live.gift', link: '/zh/events/live-gift' },
               { text: '礼物目录', link: '/zh/reference/gift-catalog' },
               { text: 'live.chat', link: '/zh/events/live-chat' },
+            ],
+          },
+          {
+            text: '可试玩 Demo',
+            items: [
+              { text: '全部 Demo', link: '/zh/demos/' },
+              { text: '拔河陷阱', link: '/zh/demos/tug-of-trap' },
+              { text: '糖果擂台', link: '/zh/demos/candy-arena-duel' },
             ],
           },
           {

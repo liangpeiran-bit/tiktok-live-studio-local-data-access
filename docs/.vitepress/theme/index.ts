@@ -2,6 +2,7 @@ import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import { h } from 'vue'
 import DeveloperApplication from './DeveloperApplication.vue'
+import DemoShowcase from './DemoShowcase.vue'
 import GiftCatalog from './GiftCatalog.vue'
 import LlmDocsEntry from './LlmDocsEntry.vue'
 import LlmSiteFooter from './LlmSiteFooter.vue'
@@ -15,6 +16,7 @@ export default {
   }),
   enhanceApp({ app }) {
     app.component('DeveloperApplication', DeveloperApplication)
+    app.component('DemoShowcase', DemoShowcase)
     app.component('GiftCatalog', GiftCatalog)
     app.component('LlmDocsEntry', LlmDocsEntry)
     app.component('Mermaid', Mermaid)

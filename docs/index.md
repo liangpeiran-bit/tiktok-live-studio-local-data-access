@@ -24,6 +24,8 @@ features:
     details: Connect H5, Unity, Unreal, or any WebSocket-capable runtime through a stable JSON event protocol.
 ---
 
+<DemoShowcase locale="en" compact />
+
 ## What is this?
 
 LIVE Studio Local Data Access is a local WebSocket gateway for trusted third-party tools running on the same machine as LIVE Studio. After authentication, a client can receive selected real-time live room events such as likes, gifts, and chat messages.

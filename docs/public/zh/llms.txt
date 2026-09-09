@@ -12,6 +12,14 @@
 - [架构](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/architecture)：推荐的客户端职责和生命周期
 - [Agent Skill](https://tiktok-live-studio-local-data-access.pages.dev/zh/guide/agent-skill)：安装并使用与技术栈无关的编码 Agent 工作流
 
+## 可试玩 Demo
+
+- [全部 Demo](https://tiktok-live-studio-local-data-access.pages.dev/zh/demos/)：比较两款使用同一本机事件协议构建的真实游戏
+- [拔河陷阱](https://tiktok-live-studio-local-data-access.pages.dev/zh/demos/tug-of-trap)：使用评论选队、点赞加力和战术礼物效果的 PixiJS 阵营对抗游戏
+- [糖果擂台](https://tiktok-live-studio-local-data-access.pages.dev/zh/demos/candy-arena-duel)：使用观众辅助与礼物战斗技能的 React + Phaser 节奏游戏
+- [拔河陷阱模拟试玩](https://liangpeiran-bit.github.io/playable_interaction_game/?demo=1)：明确标注模拟互动的公开试玩构建
+- [糖果擂台模拟试玩](https://liangpeiran-bit.github.io/candy-arena-duel/?demo=1)：明确标注模拟互动的公开试玩构建
+
 ## 协议
 
 - [连接生命周期](https://tiktok-live-studio-local-data-access.pages.dev/zh/protocol/connection)：端点发现、hello 校验、原生心跳和重连

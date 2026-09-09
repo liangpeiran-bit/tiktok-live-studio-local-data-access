@@ -12,6 +12,14 @@ Protocol version: `1.0.0`. The endpoint is loopback-only at `ws://127.0.0.1:4915
 - [Architecture](https://tiktok-live-studio-local-data-access.pages.dev/guide/architecture): Recommended client boundaries and lifecycle
 - [Agent Skill](https://tiktok-live-studio-local-data-access.pages.dev/guide/agent-skill): Install and use the reusable cross-stack coding-agent workflow
 
+## Playable Demos
+
+- [All Demos](https://tiktok-live-studio-local-data-access.pages.dev/demos/): Compare two real games built on the same local event protocol
+- [Tug of Trap](https://tiktok-live-studio-local-data-access.pages.dev/demos/tug-of-trap): PixiJS team competition using chat selection, like strength, and tactical gift effects
+- [Candy Arena](https://tiktok-live-studio-local-data-access.pages.dev/demos/candy-arena-duel): React and Phaser rhythm battle using audience assists and gift-triggered combat skills
+- [Tug of Trap — simulated demo](https://liangpeiran-bit.github.io/playable_interaction_game/?demo=1): Public playable build with clearly labeled simulated interactions
+- [Candy Arena — simulated demo](https://liangpeiran-bit.github.io/candy-arena-duel/?demo=1): Public playable build with clearly labeled simulated interactions
+
 ## Protocol
 
 - [Connection Lifecycle](https://tiktok-live-studio-local-data-access.pages.dev/protocol/connection): Endpoint discovery, hello validation, native heartbeat, and reconnection

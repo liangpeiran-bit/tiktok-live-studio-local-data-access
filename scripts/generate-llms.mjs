@@ -18,6 +18,9 @@ const agentSkillDocuments = [
 
 const englishDocuments = [
   'docs/guide/overview.md',
+  'docs/demos/index.md',
+  'docs/demos/tug-of-trap.md',
+  'docs/demos/candy-arena-duel.md',
   'docs/guide/quick-start.md',
   'docs/guide/architecture.md',
   'docs/protocol/connection.md',
@@ -38,6 +41,9 @@ const englishDocuments = [
 
 const chineseDocuments = [
   'docs/zh/guide/overview.md',
+  'docs/zh/demos/index.md',
+  'docs/zh/demos/tug-of-trap.md',
+  'docs/zh/demos/candy-arena-duel.md',
   'docs/zh/guide/quick-start.md',
   'docs/zh/guide/architecture.md',
   'docs/zh/protocol/connection.md',

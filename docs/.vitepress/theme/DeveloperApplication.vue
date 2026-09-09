@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const props = defineProps<{
   formId: string
@@ -7,6 +7,9 @@ const props = defineProps<{
 }>()
 
 const demoVideo = ref<HTMLVideoElement | null>(null)
+const tallyFrame = ref<HTMLIFrameElement | null>(null)
+const successPanel = ref<HTMLElement | null>(null)
+const submitted = ref(false)
 
 const isZh = computed(() => props.locale === 'zh')
 const copy = computed(() =>
@@ -56,6 +59,11 @@ const copy = computed(() =>
         applicationsOpen: '申请开放中',
         iframeTitle: 'LIVE Studio 开发者接入申请表',
         openForm: '打开申请表',
+        successEyebrow: '申请已提交',
+        successTitle: '感谢你的申请',
+        successDescription: '我们将在 3 个工作日内完成审核，并通过你填写的工作邮箱发送审核结果。',
+        successWindow: '工作日内',
+        successNote: '请留意收件箱和垃圾邮件。',
         configuringTitle: '申请表正在配置中',
         configuringDescription: '公开表单发布后会显示在这里。',
         footer: ['默认保护隐私', '由 LIVE Studio 团队审核', '提交申请不会自动获得生产环境权限'],
@@ -105,6 +113,11 @@ const copy = computed(() =>
         applicationsOpen: 'Applications open',
         iframeTitle: 'LIVE Studio developer access application',
         openForm: 'Open the application form',
+        successEyebrow: 'APPLICATION RECEIVED',
+        successTitle: 'Thanks for applying.',
+        successDescription: 'We will review your application and email the result to your work address within 3 business days.',
+        successWindow: 'business days',
+        successNote: 'Please check your inbox and spam folder.',
         configuringTitle: 'Application form is being configured',
         configuringDescription: 'The public form will appear here after it is published.',
         footer: ['Private by default', 'Reviewed by the LIVE Studio team', 'No production access is granted automatically'],
@@ -118,7 +131,23 @@ const embedUrl = computed(
 )
 const publicUrl = computed(() => `https://tally.so/r/${props.formId}`)
 
+const handleTallyMessage = (event: MessageEvent) => {
+  if (
+    event.origin !== 'https://tally.so' ||
+    event.source !== tallyFrame.value?.contentWindow ||
+    typeof event.data !== 'string' ||
+    !event.data.includes('Tally.FormSubmitted')
+  ) {
+    return
+  }
+
+  submitted.value = true
+  void nextTick(() => successPanel.value?.focus())
+}
+
 onMounted(() => {
+  window.addEventListener('message', handleTallyMessage)
+
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     demoVideo.value?.pause()
   }
@@ -140,6 +169,10 @@ onMounted(() => {
     script.async = true
     document.body.appendChild(script)
   }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', handleTallyMessage)
 })
 </script>
 
@@ -239,8 +272,25 @@ onMounted(() => {
           <span class="open-status"><i></i>{{ copy.applicationsOpen }}</span>
         </header>
 
-        <div v-if="isConfigured" class="tally-frame">
+        <div
+          v-if="isConfigured && submitted"
+          ref="successPanel"
+          class="submission-success"
+          role="status"
+          tabindex="-1"
+        >
+          <span class="submission-success__eyebrow"><i aria-hidden="true"></i>{{ copy.successEyebrow }}</span>
+          <h3>{{ copy.successTitle }}</h3>
+          <p>{{ copy.successDescription }}</p>
+          <div class="review-window" aria-hidden="true">
+            <strong>3</strong><span>{{ copy.successWindow }}</span>
+          </div>
+          <small>{{ copy.successNote }}</small>
+        </div>
+
+        <div v-else-if="isConfigured" class="tally-frame">
           <iframe
+            ref="tallyFrame"
             :data-tally-src="embedUrl"
             loading="lazy"
             width="100%"
@@ -530,7 +580,7 @@ onMounted(() => {
     2px 0 rgba(254, 44, 85, 0.84);
   transform-origin: left center;
   will-change: filter, opacity, transform;
-  animation: headline-short-circuit 920ms linear 420ms 1 both;
+  animation: headline-short-circuit 5s linear 420ms infinite both;
 }
 
 .apply-page--zh .apply-headline {
@@ -560,12 +610,12 @@ onMounted(() => {
 
 .apply-headline em::before {
   text-shadow: -5px 0 var(--tt-cyan), -14px 0 rgba(37, 244, 238, 0.5);
-  animation: headline-glitch-cyan 920ms steps(1, end) 420ms 1 both;
+  animation: headline-glitch-cyan 5s steps(1, end) 420ms infinite both;
 }
 
 .apply-headline em::after {
   text-shadow: 5px 0 var(--tt-pink), 14px 0 rgba(254, 44, 85, 0.5);
-  animation: headline-glitch-pink 920ms steps(1, end) 420ms 1 both;
+  animation: headline-glitch-pink 5s steps(1, end) 420ms infinite both;
 }
 
 .headline-short-circuit {
@@ -584,7 +634,7 @@ onMounted(() => {
   transform-origin: left center;
   pointer-events: none;
   will-change: opacity, transform;
-  animation: headline-electric-line 920ms steps(1, end) 420ms 1 both;
+  animation: headline-electric-line 5s steps(1, end) 420ms infinite both;
 }
 
 .apply-lede {
@@ -932,6 +982,104 @@ onMounted(() => {
 .tally-frame { min-height: 620px; padding: 18px 22px 0; }
 .tally-frame iframe { display: block; color-scheme: dark; }
 
+.submission-success {
+  position: relative;
+  display: flex;
+  min-height: 620px;
+  padding: 72px clamp(28px, 7vw, 92px);
+  overflow: hidden;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background:
+    radial-gradient(circle at 28% 28%, rgba(37, 244, 238, 0.09), transparent 34%),
+    radial-gradient(circle at 76% 68%, rgba(254, 44, 85, 0.09), transparent 36%);
+  animation: success-enter 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.submission-success::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  content: '';
+  background: linear-gradient(90deg, var(--tt-cyan), rgba(255, 255, 255, 0.7), var(--tt-pink));
+}
+
+.submission-success:focus-visible {
+  outline: 2px solid var(--tt-cyan);
+  outline-offset: -6px;
+}
+
+.submission-success__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #dffffd;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.submission-success__eyebrow i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tt-cyan);
+  box-shadow: 0 0 12px rgba(37, 244, 238, 0.72);
+}
+
+.submission-success h3 {
+  max-width: 560px;
+  margin: 20px 0 0;
+  color: #fff;
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+}
+
+.submission-success > p {
+  max-width: 620px;
+  margin: 20px 0 0;
+  color: #b7bac5;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.review-window {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 32px;
+  padding: 14px 20px;
+  color: #f6f7f9;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--tux-v2-radius-container-level0-large);
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: -4px 4px 0 rgba(37, 244, 238, 0.62), 4px -4px 0 rgba(254, 44, 85, 0.56);
+}
+
+.review-window strong {
+  color: #fff;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.review-window span {
+  color: #d9dbe2;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.submission-success small {
+  margin-top: 24px;
+  color: #7f828d;
+  font-size: 11px;
+}
+
 .form-placeholder {
   display: grid;
   place-items: center;
@@ -973,41 +1121,46 @@ onMounted(() => {
   50% { opacity: 1; transform: scale(1.18); }
 }
 
+@keyframes success-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
 @keyframes headline-short-circuit {
-  0%, 6% { opacity: 0; filter: brightness(2.2) blur(1px); transform: translate3d(-24px, 0, 0) scaleX(1.12); }
-  10% { opacity: 0.36; filter: brightness(2); transform: translate3d(12px, 0, 0) skewX(2deg); }
-  15% { opacity: 1; filter: brightness(1.7); transform: translate3d(-7px, 0, 0) skewX(-1deg); }
-  22% { filter: brightness(1.25); transform: translate3d(3px, 0, 0); }
-  30%, 100% { opacity: 1; filter: brightness(1); transform: translate3d(0, 0, 0); }
+  0%, 1.1% { opacity: 0; filter: brightness(2.2) blur(1px); transform: translate3d(-24px, 0, 0) scaleX(1.12); }
+  1.8% { opacity: 0.36; filter: brightness(2); transform: translate3d(12px, 0, 0) skewX(2deg); }
+  2.8% { opacity: 1; filter: brightness(1.7); transform: translate3d(-7px, 0, 0) skewX(-1deg); }
+  4% { filter: brightness(1.25); transform: translate3d(3px, 0, 0); }
+  5.5%, 100% { opacity: 1; filter: brightness(1); transform: translate3d(0, 0, 0); }
 }
 
 @keyframes headline-glitch-cyan {
-  0%, 6%, 31%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate3d(0, 0, 0); }
-  7% { opacity: 0.95; clip-path: inset(5% 0 69% 0); transform: translate3d(-42px, 0, 0) scaleX(1.18); }
-  12% { opacity: 0.86; clip-path: inset(34% 0 40% 0); transform: translate3d(-18px, 0, 0) scaleX(1.08); }
-  17% { opacity: 0.76; clip-path: inset(63% 0 10% 0); transform: translate3d(13px, 0, 0); }
-  23% { opacity: 0.55; clip-path: inset(19% 0 57% 0); transform: translate3d(-8px, 0, 0); }
-  29% { opacity: 0.22; clip-path: inset(76% 0 4% 0); transform: translate3d(-3px, 0, 0); }
+  0%, 1.1%, 5.7%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate3d(0, 0, 0); }
+  1.3% { opacity: 0.95; clip-path: inset(5% 0 69% 0); transform: translate3d(-42px, 0, 0) scaleX(1.18); }
+  2.2% { opacity: 0.86; clip-path: inset(34% 0 40% 0); transform: translate3d(-18px, 0, 0) scaleX(1.08); }
+  3.1% { opacity: 0.76; clip-path: inset(63% 0 10% 0); transform: translate3d(13px, 0, 0); }
+  4.2% { opacity: 0.55; clip-path: inset(19% 0 57% 0); transform: translate3d(-8px, 0, 0); }
+  5.3% { opacity: 0.22; clip-path: inset(76% 0 4% 0); transform: translate3d(-3px, 0, 0); }
 }
 
 @keyframes headline-glitch-pink {
-  0%, 6%, 31%, 100% { opacity: 0; clip-path: inset(100% 0 0 0); transform: translate3d(0, 0, 0); }
-  7% { opacity: 0.9; clip-path: inset(68% 0 6% 0); transform: translate3d(40px, 0, 0) scaleX(1.18); }
-  12% { opacity: 0.82; clip-path: inset(12% 0 62% 0); transform: translate3d(17px, 0, 0) scaleX(1.08); }
-  17% { opacity: 0.72; clip-path: inset(42% 0 31% 0); transform: translate3d(-12px, 0, 0); }
-  23% { opacity: 0.5; clip-path: inset(72% 0 7% 0); transform: translate3d(8px, 0, 0); }
-  29% { opacity: 0.2; clip-path: inset(27% 0 55% 0); transform: translate3d(3px, 0, 0); }
+  0%, 1.1%, 5.7%, 100% { opacity: 0; clip-path: inset(100% 0 0 0); transform: translate3d(0, 0, 0); }
+  1.3% { opacity: 0.9; clip-path: inset(68% 0 6% 0); transform: translate3d(40px, 0, 0) scaleX(1.18); }
+  2.2% { opacity: 0.82; clip-path: inset(12% 0 62% 0); transform: translate3d(17px, 0, 0) scaleX(1.08); }
+  3.1% { opacity: 0.72; clip-path: inset(42% 0 31% 0); transform: translate3d(-12px, 0, 0); }
+  4.2% { opacity: 0.5; clip-path: inset(72% 0 7% 0); transform: translate3d(8px, 0, 0); }
+  5.3% { opacity: 0.2; clip-path: inset(27% 0 55% 0); transform: translate3d(3px, 0, 0); }
 }
 
 @keyframes headline-electric-line {
   0% { opacity: 0; transform: translate3d(-24%, 0, 0) scaleX(0.08); }
-  4% { opacity: 0.42; transform: translate3d(-18%, 0, 0) scaleX(0.28); }
-  7% { opacity: 1; transform: translate3d(-4%, 0, 0) scaleX(0.82); }
-  11% { opacity: 0.94; transform: translate3d(0, 0, 0) scaleX(1); }
-  16% { opacity: 0.56; transform: translate3d(8%, 0, 0) scaleX(0.72); }
-  22%, 100% { opacity: 0; transform: translate3d(28%, 0, 0) scaleX(0.12); }
+  0.7% { opacity: 0.42; transform: translate3d(-18%, 0, 0) scaleX(0.28); }
+  1.3% { opacity: 1; transform: translate3d(-4%, 0, 0) scaleX(0.82); }
+  2% { opacity: 0.94; transform: translate3d(0, 0, 0) scaleX(1); }
+  2.9% { opacity: 0.56; transform: translate3d(8%, 0, 0) scaleX(0.72); }
+  4%, 100% { opacity: 0; transform: translate3d(28%, 0, 0) scaleX(0.12); }
 }
 
 @keyframes orbit-float {
@@ -1074,6 +1227,7 @@ onMounted(() => {
   .apply-shell__header { display: block; padding: 22px 20px; }
   .open-status { margin-top: 15px; }
   .tally-frame { padding-inline: 6px; }
+  .submission-success { min-height: 520px; padding: 56px 24px; }
   .apply-shell__footer { display: grid; padding: 16px 20px 20px; }
 }
 
@@ -1090,7 +1244,8 @@ onMounted(() => {
   .apply-headline em::after,
   .headline-short-circuit,
   .apply-badge span,
-  .open-status i { animation: none; }
+  .open-status i,
+  .submission-success { animation: none; }
 
   .apply-button,
   .demo-card { transition: none; }

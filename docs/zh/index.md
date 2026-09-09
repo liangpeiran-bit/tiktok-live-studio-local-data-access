@@ -24,6 +24,8 @@ features:
     details: 使用稳定的 JSON 事件协议连接 H5、Unity、Unreal 或任意支持 WebSocket 的运行时。
 ---
 
+<DemoShowcase locale="zh" compact />
+
 ## 这是什么？
 
 LIVE Studio 本地数据开放是一个跑在主播本机上的 WebSocket 网关，面向与 LIVE Studio 同机运行的受信任第三方工具。客户端完成鉴权后，可以接收点赞、礼物、评论等选定的实时直播间事件。
