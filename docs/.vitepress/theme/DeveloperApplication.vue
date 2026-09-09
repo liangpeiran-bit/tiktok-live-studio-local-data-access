@@ -328,8 +328,8 @@ onBeforeUnmount(() => {
   --tt-surface-raised: #20212b;
   --tt-text: #f8f8fa;
   --tt-muted: #adb0bc;
-  --tt-ray-cyan: rgba(54, 137, 148, 0.34);
-  --tt-ray-pink: rgba(139, 61, 82, 0.28);
+  --tt-ray-cyan: rgba(134, 198, 200, 0.78);
+  --tt-ray-pink: rgba(192, 117, 139, 0.68);
   --apply-layout-width: 1600px;
   --apply-copy-width: 560px;
   --apply-type-display: clamp(52px, 4.25vw, 68px);
@@ -388,15 +388,15 @@ onBeforeUnmount(() => {
 
 .radial-light-columns {
   position: fixed;
-  z-index: -2;
+  z-index: -1;
   top: 48px;
   left: 0;
-  width: min(58vw, 900px);
-  height: min(76vh, 820px);
+  width: min(64vw, 1060px);
+  height: min(82vh, 920px);
   overflow: hidden;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 92% 86% at 0 0, #000 0 34%, rgba(0, 0, 0, 0.72) 58%, transparent 88%);
-  mask-image: radial-gradient(ellipse 92% 86% at 0 0, #000 0 34%, rgba(0, 0, 0, 0.72) 58%, transparent 88%);
+  -webkit-mask-image: radial-gradient(ellipse 96% 92% at 0 0, #000 0 46%, rgba(0, 0, 0, 0.9) 70%, transparent 98%);
+  mask-image: radial-gradient(ellipse 96% 92% at 0 0, #000 0 46%, rgba(0, 0, 0, 0.9) 70%, transparent 98%);
 }
 
 .radial-light-columns::before {
@@ -407,40 +407,41 @@ onBeforeUnmount(() => {
   height: 430px;
   content: '';
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(55, 133, 145, 0.12), rgba(123, 55, 76, 0.05) 38%, transparent 70%);
-  filter: blur(26px);
+  background: radial-gradient(circle, rgba(134, 198, 200, 0.2), rgba(192, 117, 139, 0.09) 38%, transparent 72%);
+  filter: blur(22px);
 }
 
 .radial-light-columns span {
   --ray-angle: 12deg;
   --ray-length: min(42vw, 680px);
-  --ray-width: 20px;
+  --ray-width: 28px;
   --ray-color: var(--tt-ray-cyan);
-  --ray-opacity-low: 0.13;
-  --ray-opacity-high: 0.23;
+  --ray-opacity-low: 0.2;
+  --ray-opacity-high: 0.38;
   position: absolute;
   top: -10px;
   left: -34px;
   width: var(--ray-length);
   height: var(--ray-width);
   border-radius: 0 999px 999px 0;
-  background: linear-gradient(90deg, var(--ray-color), var(--ray-color) 18%, transparent 82%);
+  background: linear-gradient(90deg, var(--ray-color), var(--ray-color) 26%, transparent 94%);
   clip-path: polygon(0 42%, 100% 0, 100% 100%, 0 58%);
-  filter: blur(8px);
+  filter: blur(5px);
+  box-shadow: 0 0 24px var(--ray-color);
   mix-blend-mode: screen;
   transform-origin: 0 50%;
   will-change: opacity, transform;
   animation: radial-column-breathe 10s ease-in-out infinite;
 }
 
-.radial-light-columns span:nth-child(1) { --ray-angle: 7deg; --ray-length: min(34vw, 540px); --ray-width: 14px; --ray-opacity-low: 0.1; --ray-opacity-high: 0.18; animation-delay: -2s; }
-.radial-light-columns span:nth-child(2) { --ray-angle: 16deg; --ray-length: min(45vw, 720px); --ray-width: 19px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.09; --ray-opacity-high: 0.16; animation-delay: -7s; animation-duration: 12s; }
-.radial-light-columns span:nth-child(3) { --ray-angle: 25deg; --ray-length: min(42vw, 670px); --ray-width: 24px; --ray-opacity-low: 0.14; --ray-opacity-high: 0.24; animation-delay: -4s; animation-duration: 11s; }
-.radial-light-columns span:nth-child(4) { --ray-angle: 34deg; --ray-length: min(47vw, 760px); --ray-width: 18px; --ray-opacity-low: 0.09; --ray-opacity-high: 0.17; animation-delay: -9s; animation-duration: 13s; }
-.radial-light-columns span:nth-child(5) { --ray-angle: 43deg; --ray-length: min(40vw, 650px); --ray-width: 22px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.08; --ray-opacity-high: 0.15; animation-delay: -5s; animation-duration: 11.5s; }
-.radial-light-columns span:nth-child(6) { --ray-angle: 52deg; --ray-length: min(44vw, 700px); --ray-width: 17px; --ray-opacity-low: 0.11; --ray-opacity-high: 0.2; animation-delay: -1s; animation-duration: 12.5s; }
-.radial-light-columns span:nth-child(7) { --ray-angle: 62deg; --ray-length: min(36vw, 580px); --ray-width: 20px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.07; --ray-opacity-high: 0.13; animation-delay: -8s; animation-duration: 14s; }
-.radial-light-columns span:nth-child(8) { --ray-angle: 72deg; --ray-length: min(31vw, 500px); --ray-width: 13px; --ray-opacity-low: 0.08; --ray-opacity-high: 0.15; animation-delay: -3s; animation-duration: 13.5s; }
+.radial-light-columns span:nth-child(1) { --ray-angle: 7deg; --ray-length: min(36vw, 600px); --ray-width: 20px; --ray-opacity-low: 0.17; --ray-opacity-high: 0.3; animation-delay: -2s; }
+.radial-light-columns span:nth-child(2) { --ray-angle: 16deg; --ray-length: min(48vw, 790px); --ray-width: 30px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.15; --ray-opacity-high: 0.28; animation-delay: -7s; animation-duration: 12s; }
+.radial-light-columns span:nth-child(3) { --ray-angle: 25deg; --ray-length: min(45vw, 740px); --ray-width: 40px; --ray-opacity-low: 0.22; --ray-opacity-high: 0.42; animation-delay: -4s; animation-duration: 11s; }
+.radial-light-columns span:nth-child(4) { --ray-angle: 34deg; --ray-length: min(50vw, 830px); --ray-width: 28px; --ray-opacity-low: 0.17; --ray-opacity-high: 0.32; animation-delay: -9s; animation-duration: 13s; }
+.radial-light-columns span:nth-child(5) { --ray-angle: 43deg; --ray-length: min(43vw, 710px); --ray-width: 36px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.14; --ray-opacity-high: 0.27; animation-delay: -5s; animation-duration: 11.5s; }
+.radial-light-columns span:nth-child(6) { --ray-angle: 52deg; --ray-length: min(47vw, 770px); --ray-width: 27px; --ray-opacity-low: 0.18; --ray-opacity-high: 0.35; animation-delay: -1s; animation-duration: 12.5s; }
+.radial-light-columns span:nth-child(7) { --ray-angle: 62deg; --ray-length: min(39vw, 640px); --ray-width: 31px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.13; --ray-opacity-high: 0.25; animation-delay: -8s; animation-duration: 14s; }
+.radial-light-columns span:nth-child(8) { --ray-angle: 72deg; --ray-length: min(34vw, 560px); --ray-width: 19px; --ray-opacity-low: 0.14; --ray-opacity-high: 0.28; animation-delay: -3s; animation-duration: 13.5s; }
 
 .apply-ribbons {
   position: fixed;
