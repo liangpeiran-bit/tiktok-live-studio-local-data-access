@@ -148,6 +148,10 @@ onMounted(() => {
     <div class="apply-noise" aria-hidden="true"></div>
     <div class="apply-orbit apply-orbit--cyan" aria-hidden="true"></div>
     <div class="apply-orbit apply-orbit--pink" aria-hidden="true"></div>
+    <div class="radial-light-columns" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
     <div class="apply-ribbons" aria-hidden="true">
       <span></span><span></span><span></span>
     </div>
@@ -165,7 +169,10 @@ onMounted(() => {
         <p class="apply-kicker">{{ copy.kicker }}</p>
         <h1 class="apply-headline">
           <span class="apply-headline__lead">{{ copy.headlineLead }}</span>
-          <em :data-text="copy.headlineAccent">{{ copy.headlineAccent }}</em>
+          <em :data-text="copy.headlineAccent">
+            <span class="headline-short-circuit" aria-hidden="true"></span>
+            {{ copy.headlineAccent }}
+          </em>
         </h1>
         <p class="apply-lede">{{ copy.lede }}</p>
 
@@ -271,6 +278,8 @@ onMounted(() => {
   --tt-surface-raised: #20212b;
   --tt-text: #f8f8fa;
   --tt-muted: #adb0bc;
+  --tt-ray-cyan: rgba(54, 137, 148, 0.34);
+  --tt-ray-pink: rgba(139, 61, 82, 0.28);
   --apply-layout-width: 1600px;
   --apply-copy-width: 560px;
   --apply-type-display: clamp(52px, 4.25vw, 68px);
@@ -326,6 +335,62 @@ onMounted(() => {
 
 .apply-orbit--cyan { top: 6%; left: -12%; background: var(--tt-cyan); }
 .apply-orbit--pink { top: 28%; right: -10%; background: var(--tt-pink); animation-delay: -4s; }
+
+.radial-light-columns {
+  position: fixed;
+  z-index: -2;
+  top: 48px;
+  left: 0;
+  width: min(58vw, 900px);
+  height: min(76vh, 820px);
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 92% 86% at 0 0, #000 0 34%, rgba(0, 0, 0, 0.72) 58%, transparent 88%);
+  mask-image: radial-gradient(ellipse 92% 86% at 0 0, #000 0 34%, rgba(0, 0, 0, 0.72) 58%, transparent 88%);
+}
+
+.radial-light-columns::before {
+  position: absolute;
+  top: -150px;
+  left: -170px;
+  width: 430px;
+  height: 430px;
+  content: '';
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(55, 133, 145, 0.12), rgba(123, 55, 76, 0.05) 38%, transparent 70%);
+  filter: blur(26px);
+}
+
+.radial-light-columns span {
+  --ray-angle: 12deg;
+  --ray-length: min(42vw, 680px);
+  --ray-width: 20px;
+  --ray-color: var(--tt-ray-cyan);
+  --ray-opacity-low: 0.13;
+  --ray-opacity-high: 0.23;
+  position: absolute;
+  top: -10px;
+  left: -34px;
+  width: var(--ray-length);
+  height: var(--ray-width);
+  border-radius: 0 999px 999px 0;
+  background: linear-gradient(90deg, var(--ray-color), var(--ray-color) 18%, transparent 82%);
+  clip-path: polygon(0 42%, 100% 0, 100% 100%, 0 58%);
+  filter: blur(8px);
+  mix-blend-mode: screen;
+  transform-origin: 0 50%;
+  will-change: opacity, transform;
+  animation: radial-column-breathe 10s ease-in-out infinite;
+}
+
+.radial-light-columns span:nth-child(1) { --ray-angle: 7deg; --ray-length: min(34vw, 540px); --ray-width: 14px; --ray-opacity-low: 0.1; --ray-opacity-high: 0.18; animation-delay: -2s; }
+.radial-light-columns span:nth-child(2) { --ray-angle: 16deg; --ray-length: min(45vw, 720px); --ray-width: 19px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.09; --ray-opacity-high: 0.16; animation-delay: -7s; animation-duration: 12s; }
+.radial-light-columns span:nth-child(3) { --ray-angle: 25deg; --ray-length: min(42vw, 670px); --ray-width: 24px; --ray-opacity-low: 0.14; --ray-opacity-high: 0.24; animation-delay: -4s; animation-duration: 11s; }
+.radial-light-columns span:nth-child(4) { --ray-angle: 34deg; --ray-length: min(47vw, 760px); --ray-width: 18px; --ray-opacity-low: 0.09; --ray-opacity-high: 0.17; animation-delay: -9s; animation-duration: 13s; }
+.radial-light-columns span:nth-child(5) { --ray-angle: 43deg; --ray-length: min(40vw, 650px); --ray-width: 22px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.08; --ray-opacity-high: 0.15; animation-delay: -5s; animation-duration: 11.5s; }
+.radial-light-columns span:nth-child(6) { --ray-angle: 52deg; --ray-length: min(44vw, 700px); --ray-width: 17px; --ray-opacity-low: 0.11; --ray-opacity-high: 0.2; animation-delay: -1s; animation-duration: 12.5s; }
+.radial-light-columns span:nth-child(7) { --ray-angle: 62deg; --ray-length: min(36vw, 580px); --ray-width: 20px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.07; --ray-opacity-high: 0.13; animation-delay: -8s; animation-duration: 14s; }
+.radial-light-columns span:nth-child(8) { --ray-angle: 72deg; --ray-length: min(31vw, 500px); --ray-width: 13px; --ray-opacity-low: 0.08; --ray-opacity-high: 0.15; animation-delay: -3s; animation-duration: 13.5s; }
 
 .apply-ribbons {
   position: fixed;
@@ -461,11 +526,11 @@ onMounted(() => {
   color: #fff;
   font-style: normal;
   text-shadow:
-    -3px 0 rgba(37, 244, 238, 0.82),
-    3px 0 rgba(254, 44, 85, 0.78),
-    0 0 18px rgba(255, 255, 255, 0.16);
-  will-change: filter, transform;
-  animation: headline-impact 4.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+    -2px 0 rgba(37, 244, 238, 0.88),
+    2px 0 rgba(254, 44, 85, 0.84);
+  transform-origin: left center;
+  will-change: filter, opacity, transform;
+  animation: headline-short-circuit 920ms linear 420ms 1 both;
 }
 
 .apply-page--zh .apply-headline {
@@ -479,38 +544,47 @@ onMounted(() => {
   white-space: nowrap;
 }
 
-.apply-copy h1 em::before,
-.apply-copy h1 em::after {
+.apply-headline em::before,
+.apply-headline em::after {
   position: absolute;
-  z-index: -1;
+  z-index: 2;
   inset: 0;
   content: attr(data-text);
-  color: transparent;
+  overflow: hidden;
+  color: #fff;
+  opacity: 0;
   pointer-events: none;
   mix-blend-mode: screen;
-  will-change: filter, opacity, transform;
+  will-change: clip-path, opacity, transform;
 }
 
-.apply-copy h1 em::before {
-  opacity: 0.52;
-  text-shadow:
-    -12px 0 8px rgba(37, 244, 238, 0.92),
-    -30px 0 22px rgba(37, 244, 238, 0.46),
-    -52px 0 38px rgba(37, 244, 238, 0.2);
-  filter: blur(2px);
-  transform: translate3d(-3px, 0, 0);
-  animation: headline-smear-cyan 4.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+.apply-headline em::before {
+  text-shadow: -5px 0 var(--tt-cyan), -14px 0 rgba(37, 244, 238, 0.5);
+  animation: headline-glitch-cyan 920ms steps(1, end) 420ms 1 both;
 }
 
-.apply-copy h1 em::after {
-  opacity: 0.48;
-  text-shadow:
-    12px 0 8px rgba(254, 44, 85, 0.92),
-    30px 0 22px rgba(254, 44, 85, 0.46),
-    52px 0 38px rgba(254, 44, 85, 0.2);
-  filter: blur(2px);
-  transform: translate3d(3px, 0, 0);
-  animation: headline-smear-pink 4.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+.apply-headline em::after {
+  text-shadow: 5px 0 var(--tt-pink), 14px 0 rgba(254, 44, 85, 0.5);
+  animation: headline-glitch-pink 920ms steps(1, end) 420ms 1 both;
+}
+
+.headline-short-circuit {
+  position: absolute;
+  z-index: 3;
+  top: 52%;
+  left: -10%;
+  width: 120%;
+  height: 2px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, var(--tt-cyan) 12%, #fff 46% 54%, var(--tt-pink) 88%, transparent);
+  box-shadow:
+    0 -8px 0 rgba(37, 244, 238, 0.36),
+    0 8px 0 rgba(254, 44, 85, 0.34),
+    0 0 18px rgba(255, 255, 255, 0.72);
+  transform-origin: left center;
+  pointer-events: none;
+  will-change: opacity, transform;
+  animation: headline-electric-line 920ms steps(1, end) 420ms 1 both;
 }
 
 .apply-lede {
@@ -901,24 +975,49 @@ onMounted(() => {
 
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
-@keyframes headline-impact {
-  0%, 57%, 73%, 100% { filter: blur(0); transform: translate3d(0, 0, 0) skewX(0deg); }
-  64% { filter: blur(1.8px); transform: translate3d(-5px, 0, 0) skewX(-1.6deg); }
+@keyframes headline-short-circuit {
+  0%, 6% { opacity: 0; filter: brightness(2.2) blur(1px); transform: translate3d(-24px, 0, 0) scaleX(1.12); }
+  10% { opacity: 0.36; filter: brightness(2); transform: translate3d(12px, 0, 0) skewX(2deg); }
+  15% { opacity: 1; filter: brightness(1.7); transform: translate3d(-7px, 0, 0) skewX(-1deg); }
+  22% { filter: brightness(1.25); transform: translate3d(3px, 0, 0); }
+  30%, 100% { opacity: 1; filter: brightness(1); transform: translate3d(0, 0, 0); }
 }
 
-@keyframes headline-smear-cyan {
-  0%, 57%, 73%, 100% { opacity: 0.42; filter: blur(2px); transform: translate3d(-3px, 0, 0) scaleX(1); }
-  64% { opacity: 0.96; filter: blur(7px); transform: translate3d(-20px, 0, 0) scaleX(1.08); }
+@keyframes headline-glitch-cyan {
+  0%, 6%, 31%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate3d(0, 0, 0); }
+  7% { opacity: 0.95; clip-path: inset(5% 0 69% 0); transform: translate3d(-42px, 0, 0) scaleX(1.18); }
+  12% { opacity: 0.86; clip-path: inset(34% 0 40% 0); transform: translate3d(-18px, 0, 0) scaleX(1.08); }
+  17% { opacity: 0.76; clip-path: inset(63% 0 10% 0); transform: translate3d(13px, 0, 0); }
+  23% { opacity: 0.55; clip-path: inset(19% 0 57% 0); transform: translate3d(-8px, 0, 0); }
+  29% { opacity: 0.22; clip-path: inset(76% 0 4% 0); transform: translate3d(-3px, 0, 0); }
 }
 
-@keyframes headline-smear-pink {
-  0%, 57%, 73%, 100% { opacity: 0.38; filter: blur(2px); transform: translate3d(3px, 0, 0) scaleX(1); }
-  64% { opacity: 0.92; filter: blur(7px); transform: translate3d(20px, 0, 0) scaleX(1.08); }
+@keyframes headline-glitch-pink {
+  0%, 6%, 31%, 100% { opacity: 0; clip-path: inset(100% 0 0 0); transform: translate3d(0, 0, 0); }
+  7% { opacity: 0.9; clip-path: inset(68% 0 6% 0); transform: translate3d(40px, 0, 0) scaleX(1.18); }
+  12% { opacity: 0.82; clip-path: inset(12% 0 62% 0); transform: translate3d(17px, 0, 0) scaleX(1.08); }
+  17% { opacity: 0.72; clip-path: inset(42% 0 31% 0); transform: translate3d(-12px, 0, 0); }
+  23% { opacity: 0.5; clip-path: inset(72% 0 7% 0); transform: translate3d(8px, 0, 0); }
+  29% { opacity: 0.2; clip-path: inset(27% 0 55% 0); transform: translate3d(3px, 0, 0); }
+}
+
+@keyframes headline-electric-line {
+  0% { opacity: 0; transform: translate3d(-24%, 0, 0) scaleX(0.08); }
+  4% { opacity: 0.42; transform: translate3d(-18%, 0, 0) scaleX(0.28); }
+  7% { opacity: 1; transform: translate3d(-4%, 0, 0) scaleX(0.82); }
+  11% { opacity: 0.94; transform: translate3d(0, 0, 0) scaleX(1); }
+  16% { opacity: 0.56; transform: translate3d(8%, 0, 0) scaleX(0.72); }
+  22%, 100% { opacity: 0; transform: translate3d(28%, 0, 0) scaleX(0.12); }
 }
 
 @keyframes orbit-float {
   from { transform: translate3d(-20px, -12px, 0) scale(0.9); }
   to { transform: translate3d(38px, 28px, 0) scale(1.12); }
+}
+
+@keyframes radial-column-breathe {
+  0%, 100% { opacity: var(--ray-opacity-low); transform: rotate(var(--ray-angle)) scaleX(0.9); }
+  50% { opacity: var(--ray-opacity-high); transform: rotate(var(--ray-angle)) scaleX(1.04); }
 }
 
 @keyframes ribbon-sweep {
@@ -958,6 +1057,7 @@ onMounted(() => {
 
 @media (max-width: 620px) {
   .apply-page { width: min(100% - 22px, 760px); padding: 34px 0 64px; }
+  .radial-light-columns { width: 100vw; height: 52vh; opacity: 0.72; }
   .apply-headline { font-size: 43px; }
   .apply-page--zh .apply-headline { font-size: clamp(34px, 10.6vw, 42px); letter-spacing: -0.06em; }
   .apply-lede { font-size: 15px; }
@@ -980,6 +1080,7 @@ onMounted(() => {
 @media (prefers-reduced-motion: reduce) {
   .apply-page::after,
   .apply-orbit,
+  .radial-light-columns span,
   .apply-ribbons span,
   .ambient-events span,
   .demo-card,
@@ -987,6 +1088,7 @@ onMounted(() => {
   .apply-headline em,
   .apply-headline em::before,
   .apply-headline em::after,
+  .headline-short-circuit,
   .apply-badge span,
   .open-status i { animation: none; }
 
