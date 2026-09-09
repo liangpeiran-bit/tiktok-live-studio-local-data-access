@@ -15,12 +15,11 @@ const copy = computed(() =>
         badge: '开发者抢先体验',
         kicker: '直播互动，实时成为玩法',
         headlineLead: '为直播互动而生',
-        headlineAccent: '让弹幕改变游戏。',
+        headlineAccent: '让弹幕改变游戏',
         lede: '使用本机实时的点赞、礼物和评论事件，在 H5、Unity、Unreal 或任意技术栈中构建互动游戏。',
         applyAction: '申请抢先体验',
         quickStartAction: '阅读快速开始',
         quickStartHref: '/zh/guide/quick-start',
-        availableEvents: '当前开放的直播事件',
         demoAria: '在 LIVE Studio 中运行的塔防互动游戏',
         demoEvent: '礼物事件 → 游戏动作',
         demoTitle: 'Tower Defense × LIVE Studio',
@@ -70,7 +69,6 @@ const copy = computed(() =>
         applyAction: 'Apply for early access',
         quickStartAction: 'Read the quick start',
         quickStartHref: '/guide/quick-start',
-        availableEvents: 'Available live events',
         demoAria: 'Tower Defense interactive game running inside LIVE Studio',
         demoEvent: 'GIFT EVENT → GAME ACTION',
         demoTitle: 'Tower Defense × LIVE Studio',
@@ -176,11 +174,6 @@ onMounted(() => {
           <a class="apply-button apply-button--secondary" :href="copy.quickStartHref">{{ copy.quickStartAction }}</a>
         </div>
 
-        <div class="event-stream" :aria-label="copy.availableEvents">
-          <span><i class="pulse pulse--cyan"></i> live.like</span>
-          <span><i class="pulse pulse--pink"></i> live.gift</span>
-          <span><i class="pulse pulse--white"></i> live.chat</span>
-        </div>
       </div>
 
       <article class="demo-card" aria-labelledby="demo-title">
@@ -588,30 +581,6 @@ onMounted(() => {
 }
 
 .apply-button--secondary:hover { border-color: rgba(37, 244, 238, 0.5); background: rgba(37, 244, 238, 0.08); }
-
-.event-stream {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 30px;
-}
-
-.event-stream span {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  color: #d5d7df;
-  font: 650 11px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--tux-v2-radius-content-small);
-  background: rgba(7, 8, 12, 0.28);
-}
-
-.pulse { width: 6px; height: 6px; border-radius: 50%; }
-.pulse--cyan { background: var(--tt-cyan); box-shadow: 0 0 8px var(--tt-cyan); }
-.pulse--pink { background: var(--tt-pink); box-shadow: 0 0 8px var(--tt-pink); }
-.pulse--white { background: #fff; box-shadow: 0 0 8px rgba(255, 255, 255, 0.7); }
 
 .demo-card {
   align-self: center;
