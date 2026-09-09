@@ -2,6 +2,8 @@
 
 This repository ships a reusable coding-agent skill for implementing LIVE Studio Local Data Access in any application stack.
 
+<LlmDocsEntry locale="en" />
+
 ```txt
 .agents/skills/tiktok-live-studio-local-data-access/
 ├── SKILL.md

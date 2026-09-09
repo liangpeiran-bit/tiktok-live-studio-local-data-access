@@ -2,6 +2,8 @@
 
 本仓库提供了一套可复用的开发 Agent Skill，用于在任意应用技术栈中接入 LIVE Studio 本地数据开放能力。
 
+<LlmDocsEntry locale="zh" />
+
 ```txt
 .agents/skills/tiktok-live-studio-local-data-access/
 ├── SKILL.md
