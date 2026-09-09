@@ -896,7 +896,7 @@ body:has(.developer-application-page),
   min-height: 100%;
   margin: 0;
   overflow-x: clip;
-  background: linear-gradient(135deg, #10202b 0%, #191923 44%, #2a1722 100%);
+  background: linear-gradient(132deg, #0d1820 0%, #15161f 48%, #22151d 100%);
   color-scheme: dark;
   scrollbar-color: rgba(205, 210, 221, 0.42) #0f1117;
   scrollbar-width: thin;
@@ -932,7 +932,7 @@ html:has(.developer-application-page)::-webkit-scrollbar-thumb:hover {
   --tt-color-text-secondary: #b7bac4;
   --tt-color-border: rgba(255, 255, 255, 0.08);
   --tt-color-border-strong: rgba(255, 255, 255, 0.16);
-  background: linear-gradient(135deg, #10202b 0%, #191923 44%, #2a1722 100%);
+  background: linear-gradient(132deg, #0d1820 0%, #15161f 48%, #22151d 100%);
 }
 
 .developer-application-page .VPNav {
@@ -994,11 +994,11 @@ html:has(.developer-application-page)::-webkit-scrollbar-thumb:hover {
   padding-left: 0 !important;
   overflow: clip;
   background:
-    radial-gradient(circle at 10% 12%, rgba(37, 244, 238, 0.23), transparent 32%),
-    radial-gradient(circle at 90% 18%, rgba(254, 44, 85, 0.21), transparent 31%),
-    radial-gradient(circle at 52% 80%, rgba(85, 72, 176, 0.22), transparent 38%),
-    linear-gradient(135deg, #10202b 0%, #191923 44%, #2a1722 100%);
-  background-size: 115% 115%, 118% 118%, 120% 120%, auto;
+    radial-gradient(circle at 10% 10%, rgba(37, 244, 238, 0.18), transparent 34%),
+    radial-gradient(circle at 90% 16%, rgba(254, 44, 85, 0.17), transparent 33%),
+    radial-gradient(circle at 52% 84%, rgba(85, 72, 176, 0.17), transparent 40%),
+    linear-gradient(132deg, #0d1820 0%, #15161f 48%, #22151d 100%);
+  background-size: 122% 122%, 124% 124%, 126% 126%, auto;
   background-repeat: no-repeat;
   animation: application-ambient-pan 16s ease-in-out infinite alternate;
 }
