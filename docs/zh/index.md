@@ -2,7 +2,6 @@
 layout: home
 
 hero:
-  name: LIVE STUDIO · LOCAL DATA ACCESS
   text: 让直播互动，实时进入你的游戏
   tagline: 通过主播本机的 WebSocket，将点赞、礼物和评论转化为 H5、Unity、Unreal 游戏中的实时玩法。
   actions:
@@ -24,12 +23,6 @@ features:
   - title: 不限制游戏技术栈
     details: 使用稳定的 JSON 事件协议连接 H5、Unity、Unreal 或任意支持 WebSocket 的运行时。
 ---
-
-<div class="tt-event-ribbon" aria-label="当前开放的直播事件">
-  <span><i></i>live.like</span>
-  <span><i></i>live.gift</span>
-  <span><i></i>live.chat</span>
-</div>
 
 ## 这是什么？
 

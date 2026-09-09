@@ -2,7 +2,6 @@
 layout: home
 
 hero:
-  name: LIVE STUDIO · LOCAL DATA ACCESS
   text: Turn live interactions into gameplay
   tagline: Use a local WebSocket to transform likes, gifts, and chat into real-time experiences for H5, Unity, Unreal, or any game stack.
   actions:
@@ -24,12 +23,6 @@ features:
   - title: Bring any game stack
     details: Connect H5, Unity, Unreal, or any WebSocket-capable runtime through a stable JSON event protocol.
 ---
-
-<div class="tt-event-ribbon" aria-label="Currently available live events">
-  <span><i></i>live.like</span>
-  <span><i></i>live.gift</span>
-  <span><i></i>live.chat</span>
-</div>
 
 ## What is this?
 
