@@ -288,6 +288,35 @@ body {
   border-color: var(--tt-brand-pink) !important;
 }
 
+.VPNavBarTranslations > .button {
+  min-width: 38px;
+  height: 32px;
+  padding: 0 8px;
+  color: var(--tt-color-text-primary) !important;
+  border: 1px solid var(--tt-color-border-strong);
+  border-radius: var(--tux-v2-radius-content-medium);
+  background: var(--tt-color-surface-soft);
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.VPNavBarTranslations > .button .option-icon,
+.VPNavBarTranslations > .button .text-icon {
+  color: var(--tt-color-text-primary) !important;
+  opacity: 1;
+}
+
+.VPNavBarTranslations > .button:hover {
+  border-color: var(--tt-brand-cyan);
+  background: var(--tt-color-surface);
+  box-shadow: -2px 2px 0 color-mix(in srgb, var(--tt-brand-cyan) 48%, transparent),
+    2px -2px 0 color-mix(in srgb, var(--tt-brand-pink) 48%, transparent);
+}
+
+.VPNavBarTranslations > .button:focus-visible {
+  outline: 2px solid var(--tt-brand-cyan);
+  outline-offset: 2px;
+}
+
 .VPSidebar {
   border-right: 1px solid var(--tt-color-border);
   background:

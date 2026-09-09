@@ -1,11 +1,127 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const props = defineProps<{
   formId: string
+  locale?: 'en' | 'zh'
 }>()
 
 const demoVideo = ref<HTMLVideoElement | null>(null)
+const tallyFrame = ref<HTMLIFrameElement | null>(null)
+const applicationStage = ref(0)
+
+const isZh = computed(() => props.locale === 'zh')
+const copy = computed(() =>
+  isZh.value
+    ? {
+        badge: '开发者抢先体验',
+        kicker: '直播互动，实时成为玩法',
+        headlineLead: '为直播互动而生',
+        headlineAccent: '让弹幕改变游戏。',
+        lede: '使用本机实时的点赞、礼物和评论事件，在 H5、Unity、Unreal 或任意技术栈中构建互动游戏。',
+        applyAction: '申请抢先体验',
+        quickStartAction: '阅读快速开始',
+        quickStartHref: '/zh/guide/quick-start',
+        availableEvents: '当前开放的直播事件',
+        demoAria: '在 LIVE Studio 中运行的塔防互动游戏',
+        demoEvent: '礼物事件 → 游戏动作',
+        demoTitle: 'Tower Defense × LIVE Studio',
+        demoDescription: '观看一份礼物如何变成防御塔，并实时改变 LIVE Studio 内的战局。',
+        sectionIndex: '02 / 申请',
+        applicationTitle: '四步接入 LIVE Studio',
+        applicationDescription: '先告诉我们你想做什么。审核通过后，开发凭据会发送到你的申请邮箱。',
+        stepsAria: 'LIVE Studio 开发者接入流程',
+        steps: [
+          {
+            title: '提交申请',
+            description: '填写开发者、游戏和所需直播事件信息。',
+            meta: '在线提交',
+          },
+          {
+            title: 'LIVE Studio 官方审核',
+            description: '团队确认使用场景、测试信息与接入计划。',
+            meta: '邮件同步结果',
+          },
+          {
+            title: '邮件获取 Secret Key',
+            description: '审核通过后，凭据和接入说明会发送到申请邮箱。',
+            meta: '仅发送至申请邮箱',
+          },
+          {
+            title: '连接本地 LIVE Studio',
+            description: '使用 Secret Key 完成 WebSocket 鉴权，开始接收直播事件。',
+            meta: '本地 WebSocket',
+          },
+        ],
+        filling: '填写中',
+        submitted: '已提交',
+        reviewing: '审核中',
+        submissionReceived: '申请已提交，接下来由 LIVE Studio 官方审核。',
+        secretNote: '请勿将 Secret Key 提交到公开仓库或分享给无关人员。',
+        program: '开发者计划',
+        requestAccess: '申请抢先体验',
+        applicationsOpen: '申请开放中',
+        iframeTitle: 'LIVE Studio 开发者接入申请表',
+        openForm: '打开申请表',
+        configuringTitle: '申请表正在配置中',
+        configuringDescription: '公开表单发布后会显示在这里。',
+        footer: ['默认保护隐私', '由 LIVE Studio 团队审核', '提交申请不会自动获得生产环境权限'],
+      }
+    : {
+        badge: 'DEVELOPER EARLY ACCESS',
+        kicker: 'LIVE INTERACTIONS. REAL GAMEPLAY.',
+        headlineLead: 'Build for the moment',
+        headlineAccent: 'the chat changes the game.',
+        lede: 'Use local, real-time likes, gifts, and chat events to build interactive games in H5, Unity, Unreal, or any stack you choose.',
+        applyAction: 'Apply for early access',
+        quickStartAction: 'Read the quick start',
+        quickStartHref: '/guide/quick-start',
+        availableEvents: 'Available live events',
+        demoAria: 'Tower Defense interactive game running inside LIVE Studio',
+        demoEvent: 'GIFT EVENT → GAME ACTION',
+        demoTitle: 'Tower Defense × LIVE Studio',
+        demoDescription: 'Watch a gift become a tower and reshape the round inside LIVE Studio.',
+        sectionIndex: '02 / APPLY',
+        applicationTitle: 'Four steps to your first connection.',
+        applicationDescription: 'Tell us what you are building. Once approved, your developer credentials will arrive by email.',
+        stepsAria: 'LIVE Studio developer access journey',
+        steps: [
+          {
+            title: 'Submit your application',
+            description: 'Share your developer profile, game, and requested live events.',
+            meta: 'Online form',
+          },
+          {
+            title: 'LIVE Studio review',
+            description: 'Our team reviews the use case, testing details, and launch plan.',
+            meta: 'Result sent by email',
+          },
+          {
+            title: 'Receive your Secret Key',
+            description: 'Approved developers receive credentials and connection guidance by email.',
+            meta: 'Sent to your work email',
+          },
+          {
+            title: 'Connect to LIVE Studio',
+            description: 'Authenticate the local WebSocket with your Secret Key and start receiving events.',
+            meta: 'Local WebSocket',
+          },
+        ],
+        filling: 'In progress',
+        submitted: 'Submitted',
+        reviewing: 'In review',
+        submissionReceived: 'Application received. The LIVE Studio team will review it next.',
+        secretNote: 'Never commit your Secret Key to a public repository or share it outside your team.',
+        program: 'DEVELOPER PROGRAM',
+        requestAccess: 'Request early access',
+        applicationsOpen: 'Applications open',
+        iframeTitle: 'LIVE Studio developer access application',
+        openForm: 'Open the application form',
+        configuringTitle: 'Application form is being configured',
+        configuringDescription: 'The public form will appear here after it is published.',
+        footer: ['Private by default', 'Reviewed by the LIVE Studio team', 'No production access is granted automatically'],
+      },
+)
 
 const isConfigured = computed(() => props.formId && props.formId !== 'FORM_ID')
 const embedUrl = computed(
@@ -14,7 +130,34 @@ const embedUrl = computed(
 )
 const publicUrl = computed(() => `https://tally.so/r/${props.formId}`)
 
+const getStepState = (index: number) => {
+  if (index < applicationStage.value) return 'complete'
+  if (index === applicationStage.value) return 'active'
+  return 'upcoming'
+}
+
+const getStepTag = (index: number) => {
+  if (index < applicationStage.value) return copy.value.submitted
+  if (index !== applicationStage.value) return ''
+  return index === 0 ? copy.value.filling : copy.value.reviewing
+}
+
+const handleTallyMessage = (event: MessageEvent) => {
+  if (
+    event.origin !== 'https://tally.so' ||
+    event.source !== tallyFrame.value?.contentWindow ||
+    typeof event.data !== 'string' ||
+    !event.data.includes('Tally.FormSubmitted')
+  ) {
+    return
+  }
+
+  applicationStage.value = 1
+}
+
 onMounted(() => {
+  window.addEventListener('message', handleTallyMessage)
+
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     demoVideo.value?.pause()
   }
@@ -37,10 +180,14 @@ onMounted(() => {
     document.body.appendChild(script)
   }
 })
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', handleTallyMessage)
+})
 </script>
 
 <template>
-  <main class="apply-page">
+  <main class="apply-page" :lang="isZh ? 'zh-CN' : 'en'">
     <div class="apply-noise" aria-hidden="true"></div>
     <div class="apply-orbit apply-orbit--cyan" aria-hidden="true"></div>
     <div class="apply-orbit apply-orbit--pink" aria-hidden="true"></div>
@@ -57,20 +204,17 @@ onMounted(() => {
 
     <section class="apply-masthead">
       <div class="apply-copy">
-        <div class="apply-badge"><span></span> DEVELOPER EARLY ACCESS</div>
-        <p class="apply-kicker">LIVE INTERACTIONS. REAL GAMEPLAY.</p>
-        <h1>Build for the moment<br /><em data-text="the chat changes the game.">the chat changes the game.</em></h1>
-        <p class="apply-lede">
-          Use local, real-time likes, gifts, and chat events to build interactive games in H5,
-          Unity, Unreal, or any stack you choose.
-        </p>
+        <div class="apply-badge"><span></span>{{ copy.badge }}</div>
+        <p class="apply-kicker">{{ copy.kicker }}</p>
+        <h1>{{ copy.headlineLead }}<br /><em :data-text="copy.headlineAccent">{{ copy.headlineAccent }}</em></h1>
+        <p class="apply-lede">{{ copy.lede }}</p>
 
         <div class="apply-actions">
-          <a class="apply-button apply-button--primary" href="#application">Apply for early access</a>
-          <a class="apply-button apply-button--secondary" href="/guide/quick-start">Read the quick start</a>
+          <a class="apply-button apply-button--primary" href="#application">{{ copy.applyAction }}</a>
+          <a class="apply-button apply-button--secondary" :href="copy.quickStartHref">{{ copy.quickStartAction }}</a>
         </div>
 
-        <div class="event-stream" aria-label="Available live events">
+        <div class="event-stream" :aria-label="copy.availableEvents">
           <span><i class="pulse pulse--cyan"></i> live.like</span>
           <span><i class="pulse pulse--pink"></i> live.gift</span>
           <span><i class="pulse pulse--white"></i> live.chat</span>
@@ -87,16 +231,16 @@ onMounted(() => {
             playsinline
             preload="metadata"
             poster="/media/interactive-tower-defense-demo.webp"
-            aria-label="Tower Defense interactive game running inside LIVE Studio"
+            :aria-label="copy.demoAria"
           >
             <source src="/media/interactive-tower-defense-demo.mp4" type="video/mp4" />
           </video>
           <div class="demo-media__shade" aria-hidden="true"></div>
 
           <div class="demo-story">
-            <span>GIFT EVENT → GAME ACTION</span>
-            <h2 id="demo-title">Tower Defense × LIVE Studio</h2>
-            <p>Watch a gift become a tower and reshape the round inside LIVE Studio.</p>
+            <span>{{ copy.demoEvent }}</span>
+            <h2 id="demo-title">{{ copy.demoTitle }}</h2>
+            <p>{{ copy.demoDescription }}</p>
           </div>
         </div>
       </article>
@@ -104,31 +248,48 @@ onMounted(() => {
 
     <section id="application" class="application-section">
       <div class="application-intro">
-        <span class="section-index">02 / APPLY</span>
-        <h2>Bring your game to LIVE Studio.</h2>
-        <p>
-          Tell us what you want to build. We are opening local event access to a small group of
-          developers first.
+        <span class="section-index">{{ copy.sectionIndex }}</span>
+        <h2>{{ copy.applicationTitle }}</h2>
+        <p>{{ copy.applicationDescription }}</p>
+
+        <p v-if="applicationStage === 1" class="submission-received" role="status">
+          <i aria-hidden="true"></i>{{ copy.submissionReceived }}
         </p>
 
-        <ol class="apply-steps" aria-label="Application steps">
-          <li><b>01</b><span>About you</span></li>
-          <li><b>02</b><span>Your game</span></li>
-          <li><b>03</b><span>Data needs</span></li>
+        <ol class="apply-steps" :aria-label="copy.stepsAria">
+          <li
+            v-for="(step, index) in copy.steps"
+            :key="step.title"
+            :class="`is-${getStepState(index)}`"
+            :aria-current="index === applicationStage ? 'step' : undefined"
+          >
+            <div class="step-marker" aria-hidden="true"><span>0{{ index + 1 }}</span></div>
+            <div class="step-content">
+              <div class="step-heading">
+                <h3>{{ step.title }}</h3>
+                <span v-if="getStepTag(index)" class="step-tag">{{ getStepTag(index) }}</span>
+              </div>
+              <p>{{ step.description }}</p>
+              <span class="step-meta">{{ step.meta }}</span>
+            </div>
+          </li>
         </ol>
+
+        <p class="secret-note"><strong>SECRET KEY</strong>{{ copy.secretNote }}</p>
       </div>
 
       <section class="apply-shell">
         <header class="apply-shell__header">
           <div>
-            <span class="eyebrow">DEVELOPER PROGRAM</span>
-            <h2>Request early access</h2>
+            <span class="eyebrow">{{ copy.program }}</span>
+            <h2>{{ copy.requestAccess }}</h2>
           </div>
-          <span class="open-status"><i></i> Applications open</span>
+          <span class="open-status"><i></i>{{ copy.applicationsOpen }}</span>
         </header>
 
         <div v-if="isConfigured" class="tally-frame">
           <iframe
+            ref="tallyFrame"
             :data-tally-src="embedUrl"
             loading="lazy"
             width="100%"
@@ -136,23 +297,21 @@ onMounted(() => {
             frameborder="0"
             marginheight="0"
             marginwidth="0"
-            title="LIVE Studio developer access application"
+            :title="copy.iframeTitle"
           ></iframe>
           <noscript>
-            <a :href="publicUrl">Open the application form</a>
+            <a :href="publicUrl">{{ copy.openForm }}</a>
           </noscript>
         </div>
 
         <div v-else class="form-placeholder" role="status">
           <div class="form-placeholder__mark">LS</div>
-          <strong>Application form is being configured</strong>
-          <span>The public form will appear here after it is published.</span>
+          <strong>{{ copy.configuringTitle }}</strong>
+          <span>{{ copy.configuringDescription }}</span>
         </div>
 
         <footer class="apply-shell__footer">
-          <span>Private by default</span>
-          <span>Reviewed by the LIVE Studio team</span>
-          <span>No production access is granted automatically</span>
+          <span v-for="item in copy.footer" :key="item">{{ item }}</span>
         </footer>
       </section>
     </section>
@@ -567,7 +726,7 @@ onMounted(() => {
   scroll-margin-top: 92px;
 }
 
-.application-intro { position: sticky; top: 108px; padding-top: 18px; }
+.application-intro { position: sticky; top: 92px; padding-top: 18px; }
 .section-index { color: var(--tt-pink); }
 
 .application-intro h2 {
@@ -579,35 +738,166 @@ onMounted(() => {
 
 .application-intro > p { margin: 0; color: var(--tt-muted); font-size: 15px; line-height: 1.65; }
 
+.submission-received {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 24px !important;
+  padding: 12px 14px;
+  color: #dffffd !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border: 1px solid rgba(37, 244, 238, 0.24);
+  border-radius: var(--tux-v2-radius-content-large);
+  background: rgba(37, 244, 238, 0.07);
+  animation: submission-enter 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.submission-received i {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--tt-cyan);
+  box-shadow: 0 0 10px rgba(37, 244, 238, 0.72);
+}
+
 .apply-steps {
   display: grid;
-  gap: 10px;
-  margin: 30px 0 0;
+  gap: 12px;
+  margin: 32px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .apply-steps li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  color: #dfe1e7;
-  font-size: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.045);
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: start;
+  gap: 13px;
 }
 
-.apply-steps b {
+.apply-steps li:not(:last-child)::after {
+  position: absolute;
+  z-index: -1;
+  top: 41px;
+  left: 20px;
+  width: 1px;
+  height: calc(100% + 13px);
+  content: '';
+  background: linear-gradient(to bottom, rgba(37, 244, 238, 0.36), rgba(254, 44, 85, 0.18));
+}
+
+.step-marker {
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
-  color: #061416;
+  width: 42px;
+  height: 42px;
+  color: #8f929e;
   font-size: 10px;
-  border-radius: 6px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--tux-v2-radius-content-large);
+  background: rgba(18, 19, 26, 0.94);
+  transition: color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+
+.step-content {
+  min-width: 0;
+  padding: 13px 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--tux-v2-radius-container-level0-large);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+  transition: transform 200ms ease, border-color 200ms ease, background 200ms ease, box-shadow 200ms ease, opacity 200ms ease;
+}
+
+.apply-steps li:hover .step-content { transform: translateX(3px); }
+
+.step-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.step-heading h3 {
+  margin: 0;
+  color: #f5f6f8;
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.step-tag {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  color: #071315;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  border-radius: var(--tux-v2-radius-content-capsule);
   background: var(--tt-cyan);
+}
+
+.step-content p {
+  margin: 7px 0 0;
+  color: #a9acb7;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.step-meta {
+  display: block;
+  margin-top: 10px;
+  color: #7f828e;
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.apply-steps li.is-active .step-marker {
+  color: #071315;
+  border-color: var(--tt-cyan);
+  background: var(--tt-cyan);
+  box-shadow: 4px -4px 0 rgba(254, 44, 85, 0.78), 0 0 22px rgba(37, 244, 238, 0.18);
+}
+
+.apply-steps li.is-active .step-content {
+  border-color: rgba(37, 244, 238, 0.3);
+  background: linear-gradient(135deg, rgba(37, 244, 238, 0.1), rgba(254, 44, 85, 0.045));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.16);
+}
+
+.apply-steps li.is-complete .step-marker {
+  color: #dffffd;
+  border-color: rgba(37, 244, 238, 0.42);
+  background: rgba(37, 244, 238, 0.1);
+}
+
+.apply-steps li.is-complete .step-content { border-color: rgba(37, 244, 238, 0.16); }
+.apply-steps li.is-complete .step-tag { color: #dffffd; background: rgba(37, 244, 238, 0.12); }
+.apply-steps li.is-upcoming .step-content { opacity: 0.78; }
+
+.secret-note {
+  margin: 18px 0 0 !important;
+  padding: 12px 14px;
+  color: #898c97 !important;
+  font-size: 10px !important;
+  line-height: 1.55 !important;
+  border-left: 2px solid var(--tt-pink);
+  background: rgba(254, 44, 85, 0.035);
+}
+
+.secret-note strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #d7d9e0;
+  font-size: 9px;
+  letter-spacing: 0.13em;
 }
 
 .apply-shell {
@@ -691,6 +981,11 @@ onMounted(() => {
   50% { opacity: 1; transform: scale(1.18); }
 }
 
+@keyframes submission-enter {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
 @keyframes headline-impact {
@@ -741,8 +1036,9 @@ onMounted(() => {
   .apply-masthead { min-height: auto; }
   .apply-copy { padding-bottom: 8px; }
   .application-section { gap: 28px; margin-top: 112px; }
-  .application-intro { position: static; max-width: 620px; padding-top: 0; }
-  .apply-steps { grid-template-columns: repeat(3, 1fr); }
+  .application-intro { position: static; max-width: 760px; padding-top: 0; }
+  .apply-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .apply-steps li:not(:last-child)::after { display: none; }
   .ambient-events { display: none; }
 }
 
@@ -756,8 +1052,9 @@ onMounted(() => {
   .demo-story { right: 16px; bottom: 16px; }
   .demo-story p { display: none; }
   .application-section { margin-top: 88px; }
-  .apply-steps { gap: 7px; }
-  .apply-steps li { display: grid; gap: 7px; padding: 10px 8px; }
+  .apply-steps { grid-template-columns: 1fr; gap: 10px; }
+  .apply-steps li { gap: 11px; }
+  .step-content { padding: 12px 13px 13px; }
   .apply-shell { border-radius: 11px; }
   .apply-shell__header { display: block; padding: 22px 20px; }
   .open-status { margin-top: 15px; }
@@ -776,11 +1073,15 @@ onMounted(() => {
   .apply-copy h1 em::before,
   .apply-copy h1 em::after,
   .apply-badge span,
-  .open-status i { animation: none; }
+  .open-status i,
+  .submission-received { animation: none; }
 
   .apply-button,
-  .demo-card { transition: none; }
+  .demo-card,
+  .step-marker,
+  .step-content { transition: none; }
 
-  .demo-card:hover { transform: none; }
+  .demo-card:hover,
+  .apply-steps li:hover .step-content { transform: none; }
 }
 </style>
