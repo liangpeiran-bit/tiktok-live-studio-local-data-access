@@ -181,10 +181,12 @@ onBeforeUnmount(() => {
     <div class="apply-noise" aria-hidden="true"></div>
     <div class="apply-orbit apply-orbit--cyan" aria-hidden="true"></div>
     <div class="apply-orbit apply-orbit--pink" aria-hidden="true"></div>
-    <div class="radial-light-columns" aria-hidden="true">
-      <span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span>
-    </div>
+    <img
+      class="radial-light-columns"
+      src="/media/application/radial-light-columns-v1.png"
+      alt=""
+      aria-hidden="true"
+    />
     <div class="apply-ribbons" aria-hidden="true">
       <span></span><span></span><span></span>
     </div>
@@ -329,8 +331,6 @@ onBeforeUnmount(() => {
   --tt-surface-raised: #20212b;
   --tt-text: #f8f8fa;
   --tt-muted: #adb0bc;
-  --tt-ray-cyan: rgba(62, 188, 188, 0.62);
-  --tt-ray-pink: rgba(172, 74, 98, 0.5);
   --apply-layout-width: 1600px;
   --apply-copy-width: 560px;
   --apply-type-display: clamp(52px, 4.25vw, 68px);
@@ -388,60 +388,19 @@ onBeforeUnmount(() => {
 .apply-orbit--pink { top: 28%; right: -10%; background: var(--tt-pink); animation-delay: -4s; }
 
 .radial-light-columns {
-  position: fixed;
+  position: absolute;
   z-index: -1;
-  top: 48px;
-  left: 0;
-  width: min(56vw, 920px);
-  height: min(74vh, 780px);
-  overflow: hidden;
-  pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 94% 90% at 0 0, #000 0 38%, rgba(0, 0, 0, 0.82) 62%, transparent 92%);
-  mask-image: radial-gradient(ellipse 94% 90% at 0 0, #000 0 38%, rgba(0, 0, 0, 0.82) 62%, transparent 92%);
-}
-
-.radial-light-columns::before {
-  position: absolute;
-  top: -180px;
-  left: -210px;
-  width: 500px;
-  height: 500px;
-  content: '';
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(62, 188, 188, 0.2), rgba(172, 74, 98, 0.08) 38%, transparent 72%);
-  filter: blur(42px);
-}
-
-.radial-light-columns span {
-  --ray-angle: 12deg;
-  --ray-length: min(42vw, 680px);
-  --ray-width: 72px;
-  --ray-color: var(--tt-ray-cyan);
-  --ray-opacity-low: 0.11;
-  --ray-opacity-high: 0.22;
-  position: absolute;
-  top: -10px;
-  left: -46px;
-  width: var(--ray-length);
-  height: var(--ray-width);
-  border-radius: 0 999px 999px 0;
-  background: linear-gradient(90deg, var(--ray-color), var(--ray-color) 22%, transparent 88%);
-  clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 60%);
-  filter: blur(14px);
+  top: -42px;
+  left: calc((100vw - 100%) / -2);
+  width: clamp(660px, 48vw, 920px);
+  max-width: none;
+  height: auto;
+  opacity: 0.72;
+  filter: saturate(0.68) brightness(0.88);
   mix-blend-mode: screen;
-  transform-origin: 0 50%;
-  will-change: opacity, transform;
-  animation: radial-column-breathe 10s ease-in-out infinite;
+  pointer-events: none;
+  user-select: none;
 }
-
-.radial-light-columns span:nth-child(1) { --ray-angle: 5deg; --ray-length: min(34vw, 560px); --ray-width: 52px; --ray-opacity-low: 0.11; --ray-opacity-high: 0.2; animation-delay: -2s; }
-.radial-light-columns span:nth-child(2) { --ray-angle: 14deg; --ray-length: min(44vw, 720px); --ray-width: 82px; --ray-opacity-low: 0.12; --ray-opacity-high: 0.23; animation-delay: -7s; animation-duration: 12s; }
-.radial-light-columns span:nth-child(3) { --ray-angle: 24deg; --ray-length: min(40vw, 660px); --ray-width: 70px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.1; --ray-opacity-high: 0.2; animation-delay: -4s; animation-duration: 11s; }
-.radial-light-columns span:nth-child(4) { --ray-angle: 35deg; --ray-length: min(46vw, 760px); --ray-width: 96px; --ray-opacity-low: 0.14; --ray-opacity-high: 0.27; animation-delay: -9s; animation-duration: 13s; }
-.radial-light-columns span:nth-child(5) { --ray-angle: 47deg; --ray-length: min(40vw, 650px); --ray-width: 78px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.1; --ray-opacity-high: 0.2; animation-delay: -5s; animation-duration: 11.5s; }
-.radial-light-columns span:nth-child(6) { --ray-angle: 59deg; --ray-length: min(42vw, 690px); --ray-width: 88px; --ray-opacity-low: 0.12; --ray-opacity-high: 0.24; animation-delay: -1s; animation-duration: 12.5s; }
-.radial-light-columns span:nth-child(7) { --ray-angle: 70deg; --ray-length: min(34vw, 560px); --ray-width: 64px; --ray-color: var(--tt-ray-pink); --ray-opacity-low: 0.08; --ray-opacity-high: 0.16; animation-delay: -8s; animation-duration: 14s; }
-.radial-light-columns span:nth-child(8) { --ray-angle: 80deg; --ray-length: min(29vw, 480px); --ray-width: 52px; --ray-opacity-low: 0.08; --ray-opacity-high: 0.16; animation-delay: -3s; animation-duration: 13.5s; }
 
 .apply-ribbons {
   position: fixed;
@@ -1213,11 +1172,6 @@ onBeforeUnmount(() => {
   to { transform: translate3d(38px, 28px, 0) scale(1.12); }
 }
 
-@keyframes radial-column-breathe {
-  0%, 100% { opacity: var(--ray-opacity-low); transform: rotate(var(--ray-angle)) scaleX(0.9); }
-  50% { opacity: var(--ray-opacity-high); transform: rotate(var(--ray-angle)) scaleX(1.04); }
-}
-
 @keyframes ribbon-sweep {
   from { opacity: 0.08; transform: translate3d(-12vw, -3vh, 0) rotate(-18deg) scale(0.92); }
   to { opacity: 0.2; transform: translate3d(28vw, 10vh, 0) rotate(-12deg) scale(1.18); }
@@ -1255,7 +1209,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 620px) {
   .apply-page { width: min(100% - 22px, 760px); padding: 34px 0 64px; }
-  .radial-light-columns { width: 100vw; height: 52vh; opacity: 0.72; }
+  .radial-light-columns { top: -30px; left: -11px; width: 620px; opacity: 0.56; }
   .apply-headline { font-size: 43px; }
   .apply-page--zh .apply-headline { font-size: clamp(34px, 10.6vw, 42px); letter-spacing: -0.06em; }
   .apply-lede { font-size: 15px; }
@@ -1279,7 +1233,6 @@ onBeforeUnmount(() => {
 @media (prefers-reduced-motion: reduce) {
   .apply-page::after,
   .apply-orbit,
-  .radial-light-columns span,
   .apply-ribbons span,
   .ambient-events span,
   .demo-card,
