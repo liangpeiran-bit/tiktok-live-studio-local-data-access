@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const props = defineProps<{
   formId: string
@@ -7,8 +7,6 @@ const props = defineProps<{
 }>()
 
 const demoVideo = ref<HTMLVideoElement | null>(null)
-const tallyFrame = ref<HTMLIFrameElement | null>(null)
-const applicationStage = ref(0)
 
 const isZh = computed(() => props.locale === 'zh')
 const copy = computed(() =>
@@ -53,10 +51,6 @@ const copy = computed(() =>
             meta: '本地 WebSocket',
           },
         ],
-        filling: '填写中',
-        submitted: '已提交',
-        reviewing: '审核中',
-        submissionReceived: '申请已提交，接下来由 LIVE Studio 官方审核。',
         secretNote: '请勿将 Secret Key 提交到公开仓库或分享给无关人员。',
         program: '开发者计划',
         requestAccess: '申请抢先体验',
@@ -107,10 +101,6 @@ const copy = computed(() =>
             meta: 'Local WebSocket',
           },
         ],
-        filling: 'In progress',
-        submitted: 'Submitted',
-        reviewing: 'In review',
-        submissionReceived: 'Application received. The LIVE Studio team will review it next.',
         secretNote: 'Never commit your Secret Key to a public repository or share it outside your team.',
         program: 'DEVELOPER PROGRAM',
         requestAccess: 'Request early access',
@@ -130,34 +120,7 @@ const embedUrl = computed(
 )
 const publicUrl = computed(() => `https://tally.so/r/${props.formId}`)
 
-const getStepState = (index: number) => {
-  if (index < applicationStage.value) return 'complete'
-  if (index === applicationStage.value) return 'active'
-  return 'upcoming'
-}
-
-const getStepTag = (index: number) => {
-  if (index < applicationStage.value) return copy.value.submitted
-  if (index !== applicationStage.value) return ''
-  return index === 0 ? copy.value.filling : copy.value.reviewing
-}
-
-const handleTallyMessage = (event: MessageEvent) => {
-  if (
-    event.origin !== 'https://tally.so' ||
-    event.source !== tallyFrame.value?.contentWindow ||
-    typeof event.data !== 'string' ||
-    !event.data.includes('Tally.FormSubmitted')
-  ) {
-    return
-  }
-
-  applicationStage.value = 1
-}
-
 onMounted(() => {
-  window.addEventListener('message', handleTallyMessage)
-
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     demoVideo.value?.pause()
   }
@@ -179,10 +142,6 @@ onMounted(() => {
     script.async = true
     document.body.appendChild(script)
   }
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('message', handleTallyMessage)
 })
 </script>
 
@@ -252,22 +211,12 @@ onBeforeUnmount(() => {
         <h2>{{ copy.applicationTitle }}</h2>
         <p>{{ copy.applicationDescription }}</p>
 
-        <p v-if="applicationStage === 1" class="submission-received" role="status">
-          <i aria-hidden="true"></i>{{ copy.submissionReceived }}
-        </p>
-
         <ol class="apply-steps" :aria-label="copy.stepsAria">
-          <li
-            v-for="(step, index) in copy.steps"
-            :key="step.title"
-            :class="`is-${getStepState(index)}`"
-            :aria-current="index === applicationStage ? 'step' : undefined"
-          >
+          <li v-for="(step, index) in copy.steps" :key="step.title">
             <div class="step-marker" aria-hidden="true"><span>0{{ index + 1 }}</span></div>
             <div class="step-content">
               <div class="step-heading">
                 <h3>{{ step.title }}</h3>
-                <span v-if="getStepTag(index)" class="step-tag">{{ getStepTag(index) }}</span>
               </div>
               <p>{{ step.description }}</p>
               <span class="step-meta">{{ step.meta }}</span>
@@ -289,7 +238,6 @@ onBeforeUnmount(() => {
 
         <div v-if="isConfigured" class="tally-frame">
           <iframe
-            ref="tallyFrame"
             :data-tally-src="embedUrl"
             loading="lazy"
             width="100%"
@@ -738,31 +686,6 @@ onBeforeUnmount(() => {
 
 .application-intro > p { margin: 0; color: var(--tt-muted); font-size: 15px; line-height: 1.65; }
 
-.submission-received {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 24px !important;
-  padding: 12px 14px;
-  color: #dffffd !important;
-  font-size: 12px !important;
-  line-height: 1.5 !important;
-  border: 1px solid rgba(37, 244, 238, 0.24);
-  border-radius: var(--tux-v2-radius-content-large);
-  background: rgba(37, 244, 238, 0.07);
-  animation: submission-enter 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-.submission-received i {
-  flex: 0 0 auto;
-  width: 7px;
-  height: 7px;
-  margin-top: 5px;
-  border-radius: 50%;
-  background: var(--tt-cyan);
-  box-shadow: 0 0 10px rgba(37, 244, 238, 0.72);
-}
-
 .apply-steps {
   display: grid;
   gap: 12px;
@@ -795,14 +718,14 @@ onBeforeUnmount(() => {
   place-items: center;
   width: 42px;
   height: 42px;
-  color: #8f929e;
+  color: #071315;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.06em;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(37, 244, 238, 0.56);
   border-radius: var(--tux-v2-radius-content-large);
-  background: rgba(18, 19, 26, 0.94);
-  transition: color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+  background: rgba(37, 244, 238, 0.88);
+  box-shadow: 3px -3px 0 rgba(254, 44, 85, 0.48);
 }
 
 .step-content {
@@ -811,10 +734,7 @@ onBeforeUnmount(() => {
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--tux-v2-radius-container-level0-large);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
-  transition: transform 200ms ease, border-color 200ms ease, background 200ms ease, box-shadow 200ms ease, opacity 200ms ease;
 }
-
-.apply-steps li:hover .step-content { transform: translateX(3px); }
 
 .step-heading {
   display: flex;
@@ -829,17 +749,6 @@ onBeforeUnmount(() => {
   font-size: 14px;
   line-height: 1.35;
   letter-spacing: -0.01em;
-}
-
-.step-tag {
-  flex: 0 0 auto;
-  padding: 4px 7px;
-  color: #071315;
-  font-size: 9px;
-  font-weight: 800;
-  line-height: 1;
-  border-radius: var(--tux-v2-radius-content-capsule);
-  background: var(--tt-cyan);
 }
 
 .step-content p {
@@ -858,29 +767,6 @@ onBeforeUnmount(() => {
   letter-spacing: 0.11em;
   text-transform: uppercase;
 }
-
-.apply-steps li.is-active .step-marker {
-  color: #071315;
-  border-color: var(--tt-cyan);
-  background: var(--tt-cyan);
-  box-shadow: 4px -4px 0 rgba(254, 44, 85, 0.78), 0 0 22px rgba(37, 244, 238, 0.18);
-}
-
-.apply-steps li.is-active .step-content {
-  border-color: rgba(37, 244, 238, 0.3);
-  background: linear-gradient(135deg, rgba(37, 244, 238, 0.1), rgba(254, 44, 85, 0.045));
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.16);
-}
-
-.apply-steps li.is-complete .step-marker {
-  color: #dffffd;
-  border-color: rgba(37, 244, 238, 0.42);
-  background: rgba(37, 244, 238, 0.1);
-}
-
-.apply-steps li.is-complete .step-content { border-color: rgba(37, 244, 238, 0.16); }
-.apply-steps li.is-complete .step-tag { color: #dffffd; background: rgba(37, 244, 238, 0.12); }
-.apply-steps li.is-upcoming .step-content { opacity: 0.78; }
 
 .secret-note {
   margin: 18px 0 0 !important;
@@ -981,11 +867,6 @@ onBeforeUnmount(() => {
   50% { opacity: 1; transform: scale(1.18); }
 }
 
-@keyframes submission-enter {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
 @keyframes headline-impact {
@@ -1073,15 +954,11 @@ onBeforeUnmount(() => {
   .apply-copy h1 em::before,
   .apply-copy h1 em::after,
   .apply-badge span,
-  .open-status i,
-  .submission-received { animation: none; }
+  .open-status i { animation: none; }
 
   .apply-button,
-  .demo-card,
-  .step-marker,
-  .step-content { transition: none; }
+  .demo-card { transition: none; }
 
-  .demo-card:hover,
-  .apply-steps li:hover .step-content { transform: none; }
+  .demo-card:hover { transform: none; }
 }
 </style>
