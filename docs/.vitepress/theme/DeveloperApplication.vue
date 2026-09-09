@@ -694,24 +694,18 @@ onMounted(() => {
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
 @keyframes headline-impact {
-  0%, 58%, 78%, 100% { filter: blur(0); transform: translate3d(0, 0, 0) skewX(0deg); }
-  63% { filter: blur(1.8px); transform: translate3d(-6px, 0, 0) skewX(-2deg); }
-  67% { filter: blur(0.4px); transform: translate3d(4px, 0, 0) skewX(1deg); }
-  71% { filter: blur(1px); transform: translate3d(-2px, 0, 0) skewX(-0.5deg); }
+  0%, 57%, 73%, 100% { filter: blur(0); transform: translate3d(0, 0, 0) skewX(0deg); }
+  64% { filter: blur(1.8px); transform: translate3d(-5px, 0, 0) skewX(-1.6deg); }
 }
 
 @keyframes headline-smear-cyan {
-  0%, 54%, 80%, 100% { opacity: 0.42; filter: blur(2px); transform: translate3d(-3px, 0, 0) scaleX(1); }
-  62% { opacity: 0.96; filter: blur(7px); transform: translate3d(-20px, 0, 0) scaleX(1.08); }
-  68% { opacity: 0.7; filter: blur(4px); transform: translate3d(-10px, 0, 0) scaleX(1.04); }
-  74% { opacity: 0.22; filter: blur(10px); transform: translate3d(-34px, 0, 0) scaleX(1.12); }
+  0%, 57%, 73%, 100% { opacity: 0.42; filter: blur(2px); transform: translate3d(-3px, 0, 0) scaleX(1); }
+  64% { opacity: 0.96; filter: blur(7px); transform: translate3d(-20px, 0, 0) scaleX(1.08); }
 }
 
 @keyframes headline-smear-pink {
-  0%, 54%, 80%, 100% { opacity: 0.38; filter: blur(2px); transform: translate3d(3px, 0, 0) scaleX(1); }
-  62% { opacity: 0.92; filter: blur(7px); transform: translate3d(20px, 0, 0) scaleX(1.08); }
-  68% { opacity: 0.66; filter: blur(4px); transform: translate3d(10px, 0, 0) scaleX(1.04); }
-  74% { opacity: 0.2; filter: blur(10px); transform: translate3d(34px, 0, 0) scaleX(1.12); }
+  0%, 57%, 73%, 100% { opacity: 0.38; filter: blur(2px); transform: translate3d(3px, 0, 0) scaleX(1); }
+  64% { opacity: 0.92; filter: blur(7px); transform: translate3d(20px, 0, 0) scaleX(1.08); }
 }
 
 @keyframes orbit-float {
