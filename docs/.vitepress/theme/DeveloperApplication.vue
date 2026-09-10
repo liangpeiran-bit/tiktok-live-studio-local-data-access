@@ -20,7 +20,6 @@ const isZh = computed(() => props.locale === 'zh')
 const copy = computed(() =>
   isZh.value
     ? {
-        badge: '开发者抢先体验',
         kicker: '直播互动，实时成为玩法',
         headlineLead: '为直播互动而生',
         headlineAccent: '让弹幕改变游戏',
@@ -61,7 +60,6 @@ const copy = computed(() =>
         secretNote: '请勿将 Secret Key 提交到公开仓库或分享给无关人员。',
         program: '开发者计划',
         requestAccess: '申请抢先体验',
-        applicationsOpen: '申请开放中',
         formIntro: '填写申请大约需要 3 分钟。带 * 的项目为必填项。',
         formStepLabel: '申请表进度',
         formSteps: ['关于你', '你的游戏', '数据需求'],
@@ -120,7 +118,6 @@ const copy = computed(() =>
         footer: ['默认保护隐私', '由 LIVE Studio 团队审核', '提交申请不会自动获得生产环境权限'],
       }
     : {
-        badge: 'DEVELOPER EARLY ACCESS',
         kicker: 'LIVE INTERACTIONS. REAL GAMEPLAY.',
         headlineLead: 'Build for the moment',
         headlineAccent: 'the chat changes the game.',
@@ -161,7 +158,6 @@ const copy = computed(() =>
         secretNote: 'Never commit your Secret Key to a public repository or share it outside your team.',
         program: 'DEVELOPER PROGRAM',
         requestAccess: 'Request early access',
-        applicationsOpen: 'Applications open',
         formIntro: 'This application takes about 3 minutes. Fields marked * are required.',
         formStepLabel: 'Application progress',
         formSteps: ['About you', 'Your game', 'Data needs'],
@@ -319,15 +315,11 @@ onMounted(() => {
     </div>
     <div class="ambient-events" aria-hidden="true">
       <span>LIKE +248</span>
-      <span>ROSE ×1</span>
       <span>WAVE CLEARED</span>
-      <span>LIVE.CHAT</span>
-      <span>CONNECTED</span>
     </div>
 
     <section class="apply-masthead">
       <div class="apply-copy">
-        <div class="apply-badge"><span></span>{{ copy.badge }}</div>
         <p class="apply-kicker">{{ copy.kicker }}</p>
         <h1 class="apply-headline">
           <span class="apply-headline__lead">{{ copy.headlineLead }}</span>
@@ -399,7 +391,6 @@ onMounted(() => {
             <span class="eyebrow">{{ copy.program }}</span>
             <h2>{{ copy.requestAccess }}</h2>
           </div>
-          <span class="open-status"><i></i>{{ copy.applicationsOpen }}</span>
         </header>
 
         <div
@@ -701,10 +692,7 @@ onMounted(() => {
 }
 
 .ambient-events span:nth-child(1) { top: 20%; left: 2%; }
-.ambient-events span:nth-child(2) { top: 36%; right: 2%; color: rgba(255, 215, 223, 0.48); border-color: rgba(254, 44, 85, 0.16); animation-delay: -2s; }
-.ambient-events span:nth-child(3) { top: 64%; left: 3%; animation-delay: -4s; }
-.ambient-events span:nth-child(4) { right: 3%; bottom: 18%; color: rgba(255, 215, 223, 0.48); border-color: rgba(254, 44, 85, 0.16); animation-delay: -6s; }
-.ambient-events span:nth-child(5) { right: 10%; bottom: 4%; animation-delay: -8s; }
+.ambient-events span:nth-child(2) { top: 64%; left: 3%; animation-delay: -4s; }
 
 .apply-masthead {
   display: grid;
@@ -719,34 +707,11 @@ onMounted(() => {
   padding-block: 12px;
 }
 
-.apply-badge,
 .eyebrow,
 .section-index {
   font-size: 11px;
   font-weight: 760;
   letter-spacing: 0.16em;
-}
-
-.apply-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 11px;
-  color: #dffffd;
-  border: 1px solid rgba(37, 244, 238, 0.3);
-  border-radius: var(--apply-radius-control);
-  background: rgba(37, 244, 238, 0.08);
-  box-shadow: 4px 4px 0 rgba(254, 44, 85, 0.16);
-}
-
-.apply-badge span,
-.open-status i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--tt-pink);
-  box-shadow: 0 0 12px rgba(254, 44, 85, 0.82);
-  animation: live-pulse 1.8s ease-in-out infinite;
 }
 
 .apply-kicker {
@@ -1183,22 +1148,6 @@ onMounted(() => {
 
 .eyebrow { color: #8d909b; }
 .apply-shell__header h2 { margin: 6px 0 0; color: #fff; font-size: 24px; letter-spacing: -0.026em; }
-
-.open-status {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  color: #bfffdc;
-  font-size: 11px;
-  font-weight: 700;
-  border: 1px solid rgba(63, 218, 136, 0.25);
-  border-radius: 999px;
-  background: rgba(63, 218, 136, 0.08);
-}
-
-.open-status i { width: 6px; height: 6px; background: #3fda88; box-shadow: 0 0 9px rgba(63, 218, 136, 0.8); }
 
 .native-form {
   min-height: 650px;
@@ -1822,7 +1771,6 @@ onMounted(() => {
   .step-content { padding: 12px 13px 13px; }
   .apply-shell { border-radius: 11px; }
   .apply-shell__header { display: block; padding: 22px 20px; }
-  .open-status { margin-top: 15px; }
   .native-form { min-height: 0; padding: 22px 18px 26px; }
   .form-progress { gap: 5px; }
   .form-progress li { grid-template-columns: 1fr; gap: 5px; }
@@ -1851,8 +1799,6 @@ onMounted(() => {
   .headline-tiktok-echo::before,
   .headline-tiktok-echo::after,
   .headline-short-circuit,
-  .apply-badge span,
-  .open-status i,
   .submission-success,
   .form-step { animation: none; }
 
