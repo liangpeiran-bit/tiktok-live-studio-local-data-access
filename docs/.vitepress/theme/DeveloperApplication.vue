@@ -58,13 +58,13 @@ const copy = computed(() =>
             meta: '邮件同步结果',
           },
           {
-            title: '邮件获取 Secret Key',
+            title: '邮件获取开发凭证',
             description: '审核通过后，凭据和接入说明会发送到申请邮箱。',
             meta: '仅发送至申请邮箱',
           },
           {
             title: '连接本地 LIVE Studio',
-            description: '使用 Secret Key 完成 WebSocket 鉴权，开始接收直播事件。',
+            description: '使用 app_id、key_id 和 secret 完成 WebSocket 鉴权，开始接收直播事件。',
             meta: '本地 WebSocket',
           },
         ],
@@ -121,12 +121,13 @@ const copy = computed(() =>
         submitFailed: '暂时无法提交，请稍后重试；你的填写内容仍保留在页面中。',
         successEyebrow: '申请已提交',
         successTitle: '感谢你的申请',
-        successDescription: '我们将在 3 个工作日内完成审核，并通过你填写的工作邮箱发送审核结果。',
-        successWindow: '工作日内',
+        successDescription: '审核结果将发送到你填写的工作邮箱。审核时间因申请情况而异。',
         successNote: '请留意收件箱和垃圾邮件。',
         configuringTitle: '申请表正在配置中',
         configuringDescription: '公开表单发布后会显示在这里。',
-        footer: ['默认保护隐私', '由 LIVE Studio 团队审核', '提交申请不会自动获得生产环境权限'],
+        informationUse: '申请信息通过 Formspree 提交，供 LIVE Studio 团队评估接入需求并通过邮箱联系你。请勿填写密钥或直播间原始数据。',
+        support: '申请或接入遇到问题？',
+        footer: ['由 LIVE Studio 团队审核', '提交申请不会自动获得生产环境权限'],
       }
     : {
         kicker: 'LIVE INTERACTIONS. REAL GAMEPLAY.',
@@ -161,13 +162,13 @@ const copy = computed(() =>
             meta: 'Result sent by email',
           },
           {
-            title: 'Receive your Secret Key',
+            title: 'Receive developer credentials',
             description: 'Approved developers receive credentials and connection guidance by email.',
             meta: 'Sent to your work email',
           },
           {
             title: 'Connect to LIVE Studio',
-            description: 'Authenticate the local WebSocket with your Secret Key and start receiving events.',
+            description: 'Authenticate with your app_id, key_id, and secret to start receiving local events.',
             meta: 'Local WebSocket',
           },
         ],
@@ -224,12 +225,13 @@ const copy = computed(() =>
         submitFailed: 'We could not submit the form. Please try again; your answers are still here.',
         successEyebrow: 'APPLICATION RECEIVED',
         successTitle: 'Thanks for applying.',
-        successDescription: 'We will review your application and email the result to your work address within 3 business days.',
-        successWindow: 'business days',
+        successDescription: 'We will email the review result to your work address. Review times vary by application.',
         successNote: 'Please check your inbox and spam folder.',
         configuringTitle: 'Application form is being configured',
         configuringDescription: 'The public form will appear here after it is published.',
-        footer: ['Private by default', 'Reviewed by the LIVE Studio team', 'No production access is granted automatically'],
+        informationUse: 'Application details are submitted through Formspree for the LIVE Studio team to evaluate access needs and contact you by email. Do not include credentials or raw live-room data.',
+        support: 'Need help with your application or integration?',
+        footer: ['Reviewed by the LIVE Studio team', 'No production access is granted automatically'],
       },
 )
 
@@ -485,9 +487,6 @@ onUnmounted(() => cleanUpMediaQueries?.())
           <span class="submission-success__eyebrow"><i aria-hidden="true"></i>{{ copy.successEyebrow }}</span>
           <h3>{{ copy.successTitle }}</h3>
           <p>{{ copy.successDescription }}</p>
-          <div class="review-window" aria-hidden="true">
-            <strong>3</strong><span>{{ copy.successWindow }}</span>
-          </div>
           <small>{{ copy.successNote }}</small>
         </div>
 
@@ -631,6 +630,8 @@ onUnmounted(() => cleanUpMediaQueries?.())
         </div>
 
         <footer class="apply-shell__footer">
+          <p>{{ copy.informationUse }}</p>
+          <p>{{ copy.support }} <a href="mailto:liangpeiran@bytedance.com">liangpeiran@bytedance.com</a></p>
           <span v-for="item in copy.footer" :key="item">{{ item }}</span>
         </footer>
       </section>
@@ -1701,32 +1702,6 @@ onUnmounted(() => cleanUpMediaQueries?.())
   line-height: 1.7;
 }
 
-.review-window {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-top: 32px;
-  padding: 14px 20px;
-  color: #f6f7f9;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--tux-v2-radius-container-level0-large);
-  background: rgba(255, 255, 255, 0.055);
-  box-shadow: -4px 4px 0 rgba(37, 244, 238, 0.62), 4px -4px 0 rgba(254, 44, 85, 0.56);
-}
-
-.review-window strong {
-  color: #fff;
-  font-size: 44px;
-  line-height: 1;
-  letter-spacing: -0.05em;
-}
-
-.review-window span {
-  color: #d9dbe2;
-  font-size: 13px;
-  font-weight: 700;
-}
-
 .submission-success small {
   margin-top: 24px;
   color: #7f828d;
@@ -1763,10 +1738,13 @@ onUnmounted(() => cleanUpMediaQueries?.())
   gap: 10px 22px;
   padding: 18px 30px 22px;
   color: var(--tt-muted);
-  font-size: 10px;
+  font-size: 12px;
+  line-height: 1.6;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.apply-shell__footer p { flex-basis: 100%; margin: 0; }
+.apply-shell__footer a { color: var(--tt-text); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
 .apply-shell__footer span::before { margin-right: 7px; color: var(--tt-cyan); content: '•'; }
 
 @keyframes live-pulse {

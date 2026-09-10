@@ -1,4 +1,6 @@
-# Unity 示例
+# Unity 接入指南
+
+本页提供结构建议和伪代码，不是可直接下载运行的 Unity 项目。建议先用[本地 H5 示例](/zh/samples/h5)验证第一条事件，再复用游戏现有的 WebSocket 库接入。
 
 Unity 客户端应遵循与 JavaScript 客户端相同的协议流程：
 
@@ -6,7 +8,7 @@ Unity 客户端应遵循与 JavaScript 客户端相同的协议流程：
 2. 连接到 `/v1/third-party`。
 3. 校验 `SERVER_HELLO`。
 4. 发送 `AUTH`。
-5. 按事件名分发 `EVENT` 消息。
+5. 等待 `AUTH_RESULT.success=true` 后，再按事件名分发 `EVENT` 消息。
 
 ## 推荐结构
 

@@ -8,6 +8,8 @@
     "node": ">=22"
   },
   "scripts": {
+    "test": "node --test scripts/site-regression.test.mjs",
+    "docs:check-links": "node scripts/check-site-links.mjs",
     "gifts:extract": "node scripts/extract-gifts.mjs",
     "docs:llms": "node scripts/generate-llms.mjs",
     "docs:dev": "node scripts/generate-llms.mjs && vitepress dev docs",

@@ -1,11 +1,9 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { canonicalUrl, normalizeDocument } from './llms-markdown.mjs'
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const siteBaseUrl = 'https://tiktok-live-studio-local-data-access.pages.dev'
-const repositoryRawBaseUrl =
-  'https://raw.githubusercontent.com/liangpeiran-bit/tiktok-live-studio-local-data-access/main'
 
 const agentSkillDocuments = [
   '.agents/skills/tiktok-live-studio-local-data-access/SKILL.md',
@@ -21,6 +19,7 @@ const englishDocuments = [
   'docs/demos/index.md',
   'docs/demos/tug-of-trap.md',
   'docs/demos/candy-arena-duel.md',
+  'docs/demos/tower-defense.md',
   'docs/guide/quick-start.md',
   'docs/guide/architecture.md',
   'docs/protocol/connection.md',
@@ -28,6 +27,7 @@ const englishDocuments = [
   'docs/protocol/events.md',
   'docs/protocol/errors.md',
   'docs/events/live-like.md',
+  'docs/events/index.md',
   'docs/events/live-gift.md',
   'docs/reference/gift-catalog.md',
   'docs/events/live-chat.md',
@@ -36,6 +36,9 @@ const englishDocuments = [
   'docs/samples/javascript.md',
   'docs/samples/unity.md',
   'docs/samples/h5.md',
+  'docs/public/samples/local-client.mjs',
+  'docs/public/samples/local-overlay.html',
+  'docs/public/samples/preview.mjs',
   ...agentSkillDocuments,
 ]
 
@@ -44,6 +47,7 @@ const chineseDocuments = [
   'docs/zh/demos/index.md',
   'docs/zh/demos/tug-of-trap.md',
   'docs/zh/demos/candy-arena-duel.md',
+  'docs/zh/demos/tower-defense.md',
   'docs/zh/guide/quick-start.md',
   'docs/zh/guide/architecture.md',
   'docs/zh/protocol/connection.md',
@@ -51,6 +55,7 @@ const chineseDocuments = [
   'docs/zh/protocol/events.md',
   'docs/zh/protocol/errors.md',
   'docs/zh/events/live-like.md',
+  'docs/zh/events/index.md',
   'docs/zh/events/live-gift.md',
   'docs/zh/reference/gift-catalog.md',
   'docs/zh/events/live-chat.md',
@@ -59,33 +64,24 @@ const chineseDocuments = [
   'docs/zh/samples/javascript.md',
   'docs/zh/samples/unity.md',
   'docs/zh/samples/h5.md',
+  'docs/public/samples/local-client.mjs',
+  'docs/public/samples/local-overlay.html',
+  'docs/public/samples/preview.mjs',
   ...agentSkillDocuments,
 ]
-
-function getCanonicalUrl(sourcePath) {
-  if (sourcePath.startsWith('docs/')) {
-    const route = sourcePath.slice('docs/'.length).replace(/\.md$/, '')
-    return `${siteBaseUrl}/${route}`
-  }
-
-  return `${repositoryRawBaseUrl}/${sourcePath}`
-}
-
-function rewriteRootLinks(markdown) {
-  return markdown.replace(/(\[[^\]]*\]\()\/(?!\/)([^)]+)(\))/g, `$1${siteBaseUrl}/$2$3`)
-}
 
 async function renderDocument(sourcePath) {
   const absolutePath = resolve(repositoryRoot, sourcePath)
   const markdown = (await readFile(absolutePath, 'utf8')).replace(/\r\n/g, '\n').trim()
-  const canonicalUrl = getCanonicalUrl(sourcePath)
+  const sourceUrl = canonicalUrl(sourcePath)
 
   return [
     '<document>',
-    `<source>${canonicalUrl}</source>`,
+    `<source>${sourceUrl}</source>`,
     `<repository-path>${sourcePath}</repository-path>`,
     '',
-    rewriteRootLinks(markdown),
+    sourcePath.endsWith('.md') ? normalizeDocument(markdown, sourcePath)
+      : '```' + (sourcePath.endsWith('.html') ? 'html' : 'javascript') + '\n' + markdown + '\n```',
     '</document>',
   ].join('\n')
 }

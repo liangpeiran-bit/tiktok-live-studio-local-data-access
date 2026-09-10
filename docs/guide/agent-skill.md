@@ -2,7 +2,60 @@
 
 This repository ships a reusable coding-agent skill for implementing LIVE Studio Local Data Access in any application stack.
 
+## Install it in another project
+
+The fastest distribution method is the open Skills CLI. It discovers the skill from this GitHub repository and installs it for the coding agents detected on the developer machine:
+
+```bash
+npx skills add liangpeiran-bit/tiktok-live-studio-local-data-access \
+  --skill tiktok-live-studio-local-data-access \
+  -g
+```
+
+`-g` makes the skill available across the developer's projects. Omit `-g` to install it only in the current project. To target particular agents non-interactively:
+
+```bash
+npx skills add liangpeiran-bit/tiktok-live-studio-local-data-access \
+  --skill tiktok-live-studio-local-data-access \
+  -g -a codex -a claude-code -a cursor -y
+```
+
+Update an installed copy after this repository changes:
+
+```bash
+npx skills update tiktok-live-studio-local-data-access -g -y
+```
+
+Developers without Node.js/npm can download the repository or a release archive and copy the **entire** directory into the target project:
+
+```text
+source:
+  .agents/skills/tiktok-live-studio-local-data-access/
+
+recommended target for Codex, Cursor, OpenCode, Copilot, and Gemini CLI:
+  <project>/.agents/skills/tiktok-live-studio-local-data-access/
+
+Claude Code target:
+  <project>/.claude/skills/tiktok-live-studio-local-data-access/
+
+Trae target:
+  <project>/.trae/skills/tiktok-live-studio-local-data-access/
+```
+
+Do not copy only `SKILL.md`; the protocol, events, stack adaptation, and verification references are part of the workflow.
+
+For teams using several agent products, keep `.agents/skills/` as the canonical copy. Prefer an explicit read prompt or a locally managed link/copy for Claude Code and Trae instead of committing multiple editable copies that can drift.
+
+
+## Give your agent its first task
+
+```text
+Use the LIVE Studio Local Data Access skill to integrate live.like into this project. Keep the existing stack, start with mock tests, and do not request or print real credentials.
+```
+
 <LlmDocsEntry locale="en" />
+
+## What is in the skill
 
 ```txt
 .agents/skills/tiktok-live-studio-local-data-access/
@@ -49,50 +102,6 @@ Read .agents/skills/tiktok-live-studio-local-data-access/SKILL.md and all refere
 ```
 
 That explicit form also works for agents that do not automatically scan `.agents/skills/`.
-
-## Install it in another project
-
-The fastest distribution method is the open Skills CLI. It discovers the skill from this GitHub repository and installs it for the coding agents detected on the developer machine:
-
-```bash
-npx skills add liangpeiran-bit/tiktok-live-studio-local-data-access \
-  --skill tiktok-live-studio-local-data-access \
-  -g
-```
-
-`-g` makes the skill available across the developer's projects. Omit `-g` to install it only in the current project. To target particular agents non-interactively:
-
-```bash
-npx skills add liangpeiran-bit/tiktok-live-studio-local-data-access \
-  --skill tiktok-live-studio-local-data-access \
-  -g -a codex -a claude-code -a cursor -y
-```
-
-Update an installed copy after this repository changes:
-
-```bash
-npx skills update tiktok-live-studio-local-data-access -g -y
-```
-
-Developers without Node.js/npm can download the repository or a release archive and copy the **entire** directory into the target project:
-
-```text
-source:
-  .agents/skills/tiktok-live-studio-local-data-access/
-
-recommended target for Codex, Cursor, OpenCode, Copilot, and Gemini CLI:
-  <project>/.agents/skills/tiktok-live-studio-local-data-access/
-
-Claude Code target:
-  <project>/.claude/skills/tiktok-live-studio-local-data-access/
-
-Trae target:
-  <project>/.trae/skills/tiktok-live-studio-local-data-access/
-```
-
-Do not copy only `SKILL.md`; the protocol, events, stack adaptation, and verification references are part of the workflow.
-
-For teams using several agent products, keep `.agents/skills/` as the canonical copy. Prefer an explicit read prompt or a locally managed link/copy for Claude Code and Trae instead of committing multiple editable copies that can drift.
 
 ## Example requests
 

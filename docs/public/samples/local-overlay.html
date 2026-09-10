@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIVE Studio — first local event</title>
+<style>
+  :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #121218; color: #f7f7fa; }
+  body { max-width: 720px; margin: 48px auto; padding: 0 24px; }
+  h1 { font-size: 32px; } p { line-height: 1.6; color: #b8bbc5; }
+  form { display: grid; gap: 16px; } label { display: grid; gap: 8px; }
+  input, button { padding: 12px; border-radius: 8px; font: inherit; color: inherit; background: #20212a; border: 1px solid #575968; }
+  button { cursor: pointer; } button:disabled { opacity: .5; cursor: default; }
+  button[type=submit] { background: #010101; box-shadow: -3px 2px #25f4ee, 3px -2px #fe2c55; }
+  :focus-visible { outline: 2px solid #25f4ee; outline-offset: 3px; }
+  pre { padding: 16px; white-space: pre-wrap; overflow-wrap: anywhere; background: #20212a; border-radius: 8px; min-height: 120px; }
+</style>
+<h1>Your first local event</h1>
+<p>Run on the same machine as an enabled LIVE Studio installation. Credentials stay in memory and are sent only after a matching SERVER_HELLO. This starter never retries automatically.</p>
+<form id="credentials" autocomplete="off">
+  <label>App ID<input name="app_id" required spellcheck="false"></label>
+  <label>Key ID<input name="key_id" required spellcheck="false"></label>
+  <label>Secret<input name="secret" type="password" required autocomplete="off"></label>
+  <button id="connect" type="submit" disabled>Connect</button>
+</form>
+<p><button id="stop" type="button" disabled>Disconnect / cancel</button></p>
+<p id="status" role="status">Not connected</p>
+<pre id="log" aria-label="Received event types"></pre>
+<p>Gift mappings in this sample: 5655 → drop-rose, 6064 → show-gg, 7569 → controller-boost. Replace these with your own rules. Viewer text and credentials are never printed here.</p>
+<script type="module">
+  import { connectLocal } from './local-client.mjs'
+  const form = document.querySelector('#credentials')
+  const connectButton = document.querySelector('#connect')
+  const stopButton = document.querySelector('#stop')
+  const status = document.querySelector('#status')
+  const log = document.querySelector('#log')
+  const isLocal = location.hostname === '127.0.0.1'
+  connectButton.disabled = !isLocal
+  if (!isLocal) {
+    for (const input of form.querySelectorAll('input')) input.disabled = true
+    status.textContent = 'Download the starter and run node preview.mjs. Enter credentials only at http://127.0.0.1:4178.'
+  }
+  const effects = { '5655': 'drop-rose', '6064': 'show-gg', '7569': 'controller-boost' }
+  let controller = null
+  let starting = false
+  function append(text) { log.textContent = (log.textContent + text + '\n').split('\n').slice(-50).join('\n') }
+  form.addEventListener('submit', async event => {
+    event.preventDefault()
+    if (!isLocal || controller || starting) return
+    starting = true
+    controller = new AbortController()
+    connectButton.disabled = true
+    stopButton.disabled = false
+    log.textContent = ''
+    const credentials = Object.fromEntries(new FormData(form))
+    form.elements.secret.value = ''
+    try {
+      await connectLocal({ credentials, signal: controller.signal,
+        onStatus(value) {
+          status.textContent = value
+          if (['CANCELLED', 'DISCONNECTED', 'POLICY_DISCONNECT_510', 'TRANSPORT_ERROR', 'AUTH_FAILED', 'AUTH_TIMEOUT'].includes(value)) {
+            controller = null
+            connectButton.disabled = false
+            stopButton.disabled = true
+          }
+        },
+        onEvent(message) {
+          append('EVENT ' + message.event)
+          const payload = message.payload
+          const effect = message.event === 'live.gift' && payload.repeat_end === true && effects[payload.gift?.id]
+          if (effect) append('Effect: ' + effect + ' (one action at combo end)')
+        }
+      })
+    } catch (error) {
+      status.textContent = error.message
+      controller = null
+      connectButton.disabled = false
+      stopButton.disabled = true
+    } finally {
+      credentials.secret = ''
+      starting = false
+    }
+  })
+  stopButton.addEventListener('click', () => controller?.abort())
+  window.addEventListener('pagehide', () => controller?.abort())
+</script>
+</html>

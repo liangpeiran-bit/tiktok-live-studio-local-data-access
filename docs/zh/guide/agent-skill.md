@@ -2,7 +2,60 @@
 
 本仓库提供了一套可复用的开发 Agent Skill，用于在任意应用技术栈中接入 LIVE Studio 本地数据开放能力。
 
+## 安装到其他项目
+
+最快的分发方式是使用开放的 Skills CLI。它会从当前 GitHub 仓库发现 Skill，并安装到开发者机器上检测到的编码 Agent：
+
+```bash
+npx skills add liangpeiran-bit/tiktok-live-studio-local-data-access \
+  --skill tiktok-live-studio-local-data-access \
+  -g
+```
+
+`-g` 表示在开发者的所有项目中可用；去掉 `-g` 则只安装到当前项目。需要无交互地指定 Agent 时：
+
+```bash
+npx skills add liangpeiran-bit/tiktok-live-studio-local-data-access \
+  --skill tiktok-live-studio-local-data-access \
+  -g -a codex -a claude-code -a cursor -y
+```
+
+本仓库更新后，可以更新已安装副本：
+
+```bash
+npx skills update tiktok-live-studio-local-data-access -g -y
+```
+
+没有 Node.js/npm 的开发者可以下载仓库或 Release 压缩包，再把**整个目录**复制到目标项目：
+
+```text
+源目录：
+  .agents/skills/tiktok-live-studio-local-data-access/
+
+Codex、Cursor、OpenCode、Copilot、Gemini CLI 推荐目标：
+  <project>/.agents/skills/tiktok-live-studio-local-data-access/
+
+Claude Code 目标：
+  <project>/.claude/skills/tiktok-live-studio-local-data-access/
+
+Trae 目标：
+  <project>/.trae/skills/tiktok-live-studio-local-data-access/
+```
+
+不要只复制 `SKILL.md`；协议、事件、技术栈适配和验收参考文件都是流程的一部分。
+
+团队同时使用多种 Agent 产品时，建议把 `.agents/skills/` 作为唯一源。Claude Code 和 Trae 可以通过显式读取提示词，或由团队在本地维护链接/副本；不要在仓库中维护多份可编辑副本，以免内容漂移。
+
+
+## 给 Agent 的第一条任务
+
+```text
+阅读 LIVE Studio Local Data Access Skill，把 live.like 接入当前项目。保持现有技术栈；先做模拟测试，不要请求或输出真实密钥。
+```
+
 <LlmDocsEntry locale="zh" />
+
+## Skill 包含什么
 
 ```txt
 .agents/skills/tiktok-live-studio-local-data-access/
@@ -49,50 +102,6 @@ Skill 也明确禁止 Agent：把本地服务暴露到远端、在校验服务�
 ```
 
 对于不会自动扫描 `.agents/skills/` 的 Agent，也可以使用这条显式读取提示词。
-
-## 安装到其他项目
-
-最快的分发方式是使用开放的 Skills CLI。它会从当前 GitHub 仓库发现 Skill，并安装到开发者机器上检测到的编码 Agent：
-
-```bash
-npx skills add liangpeiran-bit/tiktok-live-studio-local-data-access \
-  --skill tiktok-live-studio-local-data-access \
-  -g
-```
-
-`-g` 表示在开发者的所有项目中可用；去掉 `-g` 则只安装到当前项目。需要无交互地指定 Agent 时：
-
-```bash
-npx skills add liangpeiran-bit/tiktok-live-studio-local-data-access \
-  --skill tiktok-live-studio-local-data-access \
-  -g -a codex -a claude-code -a cursor -y
-```
-
-本仓库更新后，可以更新已安装副本：
-
-```bash
-npx skills update tiktok-live-studio-local-data-access -g -y
-```
-
-没有 Node.js/npm 的开发者可以下载仓库或 Release 压缩包，再把**整个目录**复制到目标项目：
-
-```text
-源目录：
-  .agents/skills/tiktok-live-studio-local-data-access/
-
-Codex、Cursor、OpenCode、Copilot、Gemini CLI 推荐目标：
-  <project>/.agents/skills/tiktok-live-studio-local-data-access/
-
-Claude Code 目标：
-  <project>/.claude/skills/tiktok-live-studio-local-data-access/
-
-Trae 目标：
-  <project>/.trae/skills/tiktok-live-studio-local-data-access/
-```
-
-不要只复制 `SKILL.md`；协议、事件、技术栈适配和验收参考文件都是流程的一部分。
-
-团队同时使用多种 Agent 产品时，建议把 `.agents/skills/` 作为唯一源。Claude Code 和 Trae 可以通过显式读取提示词，或由团队在本地维护链接/副本；不要在仓库中维护多份可编辑副本，以免内容漂移。
 
 ## 提问示例
 

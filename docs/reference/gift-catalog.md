@@ -9,6 +9,12 @@ This catalog was extracted from a CN gift-panel response captured on September 4
 - [Machine-readable JSON](/data/gifts.json)
 - [CSV download](/data/gifts.csv)
 
+English search aliases cover the examples **Rose**, **GG**, and **Game Controller**. Other names retain the source language; use the ID if a translated name is not found. [Download search aliases](/data/gift-aliases.json).
+
+Configure effects with the string `gift.id`, not a name or diamond value. For combo-sensitive actions, wait for `repeat_end=true`; use the incoming event for runtime display.
+
+## Browse gifts
+
 <GiftCatalog />
 
 ## Match by ID, not by name

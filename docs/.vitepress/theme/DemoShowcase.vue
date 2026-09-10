@@ -77,8 +77,8 @@ const copy = computed(() => props.locale === 'zh' ? {
 </script>
 
 <template>
-  <section :class="['tt-demo-showcase', { 'tt-demo-showcase--compact': compact }]" aria-labelledby="demo-showcase-title">
-    <header class="tt-demo-showcase__header">
+  <section :class="['tt-demo-showcase', { 'tt-demo-showcase--compact': compact }]" :aria-label="copy.title">
+    <header v-if="compact" class="tt-demo-showcase__header">
       <div>
         <p>{{ copy.eyebrow }}</p>
         <h2 id="demo-showcase-title">{{ copy.title }}</h2>

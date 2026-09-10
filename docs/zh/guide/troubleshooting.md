@@ -1,5 +1,9 @@
 # 排障
 
+## 联系支持
+
+申请、配置说明缺失或尚未解决的接入问题，请联系 [liangpeiran@bytedance.com](mailto:liangpeiran@bytedance.com)。请提供 LIVE Studio 版本、客户端运行时、最后连接状态和脱敏错误码，不要发送 `secret`、完整 `AUTH` 内容或观众原始数据。申请结果通过邮箱通知，审核时间因申请情况而异。
+
 本地客户端无法发现服务、鉴权失败或收不到事件时，使用本页。
 
 ## 找不到本机服务

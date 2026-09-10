@@ -48,3 +48,12 @@ Protocol version: `1.0.0`. The endpoint is loopback-only at `ws://127.0.0.1:4915
 - [Unity Sample](https://tiktok-live-studio-local-data-access.pages.dev/samples/unity): Unity integration example
 - [H5 Overlay Sample](https://tiktok-live-studio-local-data-access.pages.dev/samples/h5): Local browser overlay example and credential caveats
 - [GitHub Repository](https://github.com/liangpeiran-bit/tiktok-live-studio-local-data-access): Documentation and Agent Skill source
+
+## Onboarding and support
+
+- [Choose an event](https://tiktok-live-studio-local-data-access.pages.dev/events/): Compare like, gift, and chat integration patterns.
+- [Runnable H5 starter](https://tiktok-live-studio-local-data-access.pages.dev/samples/h5): Download, run locally, enter credentials, and verify the first event.
+- [Local client source](https://tiktok-live-studio-local-data-access.pages.dev/samples/local-client.mjs): Bounded discovery, authentication, cancellation, and event deduplication.
+- [Tower Defense video case](https://tiktok-live-studio-local-data-access.pages.dev/demos/tower-defense): Recording, not a playable game.
+- [English search aliases](https://tiktok-live-studio-local-data-access.pages.dev/data/gift-aliases.json): Documented example aliases, not official global names.
+- [Contact support](mailto:liangpeiran@bytedance.com): Access and integration help; never send secrets. Review results arrive by email, with no guaranteed turnaround.

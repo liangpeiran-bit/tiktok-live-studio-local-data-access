@@ -72,7 +72,7 @@ export default defineConfig({
       description: 'Local real-time event access for LIVE Studio third-party clients',
       themeConfig: {
         nav: [
-          { text: 'Overview', link: '/' },
+          { text: 'Home', link: '/' },
           { text: 'Demos', link: '/demos/' },
           {
             text: 'Documentation',
@@ -81,7 +81,7 @@ export default defineConfig({
               { text: 'Quick Start', link: '/guide/quick-start' },
               { text: 'Agent Skill', link: '/guide/agent-skill' },
               { text: 'Protocol', link: '/protocol/connection' },
-              { text: 'Events', link: '/events/live-like' },
+              { text: 'Events', link: '/events/' },
               { text: 'Gift Catalog', link: '/reference/gift-catalog' },
               { text: 'Samples', link: '/samples/javascript' },
             ],
@@ -90,49 +90,97 @@ export default defineConfig({
         ],
         sidebar: [
           {
-            text: 'Guide',
-            items: [
-              { text: 'Overview', link: '/guide/overview' },
-              { text: 'Quick Start', link: '/guide/quick-start' },
-              { text: 'Architecture', link: '/guide/architecture' },
-              { text: 'Agent Skill', link: '/guide/agent-skill' },
-              { text: 'Troubleshooting', link: '/guide/troubleshooting' },
-            ],
+            "text": "Start building",
+            "items": [
+              {
+                "text": "Quick Start",
+                "link": "/guide/quick-start"
+              },
+              {
+                "text": "Build with AI",
+                "link": "/guide/agent-skill"
+              },
+              {
+                "text": "Capability & boundaries",
+                "link": "/guide/overview"
+              }
+            ]
           },
           {
-            text: 'Protocol',
-            items: [
-              { text: 'Connection Lifecycle', link: '/protocol/connection' },
-              { text: 'Authentication', link: '/protocol/auth' },
-              { text: 'Event Envelope', link: '/protocol/events' },
-              { text: 'Errors and Disconnects', link: '/protocol/errors' },
-            ],
+            "text": "Events & gifts",
+            "items": [
+              {
+                "text": "Choose an event",
+                "link": "/events/"
+              },
+              {
+                "text": "live.like",
+                "link": "/events/live-like"
+              },
+              {
+                "text": "live.gift",
+                "link": "/events/live-gift"
+              },
+              {
+                "text": "Gift Catalog",
+                "link": "/reference/gift-catalog"
+              },
+              {
+                "text": "live.chat",
+                "link": "/events/live-chat"
+              }
+            ]
           },
           {
-            text: 'Events',
-            items: [
-              { text: 'live.like', link: '/events/live-like' },
-              { text: 'live.gift', link: '/events/live-gift' },
-              { text: 'Gift Catalog', link: '/reference/gift-catalog' },
-              { text: 'live.chat', link: '/events/live-chat' },
-            ],
+            "text": "API reference",
+            "items": [
+              {
+                "text": "Architecture",
+                "link": "/guide/architecture"
+              },
+              {
+                "text": "Connection lifecycle",
+                "link": "/protocol/connection"
+              },
+              {
+                "text": "Authentication",
+                "link": "/protocol/auth"
+              },
+              {
+                "text": "Event envelope",
+                "link": "/protocol/events"
+              },
+              {
+                "text": "Errors & disconnects",
+                "link": "/protocol/errors"
+              }
+            ]
           },
           {
-            text: 'Playable Demos',
-            items: [
-              { text: 'All Demos', link: '/demos/' },
-              { text: 'Tug of Trap', link: '/demos/tug-of-trap' },
-              { text: 'Candy Arena', link: '/demos/candy-arena-duel' },
-            ],
-          },
-          {
-            text: 'Samples',
-            items: [
-              { text: 'JavaScript / TypeScript', link: '/samples/javascript' },
-              { text: 'Unity', link: '/samples/unity' },
-              { text: 'H5 Overlay', link: '/samples/h5' },
-            ],
-          },
+            "text": "Samples & help",
+            "items": [
+              {
+                "text": "H5: runnable starter",
+                "link": "/samples/h5"
+              },
+              {
+                "text": "JavaScript / TypeScript",
+                "link": "/samples/javascript"
+              },
+              {
+                "text": "Unity integration guide",
+                "link": "/samples/unity"
+              },
+              {
+                "text": "Demos & video",
+                "link": "/demos/"
+              },
+              {
+                "text": "Troubleshooting & support",
+                "link": "/guide/troubleshooting"
+              }
+            ]
+          }
         ],
       },
     },
@@ -144,7 +192,7 @@ export default defineConfig({
       description: 'LIVE Studio 本地实时事件开放能力文档',
       themeConfig: {
         nav: [
-          { text: '概览', link: '/zh/' },
+          { text: '首页', link: '/zh/' },
           { text: 'Demo', link: '/zh/demos/' },
           {
             text: '开发文档',
@@ -153,7 +201,7 @@ export default defineConfig({
               { text: '快速开始', link: '/zh/guide/quick-start' },
               { text: 'Agent Skill', link: '/zh/guide/agent-skill' },
               { text: '协议', link: '/zh/protocol/connection' },
-              { text: '事件', link: '/zh/events/live-like' },
+              { text: '事件', link: '/zh/events/' },
               { text: '礼物目录', link: '/zh/reference/gift-catalog' },
               { text: '示例', link: '/zh/samples/javascript' },
             ],
@@ -162,49 +210,97 @@ export default defineConfig({
         ],
         sidebar: [
           {
-            text: '指南',
-            items: [
-              { text: '概览', link: '/zh/guide/overview' },
-              { text: '快速开始', link: '/zh/guide/quick-start' },
-              { text: '架构', link: '/zh/guide/architecture' },
-              { text: 'Agent Skill', link: '/zh/guide/agent-skill' },
-              { text: '排障', link: '/zh/guide/troubleshooting' },
-            ],
+            "text": "开始接入",
+            "items": [
+              {
+                "text": "快速开始",
+                "link": "/zh/guide/quick-start"
+              },
+              {
+                "text": "使用 AI 接入",
+                "link": "/zh/guide/agent-skill"
+              },
+              {
+                "text": "能力与边界",
+                "link": "/zh/guide/overview"
+              }
+            ]
           },
           {
-            text: '协议',
-            items: [
-              { text: '连接生命周期', link: '/zh/protocol/connection' },
-              { text: '鉴权', link: '/zh/protocol/auth' },
-              { text: '事件信封', link: '/zh/protocol/events' },
-              { text: '错误码与断开', link: '/zh/protocol/errors' },
-            ],
+            "text": "事件与礼物",
+            "items": [
+              {
+                "text": "选择事件",
+                "link": "/zh/events/"
+              },
+              {
+                "text": "live.like",
+                "link": "/zh/events/live-like"
+              },
+              {
+                "text": "live.gift",
+                "link": "/zh/events/live-gift"
+              },
+              {
+                "text": "礼物目录",
+                "link": "/zh/reference/gift-catalog"
+              },
+              {
+                "text": "live.chat",
+                "link": "/zh/events/live-chat"
+              }
+            ]
           },
           {
-            text: '事件',
-            items: [
-              { text: 'live.like', link: '/zh/events/live-like' },
-              { text: 'live.gift', link: '/zh/events/live-gift' },
-              { text: '礼物目录', link: '/zh/reference/gift-catalog' },
-              { text: 'live.chat', link: '/zh/events/live-chat' },
-            ],
+            "text": "API 参考",
+            "items": [
+              {
+                "text": "架构",
+                "link": "/zh/guide/architecture"
+              },
+              {
+                "text": "连接生命周期",
+                "link": "/zh/protocol/connection"
+              },
+              {
+                "text": "鉴权",
+                "link": "/zh/protocol/auth"
+              },
+              {
+                "text": "事件信封",
+                "link": "/zh/protocol/events"
+              },
+              {
+                "text": "错误码与断开",
+                "link": "/zh/protocol/errors"
+              }
+            ]
           },
           {
-            text: '可试玩 Demo',
-            items: [
-              { text: '全部 Demo', link: '/zh/demos/' },
-              { text: '拔河陷阱', link: '/zh/demos/tug-of-trap' },
-              { text: '糖果擂台', link: '/zh/demos/candy-arena-duel' },
-            ],
-          },
-          {
-            text: '示例',
-            items: [
-              { text: 'JavaScript / TypeScript', link: '/zh/samples/javascript' },
-              { text: 'Unity', link: '/zh/samples/unity' },
-              { text: 'H5 Overlay', link: '/zh/samples/h5' },
-            ],
-          },
+            "text": "示例与排障",
+            "items": [
+              {
+                "text": "H5：可运行示例",
+                "link": "/zh/samples/h5"
+              },
+              {
+                "text": "JavaScript / TypeScript",
+                "link": "/zh/samples/javascript"
+              },
+              {
+                "text": "Unity 接入指南",
+                "link": "/zh/samples/unity"
+              },
+              {
+                "text": "Demo 与视频",
+                "link": "/zh/demos/"
+              },
+              {
+                "text": "排障与支持",
+                "link": "/zh/guide/troubleshooting"
+              }
+            ]
+          }
         ],
         outline: { label: '本页目录' },
         lastUpdated: { text: '最后更新' },

@@ -9,6 +9,12 @@
 - [机器可读 JSON](/data/gifts.json)
 - [下载 CSV](/data/gifts.csv)
 
+英文检索别名覆盖示例中的 **Rose**、**GG** 和 **Game Controller**，其他名称保留抓包原文。译名搜不到时请使用 ID。[下载检索别名](/data/gift-aliases.json)。
+
+选好礼物后，用字符串 `gift.id` 配置效果，不按名称或钻石数匹配。连击类动作默认等 `repeat_end=true` 再触发；展示信息以收到的真实事件为准。
+
+## 检索礼物
+
 <GiftCatalog />
 
 ## 按 ID 匹配，不要按名称匹配

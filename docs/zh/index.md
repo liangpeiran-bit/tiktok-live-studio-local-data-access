@@ -6,14 +6,11 @@ hero:
   tagline: 通过主播本机的 WebSocket，将点赞、礼物和评论转化为 H5、Unity、Unreal 游戏中的实时玩法。
   actions:
     - theme: brand
-      text: 快速开始
-      link: /zh/guide/quick-start
-    - theme: alt
-      text: 协议参考
-      link: /zh/protocol/connection
-    - theme: alt
       text: 申请接入
       link: /zh/apply
+    - theme: alt
+      text: 阅读开发文档
+      link: /zh/guide/quick-start
 
 features:
   - title: 本机 WebSocket
@@ -43,11 +40,11 @@ LIVE Studio 本地数据开放是一个跑在主播本机上的 WebSocket 网关
     <b>01</b>
     <span><strong>跑通第一次连接</strong><small>发现端口、完成鉴权，并在最短路径中收到第一条直播事件。</small></span>
   </a>
-  <a href="/zh/protocol/connection">
+  <a href="/zh/guide/agent-skill">
     <b>02</b>
-    <span><strong>实现稳定客户端</strong><small>理解连接生命周期、鉴权消息、心跳与安全重连。</small></span>
+    <span><strong>与开发 Agent 一起接入</strong><small>安装 Skill，或提供 llms.txt，让 Agent 在现有项目中适配协议。</small></span>
   </a>
-  <a href="/zh/events/live-like">
+  <a href="/zh/events/">
     <b>03</b>
     <span><strong>把事件变成玩法</strong><small>查看点赞、礼物、评论事件，并选择礼物触发对应效果。</small></span>
   </a>

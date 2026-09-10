@@ -29,6 +29,8 @@ const content = computed(() => isChinese.value
         <a :href="content.indexPath">llms.txt</a>
         <span aria-hidden="true">·</span>
         <a :href="content.fullPath">{{ content.full }}</a>
+        <span aria-hidden="true">·</span>
+        <a href="mailto:liangpeiran@bytedance.com">{{ isChinese ? '联系支持' : 'Contact support' }}</a>
       </nav>
     </div>
   </footer>

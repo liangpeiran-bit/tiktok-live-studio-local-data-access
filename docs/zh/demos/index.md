@@ -1,26 +1,25 @@
 ---
-title: 可试玩 Demo
-description: 基于 TikTok LIVE Studio 本地数据开放能力构建的互动游戏
+layout: page
+sidebar: false
+aside: false
+title: Demo 与视频
+description: 体验模拟互动游戏，观看 LIVE Studio 内的塔防视频案例。
 ---
-
-# 看见直播事件如何变成玩法
-
-两款 Demo 使用本站描述的同一套本地 WebSocket 协议。公开试玩模式使用模拟事件，因此不安装 LIVE Studio、不填写应用凭证，也能理解完整互动循环。
-
+<div class="tt-demo-index">
+<header class="tt-demo-gallery__intro">
+<p>INTERACTIONS IN ACTION</p>
+<h1>看看直播间能玩出什么。</h1>
+<p>用模拟点赞、礼物和评论试玩两款游戏，无需账号或凭证。再通过一段录制视频，看看塔防互动在 LIVE Studio 中的实际呈现。</p>
+</header>
 <DemoShowcase locale="zh" />
-
-## 两款 Demo 验证了什么
-
-| 能力 | 拔河陷阱 | 糖果擂台 |
-| --- | --- | --- |
-| 游戏形态 | 全直播间阵营对抗 | 主播操作的节奏战斗 |
-| 技术栈 | PixiJS | React + Phaser |
-| `live.chat` | 选队与协作号子 | 多人助威形成辅助 |
-| `live.like` | 个人力量与团队战意 | 英雄能量 |
-| `live.gift` | 护盾、控制、增援、重力 | 直接释放具名战斗技能 |
-
-两款游戏都把 Gateway 客户端和游戏规则分开：连接层完成鉴权与事件标准化，游戏层决定事件意味着什么。
-
-::: tip 安全试玩
-点击任一 **立即试玩** 会进入模拟互动模式。需要接收真实直播间数据时，请从[快速开始](/zh/guide/quick-start)接入，并使用为应用签发的凭证。
-:::
+<article class="tt-video-case">
+<a href="/zh/demos/tower-defense"><img src="/media/interactive-tower-defense-demo.webp" alt="在 LIVE Studio 中运行的塔防游戏" loading="lazy" /></a>
+<div>
+<small>视频案例 · 非在线试玩</small>
+<h2>Tower Defense × LIVE Studio</h2>
+<p>观看一份礼物如何变成防御塔，改变当前战局。这是一段观众互动转化为游戏动作的录制演示。</p>
+<a class="tt-demo-button" href="/zh/demos/tower-defense">观看案例 →</a>
+</div>
+</article>
+<p class="tt-gallery-next">准备接入真实事件？先<a href="/zh/apply">申请接入</a>；已经获批的开发者可以直接阅读<a href="/zh/guide/quick-start">快速开始</a>。公开试玩模式不会连接你的直播间。</p>
+</div>

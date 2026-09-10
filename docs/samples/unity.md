@@ -1,4 +1,6 @@
-# Unity Sample
+# Unity Integration Guide
+
+This page is a structure and pseudocode guide, not a downloadable Unity project. For a runnable first-event check, use the [local H5 starter](/samples/h5) before adapting the protocol to your game's existing WebSocket library.
 
 Unity clients should follow the same protocol flow as JavaScript clients:
 
@@ -6,7 +8,7 @@ Unity clients should follow the same protocol flow as JavaScript clients:
 2. Connect to `/v1/third-party`.
 3. Validate `SERVER_HELLO`.
 4. Send `AUTH`.
-5. Dispatch `EVENT` messages by event name.
+5. Wait for `AUTH_RESULT.success=true`, then dispatch `EVENT` messages by event name.
 
 ## Recommended structure
 

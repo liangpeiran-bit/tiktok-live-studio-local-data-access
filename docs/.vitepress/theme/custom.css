@@ -755,7 +755,8 @@ html:not(.dark) .vp-doc div[class*='language-'] span {
 }
 
 .VPHome .vp-doc.container {
-  max-width: 1180px;
+  /* 1180px content plus VitePress's 64px desktop gutters on each side. */
+  max-width: 1308px;
   padding-top: 20px;
   padding-bottom: 110px;
 }
@@ -1429,4 +1430,24 @@ html:has(.demo-dialog[open]) { overflow: hidden; }
 
 .developer-application-page .VPFooter {
   display: none;
+}
+
+/* Gallery pages are a destination, not narrow API reference articles. */
+.tt-demo-index { max-width: 1180px; margin: 0 auto; padding: 64px 24px 80px; }
+.tt-demo-gallery__intro { max-width: 760px; }
+.tt-demo-gallery__intro > p:first-child { font-size: 12px; letter-spacing: .14em; font-weight: 800; color: var(--vp-c-brand-1); }
+.tt-demo-gallery__intro h1 { margin: 20px 0; font-size: clamp(36px, 4.5vw, 56px); line-height: 1.08; letter-spacing: -.04em; font-weight: 750; }
+.tt-demo-gallery__intro > p:last-child { font-size: 18px; line-height: 1.65; color: var(--vp-c-text-2); }
+.tt-video-case { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 32px; padding: 24px; border: 1px solid var(--vp-c-divider); border-radius: 20px; background: var(--vp-c-bg-soft); }
+.tt-video-case img { display: block; width: 100%; border-radius: 12px; }
+.tt-video-case h2 { font-size: 30px; line-height: 1.15; letter-spacing: -.03em; font-weight: 700; margin: 12px 0; }
+.tt-video-case p { color: var(--vp-c-text-2); line-height: 1.65; margin: 12px 0 24px; }
+.tt-video-case small { color: var(--vp-c-brand-1); font-weight: 700; }
+.tt-case-video { display: block; width: 100%; border-radius: 12px; background: #010101; margin: 24px 0; }
+.tt-gallery-next { padding-top: 40px; color: var(--vp-c-text-2); line-height: 1.7; }
+.tt-gallery-next a { color: var(--vp-c-brand-1); text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 760px) {
+  .tt-demo-index { padding-top: 36px; }
+  .tt-video-case { grid-template-columns: 1fr; gap: 16px; padding: 18px; }
+  .VPNavBar .VPNavBarSearchButton { width: 44px; height: 44px; padding: 0; align-self: center; justify-content: center; }
 }

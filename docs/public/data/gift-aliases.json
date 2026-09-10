@@ -1,0 +1,4 @@
+{
+  "description": "Search aliases used in this site's examples, not an official global English gift catalog. Original names and IDs remain in gifts.json.",
+  "aliases": { "5655": ["Rose"], "6064": ["GG"], "7569": ["Game Controller"] }
+}
