@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useData, withBase } from 'vitepress'
-import aliases from '../../public/data/gift-aliases.json'
 
 type Gift = { id: string; name: string; diamond_count: number; combo: boolean; is_displayed_on_panel: boolean; image_url: string; panel_order: number }
 type Catalog = { region: string; gift_count: number; displayed_gift_count: number; gifts: Gift[] }
@@ -31,15 +30,19 @@ const page = ref(1)
 const pageSize = 25
 const copyStatus = ref('')
 const searchInput = ref<HTMLInputElement | null>(null)
-const aliasById: Record<string, string[]> = aliases.aliases
-const names = (gift: Gift) => aliasById[gift.id]?.join(' · ') || ''
+const aliasById = ref<Record<string, string[]>>({})
+const names = (gift: Gift) => aliasById.value[gift.id]?.join(' · ') || ''
 
 async function loadCatalog() {
   loadError.value = false
   try {
-    const response = await fetch(withBase('/data/gifts.json'))
-    if (!response.ok) throw new Error('Catalog unavailable')
-    catalog.value = await response.json()
+    const [data, aliases] = await Promise.all(['/data/gifts.json', '/data/gift-aliases.json'].map(async path => {
+      const response = await fetch(withBase(path))
+      if (!response.ok) throw new Error('Catalog unavailable')
+      return response.json()
+    }))
+    aliasById.value = aliases.aliases
+    catalog.value = data
   } catch { loadError.value = true }
 }
 onMounted(loadCatalog)
