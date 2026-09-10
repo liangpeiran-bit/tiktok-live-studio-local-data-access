@@ -313,11 +313,6 @@ onMounted(() => {
     <div class="apply-ribbons" aria-hidden="true">
       <span></span><span></span><span></span>
     </div>
-    <div class="ambient-events" aria-hidden="true">
-      <span>LIKE +248</span>
-      <span>WAVE CLEARED</span>
-    </div>
-
     <section class="apply-masthead">
       <div class="apply-copy">
         <p class="apply-kicker">{{ copy.kicker }}</p>
@@ -675,24 +670,6 @@ onMounted(() => {
   background: linear-gradient(90deg, transparent, #8d7dff, transparent);
   animation-delay: -9s;
 }
-
-.ambient-events span {
-  position: fixed;
-  z-index: -1;
-  padding: 7px 10px;
-  color: rgba(224, 255, 253, 0.42);
-  font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  letter-spacing: 0.08em;
-  border: 1px solid rgba(37, 244, 238, 0.14);
-  border-radius: 6px;
-  background: rgba(11, 19, 25, 0.22);
-  backdrop-filter: blur(8px);
-  pointer-events: none;
-  animation: event-drift 9s ease-in-out infinite alternate;
-}
-
-.ambient-events span:nth-child(1) { top: 20%; left: 2%; }
-.ambient-events span:nth-child(2) { top: 64%; left: 3%; animation-delay: -4s; }
 
 .apply-masthead {
   display: grid;
@@ -1724,11 +1701,6 @@ onMounted(() => {
   to { opacity: 0.2; transform: translate3d(28vw, 10vh, 0) rotate(-12deg) scale(1.18); }
 }
 
-@keyframes event-drift {
-  from { opacity: 0.25; transform: translate3d(0, -10px, 0); }
-  to { opacity: 0.7; transform: translate3d(18px, 16px, 0); }
-}
-
 @keyframes demo-enter {
   from { opacity: 0; transform: translate3d(40px, 18px, 0) rotate(1.4deg) scale(0.97); }
   to { opacity: 1; transform: translate3d(0, 0, 0) rotate(0) scale(1); }
@@ -1751,7 +1723,6 @@ onMounted(() => {
   .application-intro { position: static; max-width: 860px; padding-top: 0; }
   .apply-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .apply-steps li:not(:last-child)::after { display: none; }
-  .ambient-events { display: none; }
 }
 
 @media (max-width: 620px) {
@@ -1790,7 +1761,6 @@ onMounted(() => {
   .apply-page::after,
   .apply-orbit,
   .apply-ribbons span,
-  .ambient-events span,
   .demo-card,
   .demo-media::after,
   .apply-headline em,
