@@ -37,7 +37,7 @@ const copy = computed(() =>
         demoEvent: '礼物事件 → 游戏动作',
         demoTitle: 'Tower Defense × LIVE Studio',
         demoDescription: '观看一份礼物如何变成防御塔，并实时改变 LIVE Studio 内的战局。',
-        watchDemo: '观看完整演示',
+        watchDemo: '放大观看',
         pausePreview: '暂停预览',
         playPreview: '播放预览',
         closeDemo: '关闭演示',
@@ -141,7 +141,7 @@ const copy = computed(() =>
         demoEvent: 'GIFT EVENT → GAME ACTION',
         demoTitle: 'Tower Defense × LIVE Studio',
         demoDescription: 'Watch a gift become a tower and reshape the round inside LIVE Studio.',
-        watchDemo: 'Watch the full demo',
+        watchDemo: 'Enlarge video',
         pausePreview: 'Pause preview',
         playPreview: 'Play preview',
         closeDemo: 'Close demo',
@@ -405,7 +405,6 @@ onUnmounted(() => cleanUpMediaQueries?.())
 
       <article class="demo-card" aria-labelledby="demo-title">
         <div class="demo-media">
-          <div class="demo-gameplay">
           <video
             ref="demoVideo"
             muted
@@ -419,10 +418,6 @@ onUnmounted(() => cleanUpMediaQueries?.())
           >
             <source src="/media/interactive-tower-defense-demo.mp4" type="video/mp4" />
           </video>
-          </div>
-          <button class="demo-control demo-preview-toggle" type="button" @click="togglePreview">
-            {{ previewPlaying ? copy.pausePreview : copy.playPreview }}
-          </button>
         </div>
         <div class="demo-caption">
           <div class="demo-story">
@@ -430,9 +425,14 @@ onUnmounted(() => cleanUpMediaQueries?.())
             <h2 id="demo-title">{{ copy.demoTitle }}</h2>
             <p>{{ copy.demoDescription }}</p>
           </div>
-          <button class="demo-control demo-watch" type="button" @click="openDemo">
-            {{ copy.watchDemo }} <span aria-hidden="true">↗</span>
-          </button>
+          <div class="demo-actions">
+            <button class="demo-control demo-preview-toggle" type="button" @click="togglePreview">
+              {{ previewPlaying ? copy.pausePreview : copy.playPreview }}
+            </button>
+            <button class="demo-control demo-watch" type="button" @click="openDemo">
+              {{ copy.watchDemo }} <span aria-hidden="true">↗</span>
+            </button>
+          </div>
         </div>
       </article>
     </section>
@@ -1015,40 +1015,16 @@ onUnmounted(() => cleanUpMediaQueries?.())
 .demo-media {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
-  background: var(--apply-media-glow), var(--tt-ink);
+  aspect-ratio: 16 / 9;
+  background: var(--tt-ink);
 }
 
-.demo-media::before {
-  position: absolute;
-  inset: -24px;
-  content: '';
-  opacity: 0.2;
-  background: url('/media/interactive-tower-defense-demo.webp') center / cover;
-  filter: blur(18px);
-  pointer-events: none;
-}
-
-.demo-gameplay {
-  position: absolute;
-  height: 92%;
-  aspect-ratio: 310 / 552;
-  top: 4%;
-  left: 50%;
-  overflow: hidden;
-  transform: translateX(-50%);
-  border-radius: var(--apply-radius-control);
-  box-shadow: var(--apply-shadow-media);
-}
-
-.demo-gameplay video {
-  /* Gameplay bounds in the 1280 × 720 recording: x=484, y=98, w=310, h=552. */
-  position: absolute;
-  width: 412.9032%;
-  max-width: none;
-  height: 130.4348%;
-  left: -156.129%;
-  top: -17.7536%;
+.demo-media video {
+  /* Show the entire recording, including LIVE Studio controls and live chat. */
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .demo-caption {
@@ -1100,7 +1076,7 @@ onUnmounted(() => cleanUpMediaQueries?.())
 .demo-control:active { background: var(--tt-surface); }
 .demo-control:focus-visible,
 .application-journey summary:focus-visible { outline: 2px solid var(--tt-cyan); outline-offset: 4px; }
-.demo-preview-toggle { position: absolute; bottom: 16px; right: 16px; }
+.demo-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .demo-watch { flex-shrink: 0; }
 
 .demo-dialog {
@@ -1854,10 +1830,9 @@ onUnmounted(() => cleanUpMediaQueries?.())
   .apply-lede { font-size: 15px; }
   .apply-actions { display: grid; }
   .apply-button { width: 100%; }
-  .demo-media { aspect-ratio: 1 / 1; }
   .demo-caption { padding: 20px; gap: 16px; }
-  .demo-preview-toggle { right: 10px; bottom: 10px; }
-  .demo-watch { width: 100%; }
+  .demo-actions { width: 100%; }
+  .demo-actions .demo-control { flex: 1; }
   .application-section { margin-top: 82px; padding-top: 44px; }
   .application-intro h2 { font-size: 32px; }
   .apply-steps { grid-template-columns: 1fr; gap: 24px; }
