@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 
 const props = defineProps<{
   formId: string
@@ -7,8 +7,13 @@ const props = defineProps<{
 }>()
 
 const demoVideo = ref<HTMLVideoElement | null>(null)
-const tallyFrame = ref<HTMLIFrameElement | null>(null)
+const applicationForm = ref<HTMLFormElement | null>(null)
 const successPanel = ref<HTMLElement | null>(null)
+const currentStep = ref(0)
+const selectedEvents = ref<string[]>([])
+const isSubmitting = ref(false)
+const submitError = ref('')
+const eventsError = ref('')
 const submitted = ref(false)
 
 const isZh = computed(() => props.locale === 'zh')
@@ -57,8 +62,54 @@ const copy = computed(() =>
         program: '开发者计划',
         requestAccess: '申请抢先体验',
         applicationsOpen: '申请开放中',
-        iframeTitle: 'LIVE Studio 开发者接入申请表',
-        openForm: '打开申请表',
+        formIntro: '填写申请大约需要 3 分钟。带 * 的项目为必填项。',
+        formStepLabel: '申请表进度',
+        formSteps: ['关于你', '你的游戏', '数据需求'],
+        fields: {
+          fullName: '姓名',
+          fullNamePlaceholder: '如何称呼你',
+          workEmail: '工作邮箱',
+          workEmailPlaceholder: 'name@company.com',
+          country: '国家或地区',
+          countryPlaceholder: '例如：Singapore',
+          company: '团队或公司',
+          companyPlaceholder: '选填',
+          role: '你的角色',
+          rolePlaceholder: '例如：游戏开发者',
+          tiktokUsername: '用于测试的 TikTok 用户名',
+          tiktokUsernamePlaceholder: '选填',
+          gameName: '游戏或项目名称',
+          gameNamePlaceholder: '你的项目叫什么？',
+          gameDescription: '你想构建什么？',
+          gameDescriptionPlaceholder: '简单介绍玩法、直播互动方式和目标用户。',
+          technology: '技术栈',
+          technologyPlaceholder: '请选择',
+          technologyOptions: ['H5 / Web', 'Unity', 'Unreal Engine', '其他'],
+          demoUrl: '演示或项目链接',
+          demoUrlPlaceholder: '选填，Figma、视频、GitHub 或已上线地址',
+          timeline: '预计何时可以开始测试？',
+          timelinePlaceholder: '请选择',
+          timelineOptions: ['已可以测试', '1 个月内', '1–3 个月', '仍在规划'],
+          events: '需要哪些直播事件？',
+          eventHint: '可多选，后续仍可调整。',
+          eventOptions: [
+            { value: 'GiftMessage', title: '礼物', description: '礼物 ID、数量与连击等事件' },
+            { value: 'LikeMessage', title: '点赞', description: '实时点赞事件与累计变化' },
+            { value: 'ChatMessage', title: '评论', description: '直播间公开评论消息' },
+          ],
+          interaction: '事件将如何改变游戏？',
+          interactionPlaceholder: '例如：指定礼物生成防御塔，点赞累积为全局能量。',
+          notes: '还有什么需要告诉我们？',
+          notesPlaceholder: '选填，例如测试计划、技术问题或其他事件需求。',
+          consent: '我确认以上信息准确，并同意 LIVE Studio 团队通过工作邮箱联系我处理本次申请。',
+        },
+        previous: '上一步',
+        next: '下一步',
+        submit: '提交申请',
+        submitting: '正在提交…',
+        required: '必填',
+        eventRequired: '请至少选择一种直播事件。',
+        submitFailed: '暂时无法提交，请稍后重试；你的填写内容仍保留在页面中。',
         successEyebrow: '申请已提交',
         successTitle: '感谢你的申请',
         successDescription: '我们将在 3 个工作日内完成审核，并通过你填写的工作邮箱发送审核结果。',
@@ -111,8 +162,54 @@ const copy = computed(() =>
         program: 'DEVELOPER PROGRAM',
         requestAccess: 'Request early access',
         applicationsOpen: 'Applications open',
-        iframeTitle: 'LIVE Studio developer access application',
-        openForm: 'Open the application form',
+        formIntro: 'This application takes about 3 minutes. Fields marked * are required.',
+        formStepLabel: 'Application progress',
+        formSteps: ['About you', 'Your game', 'Data needs'],
+        fields: {
+          fullName: 'Full name',
+          fullNamePlaceholder: 'How should we address you?',
+          workEmail: 'Work email',
+          workEmailPlaceholder: 'name@company.com',
+          country: 'Country or region',
+          countryPlaceholder: 'e.g. United States',
+          company: 'Team or company',
+          companyPlaceholder: 'Optional',
+          role: 'Your role',
+          rolePlaceholder: 'e.g. Game developer',
+          tiktokUsername: 'TikTok username used for testing',
+          tiktokUsernamePlaceholder: 'Optional',
+          gameName: 'Game or project name',
+          gameNamePlaceholder: 'What is your project called?',
+          gameDescription: 'What are you building?',
+          gameDescriptionPlaceholder: 'Briefly describe the gameplay, live interaction, and target audience.',
+          technology: 'Technology stack',
+          technologyPlaceholder: 'Select one',
+          technologyOptions: ['H5 / Web', 'Unity', 'Unreal Engine', 'Other'],
+          demoUrl: 'Demo or project link',
+          demoUrlPlaceholder: 'Optional — Figma, video, GitHub, or live build',
+          timeline: 'When could you begin testing?',
+          timelinePlaceholder: 'Select one',
+          timelineOptions: ['Ready now', 'Within 1 month', 'In 1–3 months', 'Still planning'],
+          events: 'Which LIVE events do you need?',
+          eventHint: 'Select all that apply. You can adjust this later.',
+          eventOptions: [
+            { value: 'GiftMessage', title: 'Gifts', description: 'Gift IDs, quantity, and streak events' },
+            { value: 'LikeMessage', title: 'Likes', description: 'Real-time likes and aggregate changes' },
+            { value: 'ChatMessage', title: 'Chat', description: 'Public LIVE room comments' },
+          ],
+          interaction: 'How will events change the game?',
+          interactionPlaceholder: 'For example: a selected gift spawns a tower; likes charge team energy.',
+          notes: 'Anything else we should know?',
+          notesPlaceholder: 'Optional — testing plans, technical questions, or other event needs.',
+          consent: 'I confirm the information above is accurate and agree that the LIVE Studio team may contact me at my work email about this application.',
+        },
+        previous: 'Back',
+        next: 'Next',
+        submit: 'Submit application',
+        submitting: 'Submitting…',
+        required: 'Required',
+        eventRequired: 'Choose at least one LIVE event.',
+        submitFailed: 'We could not submit the form. Please try again; your answers are still here.',
         successEyebrow: 'APPLICATION RECEIVED',
         successTitle: 'Thanks for applying.',
         successDescription: 'We will review your application and email the result to your work address within 3 business days.',
@@ -125,54 +222,84 @@ const copy = computed(() =>
 )
 
 const isConfigured = computed(() => props.formId && props.formId !== 'FORM_ID')
-const embedUrl = computed(
-  () =>
-    `https://tally.so/embed/${props.formId}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1`,
-)
-const publicUrl = computed(() => `https://tally.so/r/${props.formId}`)
+const formAction = computed(() => `https://formspree.io/f/${props.formId}`)
 
-const handleTallyMessage = (event: MessageEvent) => {
-  if (
-    event.origin !== 'https://tally.so' ||
-    event.source !== tallyFrame.value?.contentWindow ||
-    typeof event.data !== 'string' ||
-    !event.data.includes('Tally.FormSubmitted')
-  ) {
-    return
+const validateCurrentStep = () => {
+  submitError.value = ''
+  eventsError.value = ''
+
+  if (currentStep.value === 2 && selectedEvents.value.length === 0) {
+    eventsError.value = copy.value.eventRequired
+    return false
   }
 
-  submitted.value = true
-  void nextTick(() => successPanel.value?.focus())
+  const panel = applicationForm.value?.querySelector<HTMLElement>(`[data-form-step="${currentStep.value}"]`)
+  const fields = panel?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+    'input, textarea, select',
+  )
+
+  for (const field of fields ?? []) {
+    if (!field.checkValidity()) {
+      field.reportValidity()
+      return false
+    }
+  }
+
+  return true
+}
+
+const goNext = () => {
+  if (!validateCurrentStep()) return
+  currentStep.value = Math.min(currentStep.value + 1, copy.value.formSteps.length - 1)
+}
+
+const goBack = () => {
+  submitError.value = ''
+  eventsError.value = ''
+  currentStep.value = Math.max(currentStep.value - 1, 0)
+}
+
+const handleSubmit = async () => {
+  if (isSubmitting.value) return
+  if (currentStep.value < copy.value.formSteps.length - 1) {
+    goNext()
+    return
+  }
+  if (!validateCurrentStep() || !applicationForm.value || !isConfigured.value) return
+
+  isSubmitting.value = true
+  submitError.value = ''
+
+  const payload = new FormData(applicationForm.value)
+  payload.set('event_types', selectedEvents.value.join(', '))
+  payload.set('locale', isZh.value ? 'zh-CN' : 'en')
+  payload.set('source', 'LIVE Studio developer application')
+  payload.set('page_url', window.location.href)
+
+  try {
+    const response = await fetch(formAction.value, {
+      method: 'POST',
+      body: payload,
+      headers: { Accept: 'application/json' },
+    })
+
+    if (!response.ok) throw new Error(`Form submission failed: ${response.status}`)
+
+    submitted.value = true
+    applicationForm.value.reset()
+    selectedEvents.value = []
+    void nextTick(() => successPanel.value?.focus())
+  } catch {
+    submitError.value = copy.value.submitFailed
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 onMounted(() => {
-  window.addEventListener('message', handleTallyMessage)
-
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     demoVideo.value?.pause()
   }
-
-  if (!isConfigured.value) return
-
-  const tallyWindow = window as Window & {
-    Tally?: { loadEmbeds: () => void }
-  }
-
-  if (tallyWindow.Tally) {
-    tallyWindow.Tally.loadEmbeds()
-    return
-  }
-
-  if (!document.querySelector('script[src="https://tally.so/widgets/embed.js"]')) {
-    const script = document.createElement('script')
-    script.src = 'https://tally.so/widgets/embed.js'
-    script.async = true
-    document.body.appendChild(script)
-  }
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('message', handleTallyMessage)
 })
 </script>
 
@@ -291,21 +418,137 @@ onBeforeUnmount(() => {
           <small>{{ copy.successNote }}</small>
         </div>
 
-        <div v-else-if="isConfigured" class="tally-frame">
-          <iframe
-            ref="tallyFrame"
-            :data-tally-src="embedUrl"
-            loading="lazy"
-            width="100%"
-            height="960"
-            frameborder="0"
-            marginheight="0"
-            marginwidth="0"
-            :title="copy.iframeTitle"
-          ></iframe>
-          <noscript>
-            <a :href="publicUrl">{{ copy.openForm }}</a>
-          </noscript>
+        <div v-else-if="isConfigured" class="native-form">
+          <div class="form-overview">
+            <p>{{ copy.formIntro }}</p>
+            <ol class="form-progress" :aria-label="copy.formStepLabel">
+              <li
+                v-for="(step, index) in copy.formSteps"
+                :key="step"
+                :class="{ 'is-active': index === currentStep, 'is-complete': index < currentStep }"
+                :aria-current="index === currentStep ? 'step' : undefined"
+              >
+                <span>0{{ index + 1 }}</span>
+                <strong>{{ step }}</strong>
+              </li>
+            </ol>
+          </div>
+
+          <form ref="applicationForm" :action="formAction" method="POST" novalidate @submit.prevent="handleSubmit">
+            <input class="form-honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+            <input type="hidden" name="_subject" value="LIVE Studio developer access application" />
+
+            <fieldset v-show="currentStep === 0" class="form-step" data-form-step="0">
+              <legend>{{ copy.formSteps[0] }}</legend>
+              <div class="form-grid">
+                <label class="form-field">
+                  <span>{{ copy.fields.fullName }} <i aria-hidden="true">*</i></span>
+                  <input name="full_name" type="text" autocomplete="name" required :placeholder="copy.fields.fullNamePlaceholder" />
+                </label>
+                <label class="form-field">
+                  <span>{{ copy.fields.workEmail }} <i aria-hidden="true">*</i></span>
+                  <input name="email" type="email" autocomplete="email" required :placeholder="copy.fields.workEmailPlaceholder" />
+                </label>
+                <label class="form-field">
+                  <span>{{ copy.fields.country }} <i aria-hidden="true">*</i></span>
+                  <input name="country_or_region" type="text" autocomplete="country-name" required :placeholder="copy.fields.countryPlaceholder" />
+                </label>
+                <label class="form-field">
+                  <span>{{ copy.fields.company }}</span>
+                  <input name="team_or_company" type="text" autocomplete="organization" :placeholder="copy.fields.companyPlaceholder" />
+                </label>
+                <label class="form-field">
+                  <span>{{ copy.fields.role }} <i aria-hidden="true">*</i></span>
+                  <input name="role" type="text" autocomplete="organization-title" required :placeholder="copy.fields.rolePlaceholder" />
+                </label>
+                <label class="form-field">
+                  <span>{{ copy.fields.tiktokUsername }}</span>
+                  <input name="tiktok_username" type="text" autocomplete="off" :placeholder="copy.fields.tiktokUsernamePlaceholder" />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset v-show="currentStep === 1" class="form-step" data-form-step="1">
+              <legend>{{ copy.formSteps[1] }}</legend>
+              <div class="form-grid">
+                <label class="form-field form-field--wide">
+                  <span>{{ copy.fields.gameName }} <i aria-hidden="true">*</i></span>
+                  <input name="game_name" type="text" required :placeholder="copy.fields.gameNamePlaceholder" />
+                </label>
+                <label class="form-field form-field--wide">
+                  <span>{{ copy.fields.gameDescription }} <i aria-hidden="true">*</i></span>
+                  <textarea name="game_description" rows="5" required :placeholder="copy.fields.gameDescriptionPlaceholder"></textarea>
+                </label>
+                <label class="form-field">
+                  <span>{{ copy.fields.technology }} <i aria-hidden="true">*</i></span>
+                  <select name="technology_stack" required>
+                    <option value="" selected disabled>{{ copy.fields.technologyPlaceholder }}</option>
+                    <option v-for="option in copy.fields.technologyOptions" :key="option" :value="option">{{ option }}</option>
+                  </select>
+                </label>
+                <label class="form-field">
+                  <span>{{ copy.fields.timeline }} <i aria-hidden="true">*</i></span>
+                  <select name="testing_timeline" required>
+                    <option value="" selected disabled>{{ copy.fields.timelinePlaceholder }}</option>
+                    <option v-for="option in copy.fields.timelineOptions" :key="option" :value="option">{{ option }}</option>
+                  </select>
+                </label>
+                <label class="form-field form-field--wide">
+                  <span>{{ copy.fields.demoUrl }}</span>
+                  <input name="demo_url" type="url" inputmode="url" :placeholder="copy.fields.demoUrlPlaceholder" />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset v-show="currentStep === 2" class="form-step" data-form-step="2">
+              <legend>{{ copy.formSteps[2] }}</legend>
+              <div class="event-question">
+                <div class="event-question__heading">
+                  <span>{{ copy.fields.events }} <i aria-hidden="true">*</i></span>
+                  <small>{{ copy.fields.eventHint }}</small>
+                </div>
+                <div class="event-options">
+                  <label v-for="option in copy.fields.eventOptions" :key="option.value" class="event-option">
+                    <input v-model="selectedEvents" type="checkbox" :value="option.value" />
+                    <span class="event-option__check" aria-hidden="true"></span>
+                    <span><strong>{{ option.title }}</strong><small>{{ option.description }}</small></span>
+                  </label>
+                </div>
+                <p v-if="eventsError" class="field-error" role="alert">{{ eventsError }}</p>
+              </div>
+
+              <div class="form-grid">
+                <label class="form-field form-field--wide">
+                  <span>{{ copy.fields.interaction }} <i aria-hidden="true">*</i></span>
+                  <textarea name="interaction_design" rows="5" required :placeholder="copy.fields.interactionPlaceholder"></textarea>
+                </label>
+                <label class="form-field form-field--wide">
+                  <span>{{ copy.fields.notes }}</span>
+                  <textarea name="additional_notes" rows="4" :placeholder="copy.fields.notesPlaceholder"></textarea>
+                </label>
+              </div>
+
+              <label class="consent-field">
+                <input name="contact_consent" type="checkbox" value="confirmed" required />
+                <span class="consent-field__check" aria-hidden="true"></span>
+                <span>{{ copy.fields.consent }}</span>
+              </label>
+            </fieldset>
+
+            <p v-if="submitError" class="form-error" role="alert">{{ submitError }}</p>
+
+            <div class="form-actions">
+              <button v-if="currentStep > 0" class="form-button form-button--secondary" type="button" :disabled="isSubmitting" @click="goBack">
+                {{ copy.previous }}
+              </button>
+              <button v-if="currentStep < copy.formSteps.length - 1" class="form-button form-button--primary" type="button" @click="goNext">
+                {{ copy.next }} <span aria-hidden="true">→</span>
+              </button>
+              <button v-else class="form-button form-button--primary" type="submit" :disabled="isSubmitting">
+                {{ isSubmitting ? copy.submitting : copy.submit }} <span v-if="!isSubmitting" aria-hidden="true">→</span>
+              </button>
+            </div>
+          </form>
         </div>
 
         <div v-else class="form-placeholder" role="status">
@@ -862,28 +1105,12 @@ onBeforeUnmount(() => {
   background: rgba(12, 13, 18, 0.72);
 }
 
-.apply-steps li:first-child .step-marker {
-  color: #071315;
-  border-color: rgba(37, 244, 238, 0.56);
-  background: rgba(37, 244, 238, 0.9);
-  box-shadow: 3px -3px 0 rgba(254, 44, 85, 0.48);
-}
-
 .step-content {
   min-width: 0;
   padding: 14px 16px 15px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--tux-v2-radius-container-level0-large);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
-}
-
-.apply-steps li:first-child .step-content {
-  border-color: rgba(37, 244, 238, 0.2);
-  background: linear-gradient(135deg, rgba(37, 244, 238, 0.075), rgba(255, 255, 255, 0.025) 64%, rgba(254, 44, 85, 0.04));
-}
-
-.apply-steps li:first-child .step-meta {
-  color: rgba(37, 244, 238, 0.78);
 }
 
 .step-heading {
@@ -973,8 +1200,374 @@ onBeforeUnmount(() => {
 
 .open-status i { width: 6px; height: 6px; background: #3fda88; box-shadow: 0 0 9px rgba(63, 218, 136, 0.8); }
 
-.tally-frame { min-height: 620px; padding: 18px 22px 0; }
-.tally-frame iframe { display: block; color-scheme: dark; }
+.native-form {
+  min-height: 650px;
+  padding: 26px 30px 32px;
+}
+
+.form-overview {
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.form-overview > p {
+  margin: 0;
+  color: #9ca0ac;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.form-progress {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.form-progress li {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  padding-top: 12px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  color: #6f727d;
+  border-top: 2px solid rgba(255, 255, 255, 0.09);
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.form-progress li::before {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  content: '';
+  background: linear-gradient(90deg, var(--tt-cyan), var(--tt-pink));
+  transition: width 200ms ease;
+}
+
+.form-progress li.is-active,
+.form-progress li.is-complete {
+  color: #f5f6f8;
+}
+
+.form-progress li.is-active::before,
+.form-progress li.is-complete::before { width: 100%; }
+
+.form-progress li > span {
+  color: inherit;
+  font: 760 9px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.06em;
+}
+
+.form-progress li > strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 720;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.native-form form { padding-top: 28px; }
+
+.form-honeypot {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.form-step {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  animation: form-step-enter 200ms ease both;
+}
+
+.form-step > legend {
+  width: 100%;
+  margin: 0 0 24px;
+  padding: 0;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 740;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 18px;
+}
+
+.form-field {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.form-field--wide { grid-column: 1 / -1; }
+
+.form-field > span,
+.event-question__heading > span {
+  color: #eef0f4;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.form-field i,
+.event-question__heading i {
+  color: var(--tt-pink);
+  font-style: normal;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: #f6f7fa;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.45;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--tux-v2-radius-content-large);
+  outline: none;
+  background: rgba(255, 255, 255, 0.055);
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.form-field input,
+.form-field select { height: 44px; padding: 0 13px; }
+
+.form-field textarea {
+  min-height: 112px;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder { color: #686b76; opacity: 1; }
+
+.form-field select { color-scheme: dark; }
+.form-field select:invalid { color: #777a85; }
+
+.form-field input:hover,
+.form-field textarea:hover,
+.form-field select:hover { border-color: rgba(255, 255, 255, 0.24); }
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-color: rgba(37, 244, 238, 0.72);
+  background: rgba(37, 244, 238, 0.055);
+  box-shadow: 0 0 0 3px rgba(37, 244, 238, 0.1), 3px 0 0 rgba(254, 44, 85, 0.28);
+}
+
+.event-question { margin-bottom: 24px; }
+
+.event-question__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.event-question__heading small {
+  color: #777a85;
+  font-size: 10px;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.event-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.event-option {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  padding: 14px;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--tux-v2-radius-container-level0-large);
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.event-option:hover {
+  border-color: rgba(37, 244, 238, 0.3);
+  background: rgba(37, 244, 238, 0.04);
+  transform: translateY(-1px);
+}
+
+.event-option input,
+.consent-field input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.event-option__check,
+.consent-field__check {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--tux-v2-radius-content-tiny);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.event-option__check::after,
+.consent-field__check::after {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 4px;
+  height: 8px;
+  content: '';
+  opacity: 0;
+  border: solid #071214;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0.6);
+  transition: opacity 120ms ease, transform 180ms ease;
+}
+
+.event-option input:checked + .event-option__check,
+.consent-field input:checked + .consent-field__check {
+  border-color: var(--tt-cyan);
+  background: var(--tt-cyan);
+  box-shadow: 2px -2px 0 rgba(254, 44, 85, 0.7);
+}
+
+.event-option input:checked + .event-option__check::after,
+.consent-field input:checked + .consent-field__check::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+.event-option input:focus-visible + .event-option__check,
+.consent-field input:focus-visible + .consent-field__check {
+  outline: 3px solid rgba(37, 244, 238, 0.5);
+  outline-offset: 3px;
+}
+
+.event-option strong {
+  display: block;
+  color: #f5f6f8;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.event-option small {
+  display: block;
+  margin-top: 5px;
+  color: #858894;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.consent-field {
+  display: grid;
+  margin-top: 20px;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  color: #9497a2;
+  font-size: 10px;
+  line-height: 1.55;
+  cursor: pointer;
+}
+
+.field-error,
+.form-error {
+  color: #ff9cad;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.field-error { margin: 9px 0 0; }
+
+.form-error {
+  margin: 20px 0 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(254, 44, 85, 0.24);
+  border-radius: var(--tux-v2-radius-content-medium);
+  background: rgba(254, 44, 85, 0.07);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.form-button {
+  display: inline-flex;
+  min-width: 112px;
+  min-height: 44px;
+  padding: 0 17px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: #f6f7f9;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 760;
+  border: 1px solid transparent;
+  border-radius: var(--tux-v2-radius-content-large);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.form-button:hover:not(:disabled) { transform: translateY(-1px); }
+.form-button:focus-visible { outline: 3px solid rgba(37, 244, 238, 0.6); outline-offset: 3px; }
+.form-button:disabled { opacity: 0.55; cursor: wait; }
+
+.form-button--secondary {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.form-button--secondary:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.28); background: rgba(255, 255, 255, 0.075); }
+
+.form-button--primary {
+  color: #fff;
+  background: var(--tt-pink);
+  box-shadow: -4px 4px 0 var(--tt-cyan), 0 10px 26px rgba(254, 44, 85, 0.16);
+}
+
+.form-button--primary:hover:not(:disabled) {
+  background: #ff3d62;
+  box-shadow: -6px 6px 0 var(--tt-cyan), 0 14px 30px rgba(254, 44, 85, 0.22);
+}
 
 .submission-success {
   position: relative;
@@ -1120,6 +1713,11 @@ onBeforeUnmount(() => {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes form-step-enter {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 @keyframes grid-drift { to { background-position: 56px 28px, 56px 28px; } }
 
 @keyframes headline-short-circuit {
@@ -1225,7 +1823,17 @@ onBeforeUnmount(() => {
   .apply-shell { border-radius: 11px; }
   .apply-shell__header { display: block; padding: 22px 20px; }
   .open-status { margin-top: 15px; }
-  .tally-frame { padding-inline: 6px; }
+  .native-form { min-height: 0; padding: 22px 18px 26px; }
+  .form-progress { gap: 5px; }
+  .form-progress li { grid-template-columns: 1fr; gap: 5px; }
+  .form-progress li > strong { font-size: 9px; }
+  .form-grid { grid-template-columns: 1fr; gap: 17px; }
+  .form-field--wide { grid-column: auto; }
+  .event-question__heading { display: grid; }
+  .event-question__heading small { text-align: left; }
+  .event-options { grid-template-columns: 1fr; }
+  .form-actions { justify-content: stretch; }
+  .form-button { flex: 1 1 0; }
   .submission-success { min-height: 520px; padding: 56px 24px; }
   .apply-shell__footer { display: grid; padding: 16px 20px 20px; }
 }
@@ -1245,10 +1853,18 @@ onBeforeUnmount(() => {
   .headline-short-circuit,
   .apply-badge span,
   .open-status i,
-  .submission-success { animation: none; }
+  .submission-success,
+  .form-step { animation: none; }
 
   .apply-button,
-  .demo-card { transition: none; }
+  .demo-card,
+  .form-progress li,
+  .form-progress li::before,
+  .form-field input,
+  .form-field textarea,
+  .form-field select,
+  .event-option,
+  .form-button { transition: none; }
 
   .demo-card:hover { transform: none; }
 }

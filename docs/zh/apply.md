@@ -7,4 +7,4 @@ sidebar: false
 pageClass: developer-application-page
 ---
 
-<DeveloperApplication form-id="J9PxWJ" locale="zh" />
+<DeveloperApplication form-id="mnpqllrw" locale="zh" />
