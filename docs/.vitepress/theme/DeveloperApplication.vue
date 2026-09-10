@@ -1762,7 +1762,9 @@ onUnmounted(() => cleanUpMediaQueries?.())
   .apply-actions { display: grid; }
   .apply-button { width: 100%; }
   .demo-caption { padding: 10px 14px; }
-  .demo-story h2 { font-size: var(--apply-type-media-mobile); line-height: 1.15; }
+  .demo-story span { display: block; line-height: 1.2; }
+  .demo-story h2 { margin: 4px 0 0; font-size: var(--apply-type-media-mobile); line-height: 1.15; }
+  .demo-story p { display: none; }
   .application-section { margin-top: 82px; padding-top: 44px; }
   .application-intro h2 { font-size: 32px; }
   .apply-steps { grid-template-columns: 1fr; gap: 24px; }
