@@ -621,9 +621,8 @@ onUnmounted(() => cleanUpMediaQueries?.())
   --apply-radius-card: var(--tux-v2-radius-container-level1-large);
   --apply-shadow-media: 0 38px 96px rgba(0, 0, 0, 0.42);
   --apply-shadow-panel: 0 34px 90px rgba(0, 0, 0, 0.34);
-  --apply-media-border: rgba(255, 255, 255, 0.14);
-  --apply-media-glass: linear-gradient(to bottom, color-mix(in srgb, var(--tt-ink) 28%, transparent), color-mix(in srgb, var(--tt-ink) 78%, transparent));
-  --apply-media-glass-blur: 12px;
+  --apply-media-glass: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--tt-ink) 28%, transparent) 40%, color-mix(in srgb, var(--tt-ink) 72%, transparent));
+  --apply-media-glass-blur: 2px;
   --apply-type-media-mobile: clamp(17px, 4.5vw, 22px);
   --apply-media-glow: radial-gradient(ellipse at 24% 35%, rgba(37, 244, 238, 0.16), transparent 65%), radial-gradient(ellipse at 84% 68%, rgba(254, 44, 85, 0.14), transparent 60%);
   --apply-media-edge: -3px 3px 0 rgba(37, 244, 238, 0.64), 3px -3px 0 rgba(254, 44, 85, 0.64);
@@ -1002,11 +1001,30 @@ onUnmounted(() => cleanUpMediaQueries?.())
   z-index: 1;
   inset: auto 0 0;
   padding: 24px;
-  border-top: 1px solid var(--apply-media-border);
-  background: var(--apply-media-glass);
-  -webkit-backdrop-filter: blur(var(--apply-media-glass-blur)) saturate(115%);
-  backdrop-filter: blur(var(--apply-media-glass-blur)) saturate(115%);
   pointer-events: none;
+}
+
+.demo-caption::before {
+  position: absolute;
+  inset: -20px 0 0;
+  content: '';
+  background: var(--apply-media-glass);
+}
+
+.demo-caption::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  -webkit-backdrop-filter: blur(var(--apply-media-glass-blur));
+  backdrop-filter: blur(var(--apply-media-glass-blur));
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+  mask-image: linear-gradient(to bottom, transparent, #000);
+}
+
+.demo-story {
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
 }
 
 .demo-story span {
