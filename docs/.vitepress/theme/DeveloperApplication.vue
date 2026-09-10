@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 const props = defineProps<{
   formId: string
@@ -7,6 +7,12 @@ const props = defineProps<{
 }>()
 
 const demoVideo = ref<HTMLVideoElement | null>(null)
+const fullDemoVideo = ref<HTMLVideoElement | null>(null)
+const demoDialog = ref<HTMLDialogElement | null>(null)
+const previewPlaying = ref(false)
+const journeyOpen = ref(false)
+let resumePreview = false
+let cleanUpMediaQueries: (() => void) | undefined
 const applicationForm = ref<HTMLFormElement | null>(null)
 const successPanel = ref<HTMLElement | null>(null)
 const currentStep = ref(0)
@@ -31,6 +37,11 @@ const copy = computed(() =>
         demoEvent: '礼物事件 → 游戏动作',
         demoTitle: 'Tower Defense × LIVE Studio',
         demoDescription: '观看一份礼物如何变成防御塔，并实时改变 LIVE Studio 内的战局。',
+        watchDemo: '观看完整演示',
+        pausePreview: '暂停预览',
+        playPreview: '播放预览',
+        closeDemo: '关闭演示',
+        journeySummary: '申请后会发生什么？',
         sectionIndex: '02 / 申请',
         applicationTitle: '四步接入 LIVE Studio',
         applicationDescription: '先告诉我们你想做什么。审核通过后，开发凭据会发送到你的申请邮箱。',
@@ -129,6 +140,11 @@ const copy = computed(() =>
         demoEvent: 'GIFT EVENT → GAME ACTION',
         demoTitle: 'Tower Defense × LIVE Studio',
         demoDescription: 'Watch a gift become a tower and reshape the round inside LIVE Studio.',
+        watchDemo: 'Watch the full demo',
+        pausePreview: 'Pause preview',
+        playPreview: 'Play preview',
+        closeDemo: 'Close demo',
+        journeySummary: 'What happens after applying?',
         sectionIndex: '02 / APPLY',
         applicationTitle: 'Four steps to your first connection.',
         applicationDescription: 'Tell us what you are building. Once approved, your developer credentials will arrive by email.',
@@ -244,15 +260,28 @@ const validateCurrentStep = () => {
   return true
 }
 
+const focusCurrentStep = () => {
+  void nextTick(() => {
+    const panel = applicationForm.value?.querySelector<HTMLElement>(`[data-form-step="${currentStep.value}"]`)
+    panel?.querySelector<HTMLElement>('legend')?.focus({ preventScroll: true })
+    applicationForm.value?.previousElementSibling?.scrollIntoView({
+      block: 'start',
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+    })
+  })
+}
+
 const goNext = () => {
   if (!validateCurrentStep()) return
   currentStep.value = Math.min(currentStep.value + 1, copy.value.formSteps.length - 1)
+  focusCurrentStep()
 }
 
 const goBack = () => {
   submitError.value = ''
   eventsError.value = ''
   currentStep.value = Math.max(currentStep.value - 1, 0)
+  focusCurrentStep()
 }
 
 const handleSubmit = async () => {
@@ -292,11 +321,49 @@ const handleSubmit = async () => {
   }
 }
 
+const togglePreview = () => {
+  if (demoVideo.value?.paused) void demoVideo.value.play().catch(() => {})
+  else demoVideo.value?.pause()
+}
+
+const openDemo = () => {
+  if (!demoDialog.value) return
+  resumePreview = !demoVideo.value?.paused
+  demoVideo.value?.pause()
+  demoDialog.value.showModal()
+  // Load the full recording on demand; native controls include fullscreen.
+  if (fullDemoVideo.value && !fullDemoVideo.value.getAttribute('src')) {
+    fullDemoVideo.value.src = '/media/interactive-tower-defense-demo.mp4'
+  }
+  void fullDemoVideo.value?.play().catch(() => {})
+}
+
+const onDemoClosed = () => {
+  fullDemoVideo.value?.pause()
+  if (resumePreview && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    void demoVideo.value?.play().catch(() => {})
+  }
+}
+
 onMounted(() => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    demoVideo.value?.pause()
+  const compactLayout = window.matchMedia('(max-width: 1180px)')
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+  const updateLayout = () => { journeyOpen.value = !compactLayout.matches }
+  const updateMotion = () => {
+    if (reducedMotion.matches) demoVideo.value?.pause()
+    else void demoVideo.value?.play().catch(() => {})
+  }
+  updateLayout()
+  updateMotion()
+  compactLayout.addEventListener('change', updateLayout)
+  reducedMotion.addEventListener('change', updateMotion)
+  cleanUpMediaQueries = () => {
+    compactLayout.removeEventListener('change', updateLayout)
+    reducedMotion.removeEventListener('change', updateMotion)
   }
 })
+
+onUnmounted(() => cleanUpMediaQueries?.())
 </script>
 
 <template>
@@ -318,7 +385,8 @@ onMounted(() => {
         <p class="apply-kicker">{{ copy.kicker }}</p>
         <h1 class="apply-headline">
           <span class="apply-headline__lead">{{ copy.headlineLead }}</span>
-          <em :data-text="copy.headlineAccent">
+          <span class="visually-hidden">{{ copy.headlineAccent }}</span>
+          <em :data-text="copy.headlineAccent" aria-hidden="true">
             <span class="headline-tiktok-echo" :data-text="copy.headlineAccent" aria-hidden="true"></span>
             <span class="headline-short-circuit" aria-hidden="true"></span>
             {{ copy.headlineAccent }}
@@ -335,56 +403,75 @@ onMounted(() => {
 
       <article class="demo-card" aria-labelledby="demo-title">
         <div class="demo-media">
+          <div class="demo-gameplay">
           <video
             ref="demoVideo"
-            autoplay
             muted
             loop
             playsinline
             preload="metadata"
             poster="/media/interactive-tower-defense-demo.webp"
             :aria-label="copy.demoAria"
+            @play="previewPlaying = true"
+            @pause="previewPlaying = false"
           >
             <source src="/media/interactive-tower-defense-demo.mp4" type="video/mp4" />
           </video>
-          <div class="demo-media__shade" aria-hidden="true"></div>
-
+          </div>
+          <button class="demo-control demo-preview-toggle" type="button" @click="togglePreview">
+            {{ previewPlaying ? copy.pausePreview : copy.playPreview }}
+          </button>
+        </div>
+        <div class="demo-caption">
           <div class="demo-story">
             <span>{{ copy.demoEvent }}</span>
             <h2 id="demo-title">{{ copy.demoTitle }}</h2>
             <p>{{ copy.demoDescription }}</p>
           </div>
+          <button class="demo-control demo-watch" type="button" @click="openDemo">
+            {{ copy.watchDemo }} <span aria-hidden="true">↗</span>
+          </button>
         </div>
       </article>
     </section>
 
-    <section id="application" class="application-section">
+    <dialog ref="demoDialog" class="demo-dialog" aria-labelledby="full-demo-title" @close="onDemoClosed" @click="($event.target === demoDialog) && demoDialog?.close()">
+      <div class="demo-dialog__header">
+        <h2 id="full-demo-title">{{ copy.demoTitle }}</h2>
+        <button class="demo-control" type="button" autofocus @click="demoDialog?.close()">{{ copy.closeDemo }} <span aria-hidden="true">×</span></button>
+      </div>
+      <video ref="fullDemoVideo" controls playsinline preload="none" :aria-label="copy.demoAria" />
+    </dialog>
+
+    <section class="application-section">
       <div class="application-intro">
         <span class="section-index">{{ copy.sectionIndex }}</span>
         <h2>{{ copy.applicationTitle }}</h2>
         <p>{{ copy.applicationDescription }}</p>
 
+        <details class="application-journey" :open="journeyOpen">
+          <summary>{{ copy.journeySummary }}</summary>
         <ol class="apply-steps" :aria-label="copy.stepsAria">
-          <li v-for="(step, index) in copy.steps" :key="step.title">
-            <div class="step-marker" aria-hidden="true"><span>0{{ index + 1 }}</span></div>
+          <li v-for="step in copy.steps" :key="step.title">
+            <div class="step-marker" aria-hidden="true"></div>
             <div class="step-content">
               <div class="step-heading">
                 <h3>{{ step.title }}</h3>
               </div>
               <p>{{ step.description }}</p>
-              <span class="step-meta">{{ step.meta }}</span>
             </div>
           </li>
         </ol>
 
         <p class="secret-note"><strong>SECRET KEY</strong>{{ copy.secretNote }}</p>
+        </details>
       </div>
 
-      <section class="apply-shell">
+      <section id="application" class="apply-shell" aria-labelledby="application-title" tabindex="-1">
         <header class="apply-shell__header">
           <div>
             <span class="eyebrow">{{ copy.program }}</span>
-            <h2>{{ copy.requestAccess }}</h2>
+            <h2 id="application-title">{{ copy.requestAccess }}</h2>
           </div>
         </header>
 
@@ -425,7 +512,7 @@ onMounted(() => {
             <input type="hidden" name="_subject" value="LIVE Studio developer access application" />
 
             <fieldset v-show="currentStep === 0" class="form-step" data-form-step="0">
-              <legend>{{ copy.formSteps[0] }}</legend>
+              <legend tabindex="-1">{{ copy.formSteps[0] }}</legend>
               <div class="form-grid">
                 <label class="form-field">
                   <span>{{ copy.fields.fullName }} <i aria-hidden="true">*</i></span>
@@ -455,7 +542,7 @@ onMounted(() => {
             </fieldset>
 
             <fieldset v-show="currentStep === 1" class="form-step" data-form-step="1">
-              <legend>{{ copy.formSteps[1] }}</legend>
+              <legend tabindex="-1">{{ copy.formSteps[1] }}</legend>
               <div class="form-grid">
                 <label class="form-field form-field--wide">
                   <span>{{ copy.fields.gameName }} <i aria-hidden="true">*</i></span>
@@ -487,7 +574,7 @@ onMounted(() => {
             </fieldset>
 
             <fieldset v-show="currentStep === 2" class="form-step" data-form-step="2">
-              <legend>{{ copy.formSteps[2] }}</legend>
+              <legend tabindex="-1">{{ copy.formSteps[2] }}</legend>
               <div class="event-question">
                 <div class="event-question__heading">
                   <span>{{ copy.fields.events }} <i aria-hidden="true">*</i></span>
@@ -563,12 +650,19 @@ onMounted(() => {
   --apply-layout-width: 1600px;
   --apply-copy-width: 560px;
   --apply-type-display: clamp(52px, 4.25vw, 68px);
+  --apply-type-lead: clamp(28px, 2.35vw, 38px);
   --apply-type-display-zh: clamp(50px, 3.7vw, 62px);
   --apply-type-section: clamp(38px, 3.5vw, 50px);
   --apply-radius-control: var(--tux-v2-radius-content-large);
   --apply-radius-card: var(--tux-v2-radius-container-level1-large);
   --apply-shadow-media: 0 38px 96px rgba(0, 0, 0, 0.42);
   --apply-shadow-panel: 0 34px 90px rgba(0, 0, 0, 0.34);
+  --apply-media-border: rgba(255, 255, 255, 0.14);
+  --apply-media-glow: radial-gradient(ellipse at 24% 35%, rgba(37, 244, 238, 0.16), transparent 65%), radial-gradient(ellipse at 84% 68%, rgba(254, 44, 85, 0.14), transparent 60%);
+  --apply-media-edge: -3px 3px 0 rgba(37, 244, 238, 0.64), 3px -3px 0 rgba(254, 44, 85, 0.64);
+  --apply-control-height: 44px;
+  --apply-type-control: 13px;
+  --apply-weight-control: 700;
   position: relative;
   isolation: isolate;
   width: min(var(--apply-layout-width), calc(100% - 64px));
@@ -583,7 +677,7 @@ onMounted(() => {
   z-index: -3;
   inset: 0;
   content: '';
-  opacity: 0.32;
+  opacity: 0.18;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
@@ -624,8 +718,8 @@ onMounted(() => {
   width: clamp(660px, 48vw, 920px);
   max-width: none;
   height: auto;
-  opacity: 0.72;
-  filter: saturate(0.68) brightness(0.88);
+  opacity: 0.3;
+  filter: blur(3px) saturate(0.6) brightness(0.8);
   mix-blend-mode: screen;
   pointer-events: none;
   user-select: none;
@@ -713,17 +807,36 @@ onMounted(() => {
   display: block;
 }
 
+.apply-headline__lead {
+  max-width: 420px;
+  color: var(--tt-muted);
+  font-size: var(--apply-type-lead);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .apply-headline em {
   display: inline-block;
   position: relative;
   isolation: isolate;
-  margin-top: 10px;
+  margin-top: 20px;
   color: #fff;
   font-style: normal;
   text-shadow:
-    -3px 0 rgba(37, 244, 238, 0.82),
-    3px 0 rgba(254, 44, 85, 0.78),
-    0 0 18px rgba(255, 255, 255, 0.16);
+    -2px 0 rgba(37, 244, 238, 0.72),
+    2px 0 rgba(254, 44, 85, 0.68);
   transform-origin: left center;
   will-change: filter, opacity, transform;
   animation: headline-short-circuit 5s linear 420ms infinite both;
@@ -835,7 +948,7 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
+  min-height: var(--tt-control-height);
   padding: 0 20px;
   color: #fff;
   font-size: 14px;
@@ -854,20 +967,14 @@ onMounted(() => {
   background:
     linear-gradient(#08090d, #08090d) padding-box,
     linear-gradient(110deg, var(--tt-cyan) 0 44%, var(--tt-pink) 56% 100%) border-box;
-  box-shadow:
-    -5px 5px 0 var(--tt-cyan),
-    5px -5px 0 var(--tt-pink),
-    0 12px 28px rgba(0, 0, 0, 0.32);
+  box-shadow: var(--tt-shadow-brand);
 }
 
 .apply-button--primary:hover {
   background:
     linear-gradient(#111218, #08090d) padding-box,
     linear-gradient(110deg, var(--tt-cyan) 0 44%, var(--tt-pink) 56% 100%) border-box;
-  box-shadow:
-    -7px 7px 0 var(--tt-cyan),
-    7px -7px 0 var(--tt-pink),
-    0 16px 34px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--tt-shadow-brand-hover);
 }
 
 .apply-button--primary:active {
@@ -893,10 +1000,7 @@ onMounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--apply-radius-card);
   background: rgba(12, 13, 17, 0.92);
-  box-shadow:
-    -9px 9px 0 rgba(37, 244, 238, 0.68),
-    9px -9px 0 rgba(254, 44, 85, 0.62),
-    var(--apply-shadow-media);
+  box-shadow: var(--apply-media-edge), var(--apply-shadow-media);
   transform: none;
   transform-origin: left center;
   transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 350ms ease;
@@ -904,54 +1008,56 @@ onMounted(() => {
 }
 
 .demo-card:hover {
-  box-shadow:
-    -12px 12px 0 rgba(37, 244, 238, 0.74),
-    12px -12px 0 rgba(254, 44, 85, 0.68),
-    0 48px 112px rgba(0, 0, 0, 0.5);
-  transform: translateY(-4px);
+  transform: translateY(-2px);
 }
 
 .demo-media {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 16 / 9;
-  background: #050609;
+  aspect-ratio: 4 / 3;
+  background: var(--apply-media-glow), var(--tt-ink);
 }
 
-.demo-media::after {
+.demo-media::before {
   position: absolute;
-  top: -20%;
-  bottom: -20%;
-  left: -32%;
-  width: 18%;
+  inset: -24px;
   content: '';
-  opacity: 0.13;
-  background: linear-gradient(90deg, transparent, #fff, transparent);
-  filter: blur(8px);
-  transform: skewX(-16deg);
+  opacity: 0.2;
+  background: url('/media/interactive-tower-defense-demo.webp') center / cover;
+  filter: blur(18px);
   pointer-events: none;
-  animation: media-scan 6s ease-in-out infinite;
 }
 
-.demo-media video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.demo-media__shade {
+.demo-gameplay {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to top, rgba(5, 5, 8, 0.88) 0%, transparent 48%), linear-gradient(90deg, rgba(0, 0, 0, 0.15), transparent 42%);
+  height: 92%;
+  aspect-ratio: 310 / 552;
+  top: 4%;
+  left: 50%;
+  overflow: hidden;
+  transform: translateX(-50%);
+  border-radius: var(--apply-radius-control);
+  box-shadow: var(--apply-shadow-media);
 }
 
-.demo-story {
+.demo-gameplay video {
+  /* Gameplay bounds in the 1280 × 720 recording: x=484, y=98, w=310, h=552. */
   position: absolute;
-  left: clamp(20px, 3vw, 32px);
-  right: 32px;
-  bottom: clamp(20px, 3vw, 30px);
+  width: 412.9032%;
+  max-width: none;
+  height: 130.4348%;
+  left: -156.129%;
+  top: -17.7536%;
+}
+
+.demo-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px;
+  border-top: 1px solid var(--apply-media-border);
 }
 
 .demo-story span {
@@ -971,10 +1077,53 @@ onMounted(() => {
 
 .demo-story p { max-width: 430px; margin: 0; color: #c9cbd2; font-size: 12px; line-height: 1.45; }
 
+.demo-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: var(--apply-control-height);
+  padding: 0 14px;
+  border: 1px solid var(--apply-media-border);
+  border-radius: var(--apply-radius-control);
+  background: var(--tt-ink);
+  color: var(--tt-text);
+  font: inherit;
+  font-size: var(--apply-type-control);
+  font-weight: var(--apply-weight-control);
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.demo-control:hover { border-color: var(--tt-cyan); background: var(--tt-surface-raised); }
+.demo-control:active { background: var(--tt-surface); }
+.demo-control:focus-visible,
+.application-journey summary:focus-visible { outline: 2px solid var(--tt-cyan); outline-offset: 4px; }
+.demo-preview-toggle { position: absolute; bottom: 16px; right: 16px; }
+.demo-watch { flex-shrink: 0; }
+
+.demo-dialog {
+  width: min(1200px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--apply-media-border);
+  border-radius: var(--apply-radius-card);
+  background: var(--tt-ink);
+  color: var(--tt-text);
+  box-shadow: var(--apply-shadow-media);
+}
+
+.demo-dialog::backdrop { background: rgba(0, 0, 0, 0.86); backdrop-filter: blur(12px); }
+.demo-dialog__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; }
+.demo-dialog__header h2 { font-size: var(--apply-type-control); font-weight: var(--apply-weight-control); line-height: 1.4; }
+.demo-dialog video { display: block; width: 100%; max-height: calc(100dvh - 116px); }
+
 .application-section {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(400px, 0.54fr) minmax(680px, 1fr);
+  grid-template-columns: minmax(340px, 0.54fr) minmax(0, 1fr);
   align-items: start;
   gap: clamp(48px, 5vw, 76px);
   margin-top: clamp(96px, 10vw, 132px);
@@ -1006,9 +1155,11 @@ onMounted(() => {
 
 .application-intro > p { max-width: 470px; margin: 0; color: var(--tt-muted); font-size: 15px; line-height: 1.65; }
 
+.application-journey summary { display: none; cursor: pointer; color: var(--tt-text); }
+
 .apply-steps {
   display: grid;
-  gap: 10px;
+  gap: 24px;
   margin: 28px 0 0;
   padding: 0;
   list-style: none;
@@ -1017,42 +1168,34 @@ onMounted(() => {
 .apply-steps li {
   position: relative;
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-columns: 12px minmax(0, 1fr);
   align-items: start;
-  gap: 13px;
+  gap: 18px;
 }
 
 .apply-steps li:not(:last-child)::after {
   position: absolute;
   z-index: -1;
-  top: 39px;
-  left: 19px;
+  top: 16px;
+  left: 5px;
   width: 1px;
-  height: calc(100% + 13px);
+  height: calc(100% + 12px);
   content: '';
   background: linear-gradient(to bottom, rgba(37, 244, 238, 0.36), rgba(254, 44, 85, 0.18));
 }
 
 .step-marker {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  color: #b8bbc5;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--tux-v2-radius-content-large);
-  background: rgba(12, 13, 18, 0.72);
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  border: 2px solid var(--tt-cyan);
+  border-radius: var(--tux-v2-radius-content-capsule);
+  background: var(--tt-ink);
 }
 
 .step-content {
   min-width: 0;
-  padding: 14px 16px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: var(--tux-v2-radius-container-level0-large);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+  padding: 0;
 }
 
 .step-heading {
@@ -1077,21 +1220,11 @@ onMounted(() => {
   line-height: 1.55;
 }
 
-.step-meta {
-  display: block;
-  margin-top: 10px;
-  color: #7f828e;
-  font-size: 9px;
-  font-weight: 760;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
 .secret-note {
   margin: 20px 0 0 !important;
   padding: 13px 15px;
-  color: #898c97 !important;
-  font-size: 10px !important;
+  color: var(--tt-muted) !important;
+  font-size: 12px !important;
   line-height: 1.55 !important;
   border-left: 2px solid var(--tt-pink);
   background: rgba(254, 44, 85, 0.035);
@@ -1106,12 +1239,16 @@ onMounted(() => {
 }
 
 .apply-shell {
+  scroll-margin-top: calc(var(--vp-nav-height) + 24px);
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: var(--apply-radius-card);
   background: linear-gradient(145deg, rgba(31, 32, 42, 0.97), rgba(18, 19, 26, 0.98));
-  box-shadow: var(--apply-shadow-panel), 8px 8px 0 rgba(254, 44, 85, 0.1);
+  box-shadow: var(--apply-shadow-panel);
 }
+
+/* The anchor moves keyboard focus without drawing a frame around the whole form. */
+.apply-shell:focus { outline: none; }
 
 .apply-shell__header {
   display: flex;
@@ -1132,9 +1269,12 @@ onMounted(() => {
 }
 
 .form-overview {
+  scroll-margin-top: calc(var(--vp-nav-height) + 24px);
   padding-bottom: 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+.form-step legend:focus { outline: none; }
 
 .form-overview > p {
   margin: 0;
@@ -1160,7 +1300,7 @@ onMounted(() => {
   grid-template-columns: 24px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
-  color: #6f727d;
+  color: var(--tt-muted);
   border-top: 2px solid rgba(255, 255, 255, 0.09);
   transition: color 180ms ease, border-color 180ms ease;
 }
@@ -1287,10 +1427,10 @@ onMounted(() => {
 }
 
 .form-field input::placeholder,
-.form-field textarea::placeholder { color: #686b76; opacity: 1; }
+.form-field textarea::placeholder { color: var(--tt-muted); opacity: 1; }
 
 .form-field select { color-scheme: dark; }
-.form-field select:invalid { color: #777a85; }
+.form-field select:invalid { color: var(--tt-muted); }
 
 .form-field input:hover,
 .form-field textarea:hover,
@@ -1315,7 +1455,7 @@ onMounted(() => {
 }
 
 .event-question__heading small {
-  color: #777a85;
+  color: var(--tt-muted);
   font-size: 10px;
   line-height: 1.35;
   text-align: right;
@@ -1458,7 +1598,7 @@ onMounted(() => {
 .form-button {
   display: inline-flex;
   min-width: 112px;
-  min-height: 44px;
+  min-height: var(--tt-control-height);
   padding: 0 17px;
   align-items: center;
   justify-content: center;
@@ -1485,14 +1625,14 @@ onMounted(() => {
 .form-button--secondary:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.28); background: rgba(255, 255, 255, 0.075); }
 
 .form-button--primary {
-  color: #fff;
-  background: var(--tt-pink);
-  box-shadow: -4px 4px 0 var(--tt-cyan), 0 10px 26px rgba(254, 44, 85, 0.16);
+  color: var(--tt-text);
+  background: var(--tt-brand-black);
+  box-shadow: var(--tt-shadow-brand);
 }
 
 .form-button--primary:hover:not(:disabled) {
-  background: #ff3d62;
-  box-shadow: -6px 6px 0 var(--tt-cyan), 0 14px 30px rgba(254, 44, 85, 0.22);
+  background: var(--tt-ink);
+  box-shadow: var(--tt-shadow-brand-hover);
 }
 
 .submission-success {
@@ -1622,7 +1762,7 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 10px 22px;
   padding: 18px 30px 22px;
-  color: #777a84;
+  color: var(--tt-muted);
   font-size: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -1682,13 +1822,13 @@ onMounted(() => {
 }
 
 @keyframes headline-tiktok-smear-cyan {
-  0%, 46%, 72%, 100% { opacity: 0.42; filter: blur(2px); transform: translate3d(-3px, 0, 0) scaleX(1); }
-  58% { opacity: 0.96; filter: blur(7px); transform: translate3d(-20px, 0, 0) scaleX(1.08); }
+  0%, 46%, 72%, 100% { opacity: 0.12; filter: blur(1px); transform: translate3d(-2px, 0, 0) scaleX(1); }
+  58% { opacity: 0.72; filter: blur(7px); transform: translate3d(-20px, 0, 0) scaleX(1.08); }
 }
 
 @keyframes headline-tiktok-smear-pink {
-  0%, 46%, 72%, 100% { opacity: 0.38; filter: blur(2px); transform: translate3d(3px, 0, 0) scaleX(1); }
-  58% { opacity: 0.92; filter: blur(7px); transform: translate3d(20px, 0, 0) scaleX(1.08); }
+  0%, 46%, 72%, 100% { opacity: 0.1; filter: blur(1px); transform: translate3d(2px, 0, 0) scaleX(1); }
+  58% { opacity: 0.68; filter: blur(7px); transform: translate3d(20px, 0, 0) scaleX(1.08); }
 }
 
 @keyframes orbit-float {
@@ -1698,7 +1838,7 @@ onMounted(() => {
 
 @keyframes ribbon-sweep {
   from { opacity: 0.08; transform: translate3d(-12vw, -3vh, 0) rotate(-18deg) scale(0.92); }
-  to { opacity: 0.2; transform: translate3d(28vw, 10vh, 0) rotate(-12deg) scale(1.18); }
+  to { opacity: 0.12; transform: translate3d(28vw, 10vh, 0) rotate(-12deg) scale(1.18); }
 }
 
 @keyframes demo-enter {
@@ -1721,31 +1861,34 @@ onMounted(() => {
   .demo-card { justify-self: stretch; width: 100%; }
   .application-section { gap: 34px; margin-top: 108px; padding-top: 58px; }
   .application-intro { position: static; max-width: 860px; padding-top: 0; }
+  .application-journey { margin-top: 24px; }
+  .application-journey summary { display: list-item; padding: 14px 0; }
   .apply-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .apply-steps li:not(:last-child)::after { display: none; }
 }
 
 @media (max-width: 620px) {
-  .apply-page { width: min(100% - 22px, 760px); padding: 34px 0 64px; }
-  .radial-light-columns { top: -30px; left: -11px; width: 620px; opacity: 0.56; }
-  .apply-headline { font-size: 43px; }
+  .apply-page { width: min(100% - 40px, 760px); padding: 26px 0 64px; }
+  .radial-light-columns { top: -30px; left: -20px; width: 620px; opacity: 0.24; }
+  .apply-kicker { margin-top: 14px; }
+  .apply-headline { font-size: clamp(40px, 12vw, 60px); }
   .apply-page--zh .apply-headline { font-size: clamp(34px, 10.6vw, 42px); letter-spacing: -0.06em; }
   .apply-lede { font-size: 15px; }
   .apply-actions { display: grid; }
   .apply-button { width: 100%; }
-  .demo-card { border-radius: 11px; box-shadow: -5px 5px 0 rgba(37, 244, 238, 0.66), 5px -5px 0 rgba(254, 44, 85, 0.58), 0 24px 60px rgba(0, 0, 0, 0.4); }
-  .demo-story { right: 16px; bottom: 16px; }
-  .demo-story p { display: none; }
+  .demo-media { aspect-ratio: 1 / 1; }
+  .demo-caption { padding: 20px; gap: 16px; }
+  .demo-preview-toggle { right: 10px; bottom: 10px; }
+  .demo-watch { width: 100%; }
   .application-section { margin-top: 82px; padding-top: 44px; }
-  .apply-steps { grid-template-columns: 1fr; gap: 10px; }
-  .apply-steps li { gap: 11px; }
-  .step-content { padding: 12px 13px 13px; }
-  .apply-shell { border-radius: 11px; }
+  .application-intro h2 { font-size: 32px; }
+  .apply-steps { grid-template-columns: 1fr; gap: 24px; }
+  .apply-steps li:not(:last-child)::after { display: block; }
   .apply-shell__header { display: block; padding: 22px 20px; }
   .native-form { min-height: 0; padding: 22px 18px 26px; }
   .form-progress { gap: 5px; }
   .form-progress li { grid-template-columns: 1fr; gap: 5px; }
-  .form-progress li > strong { font-size: 9px; }
+  .form-progress li > strong { font-size: 11px; }
   .form-grid { grid-template-columns: 1fr; gap: 17px; }
   .form-field--wide { grid-column: auto; }
   .event-question__heading { display: grid; }
@@ -1773,6 +1916,7 @@ onMounted(() => {
   .form-step { animation: none; }
 
   .apply-button,
+  .demo-control,
   .demo-card,
   .form-progress li,
   .form-progress li::before,

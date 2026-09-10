@@ -7,6 +7,7 @@ export default defineConfig({
   appearance: true,
   lastUpdated: true,
   head: [
+    ['link', { rel: 'preload', href: '/fonts/tiktok-sans-latin-variable.woff2', as: 'font', type: 'font/woff2', crossorigin: '' }],
     ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
     ['link', { rel: 'icon', type: 'image/png', href: '/favicon-32x32.png', sizes: '32x32' }],
     ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
@@ -72,13 +73,19 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: 'Overview', link: '/' },
-          { text: 'Quick Start', link: '/guide/quick-start' },
-          { text: 'Agent Skill', link: '/guide/agent-skill' },
-          { text: 'Protocol', link: '/protocol/connection' },
-          { text: 'Events', link: '/events/live-like' },
-          { text: 'Gift Catalog', link: '/reference/gift-catalog' },
           { text: 'Demos', link: '/demos/' },
-          { text: 'Samples', link: '/samples/javascript' },
+          {
+            text: 'Documentation',
+            activeMatch: '^/(guide|protocol|events|reference|samples)/',
+            items: [
+              { text: 'Quick Start', link: '/guide/quick-start' },
+              { text: 'Agent Skill', link: '/guide/agent-skill' },
+              { text: 'Protocol', link: '/protocol/connection' },
+              { text: 'Events', link: '/events/live-like' },
+              { text: 'Gift Catalog', link: '/reference/gift-catalog' },
+              { text: 'Samples', link: '/samples/javascript' },
+            ],
+          },
           { text: 'Apply', link: '/apply' },
         ],
         sidebar: [
@@ -138,13 +145,19 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: '概览', link: '/zh/' },
-          { text: '快速开始', link: '/zh/guide/quick-start' },
-          { text: 'Agent Skill', link: '/zh/guide/agent-skill' },
-          { text: '协议', link: '/zh/protocol/connection' },
-          { text: '事件', link: '/zh/events/live-like' },
-          { text: '礼物目录', link: '/zh/reference/gift-catalog' },
           { text: 'Demo', link: '/zh/demos/' },
-          { text: '示例', link: '/zh/samples/javascript' },
+          {
+            text: '开发文档',
+            activeMatch: '^/zh/(guide|protocol|events|reference|samples)/',
+            items: [
+              { text: '快速开始', link: '/zh/guide/quick-start' },
+              { text: 'Agent Skill', link: '/zh/guide/agent-skill' },
+              { text: '协议', link: '/zh/protocol/connection' },
+              { text: '事件', link: '/zh/events/live-like' },
+              { text: '礼物目录', link: '/zh/reference/gift-catalog' },
+              { text: '示例', link: '/zh/samples/javascript' },
+            ],
+          },
           { text: '申请接入', link: '/zh/apply' },
         ],
         sidebar: [
