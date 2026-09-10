@@ -1397,8 +1397,6 @@ html:has(.developer-application-page)::-webkit-scrollbar-thumb:hover {
 .developer-application-page .VPNavScreenAppearance,
 .developer-application-page .VPNavBarExtra .appearance { display: none; }
 
-html:has(.demo-dialog[open]) { overflow: hidden; }
-
 .developer-application-page .VPPage {
   width: 100%;
   max-width: none;

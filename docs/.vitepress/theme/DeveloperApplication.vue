@@ -7,11 +7,8 @@ const props = defineProps<{
 }>()
 
 const demoVideo = ref<HTMLVideoElement | null>(null)
-const fullDemoVideo = ref<HTMLVideoElement | null>(null)
-const demoDialog = ref<HTMLDialogElement | null>(null)
 const previewPlaying = ref(false)
 const journeyOpen = ref(false)
-let resumePreview = false
 let cleanUpMediaQueries: (() => void) | undefined
 const applicationForm = ref<HTMLFormElement | null>(null)
 const successPanel = ref<HTMLElement | null>(null)
@@ -37,10 +34,8 @@ const copy = computed(() =>
         demoEvent: '礼物事件 → 游戏动作',
         demoTitle: 'Tower Defense × LIVE Studio',
         demoDescription: '观看一份礼物如何变成防御塔，并实时改变 LIVE Studio 内的战局。',
-        watchDemo: '放大观看',
         pausePreview: '暂停预览',
         playPreview: '播放预览',
-        closeDemo: '关闭演示',
         journeySummary: '申请后会发生什么？',
         sectionIndex: '02 / 申请',
         applicationTitle: '四步接入 LIVE Studio',
@@ -141,10 +136,8 @@ const copy = computed(() =>
         demoEvent: 'GIFT EVENT → GAME ACTION',
         demoTitle: 'Tower Defense × LIVE Studio',
         demoDescription: 'Watch a gift become a tower and reshape the round inside LIVE Studio.',
-        watchDemo: 'Enlarge video',
         pausePreview: 'Pause preview',
         playPreview: 'Play preview',
-        closeDemo: 'Close demo',
         journeySummary: 'What happens after applying?',
         sectionIndex: '02 / APPLY',
         applicationTitle: 'Four steps to your first connection.',
@@ -328,25 +321,6 @@ const togglePreview = () => {
   else demoVideo.value?.pause()
 }
 
-const openDemo = () => {
-  if (!demoDialog.value) return
-  resumePreview = !demoVideo.value?.paused
-  demoVideo.value?.pause()
-  demoDialog.value.showModal()
-  // Load the full recording on demand; native controls include fullscreen.
-  if (fullDemoVideo.value && !fullDemoVideo.value.getAttribute('src')) {
-    fullDemoVideo.value.src = '/media/interactive-tower-defense-demo.mp4'
-  }
-  void fullDemoVideo.value?.play().catch(() => {})
-}
-
-const onDemoClosed = () => {
-  fullDemoVideo.value?.pause()
-  if (resumePreview && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    void demoVideo.value?.play().catch(() => {})
-  }
-}
-
 onMounted(() => {
   const compactLayout = window.matchMedia('(max-width: 1180px)')
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -412,7 +386,12 @@ onUnmounted(() => cleanUpMediaQueries?.())
             playsinline
             preload="metadata"
             poster="/media/interactive-tower-defense-demo.webp"
-            :aria-label="copy.demoAria"
+            role="button"
+            tabindex="0"
+            :aria-label="`${copy.demoAria} — ${previewPlaying ? copy.pausePreview : copy.playPreview}`"
+            @click="togglePreview"
+            @keydown.space.prevent="togglePreview"
+            @keydown.enter.prevent="togglePreview"
             @play="previewPlaying = true"
             @pause="previewPlaying = false"
           >
@@ -425,25 +404,9 @@ onUnmounted(() => cleanUpMediaQueries?.())
             <h2 id="demo-title">{{ copy.demoTitle }}</h2>
             <p>{{ copy.demoDescription }}</p>
           </div>
-          <div class="demo-actions">
-            <button class="demo-control demo-preview-toggle" type="button" @click="togglePreview">
-              {{ previewPlaying ? copy.pausePreview : copy.playPreview }}
-            </button>
-            <button class="demo-control demo-watch" type="button" @click="openDemo">
-              {{ copy.watchDemo }} <span aria-hidden="true">↗</span>
-            </button>
-          </div>
         </div>
       </article>
     </section>
-
-    <dialog ref="demoDialog" class="demo-dialog" aria-labelledby="full-demo-title" @close="onDemoClosed" @click="($event.target === demoDialog) && demoDialog?.close()">
-      <div class="demo-dialog__header">
-        <h2 id="full-demo-title">{{ copy.demoTitle }}</h2>
-        <button class="demo-control" type="button" autofocus @click="demoDialog?.close()">{{ copy.closeDemo }} <span aria-hidden="true">×</span></button>
-      </div>
-      <video ref="fullDemoVideo" controls playsinline preload="none" :aria-label="copy.demoAria" />
-    </dialog>
 
     <section class="application-section">
       <div class="application-intro">
@@ -659,6 +622,9 @@ onUnmounted(() => cleanUpMediaQueries?.())
   --apply-shadow-media: 0 38px 96px rgba(0, 0, 0, 0.42);
   --apply-shadow-panel: 0 34px 90px rgba(0, 0, 0, 0.34);
   --apply-media-border: rgba(255, 255, 255, 0.14);
+  --apply-media-glass: linear-gradient(to bottom, color-mix(in srgb, var(--tt-ink) 28%, transparent), color-mix(in srgb, var(--tt-ink) 78%, transparent));
+  --apply-media-glass-blur: 12px;
+  --apply-type-media-mobile: clamp(17px, 4.5vw, 22px);
   --apply-media-glow: radial-gradient(ellipse at 24% 35%, rgba(37, 244, 238, 0.16), transparent 65%), radial-gradient(ellipse at 84% 68%, rgba(254, 44, 85, 0.14), transparent 60%);
   --apply-media-edge: -3px 3px 0 rgba(37, 244, 238, 0.64), 3px -3px 0 rgba(254, 44, 85, 0.64);
   --apply-control-height: 44px;
@@ -994,6 +960,7 @@ onUnmounted(() => cleanUpMediaQueries?.())
 .apply-button--secondary:hover { border-color: rgba(37, 244, 238, 0.5); background: rgba(37, 244, 238, 0.08); }
 
 .demo-card {
+  position: relative;
   align-self: center;
   width: min(100%, 980px);
   justify-self: end;
@@ -1025,16 +992,21 @@ onUnmounted(() => cleanUpMediaQueries?.())
   width: 100%;
   height: 100%;
   object-fit: contain;
+  cursor: pointer;
 }
 
+.demo-media video:focus-visible { outline: 2px solid var(--tt-cyan); outline-offset: -4px; }
+
 .demo-caption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  position: absolute;
+  z-index: 1;
+  inset: auto 0 0;
   padding: 24px;
   border-top: 1px solid var(--apply-media-border);
+  background: var(--apply-media-glass);
+  -webkit-backdrop-filter: blur(var(--apply-media-glass-blur)) saturate(115%);
+  backdrop-filter: blur(var(--apply-media-glass-blur)) saturate(115%);
+  pointer-events: none;
 }
 
 .demo-story span {
@@ -1054,48 +1026,7 @@ onUnmounted(() => cleanUpMediaQueries?.())
 
 .demo-story p { max-width: 430px; margin: 0; color: #c9cbd2; font-size: 12px; line-height: 1.45; }
 
-.demo-control {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: var(--apply-control-height);
-  padding: 0 14px;
-  border: 1px solid var(--apply-media-border);
-  border-radius: var(--apply-radius-control);
-  background: var(--tt-ink);
-  color: var(--tt-text);
-  font: inherit;
-  font-size: var(--apply-type-control);
-  font-weight: var(--apply-weight-control);
-  cursor: pointer;
-  transition: border-color 150ms ease, background-color 150ms ease;
-}
-
-.demo-control:hover { border-color: var(--tt-cyan); background: var(--tt-surface-raised); }
-.demo-control:active { background: var(--tt-surface); }
-.demo-control:focus-visible,
 .application-journey summary:focus-visible { outline: 2px solid var(--tt-cyan); outline-offset: 4px; }
-.demo-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.demo-watch { flex-shrink: 0; }
-
-.demo-dialog {
-  width: min(1200px, calc(100vw - 32px));
-  max-width: none;
-  max-height: calc(100dvh - 32px);
-  margin: auto;
-  padding: 0;
-  border: 1px solid var(--apply-media-border);
-  border-radius: var(--apply-radius-card);
-  background: var(--tt-ink);
-  color: var(--tt-text);
-  box-shadow: var(--apply-shadow-media);
-}
-
-.demo-dialog::backdrop { background: rgba(0, 0, 0, 0.86); backdrop-filter: blur(12px); }
-.demo-dialog__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; }
-.demo-dialog__header h2 { font-size: var(--apply-type-control); font-weight: var(--apply-weight-control); line-height: 1.4; }
-.demo-dialog video { display: block; width: 100%; max-height: calc(100dvh - 116px); }
 
 .application-section {
   position: relative;
@@ -1830,9 +1761,8 @@ onUnmounted(() => cleanUpMediaQueries?.())
   .apply-lede { font-size: 15px; }
   .apply-actions { display: grid; }
   .apply-button { width: 100%; }
-  .demo-caption { padding: 20px; gap: 16px; }
-  .demo-actions { width: 100%; }
-  .demo-actions .demo-control { flex: 1; }
+  .demo-caption { padding: 10px 14px; }
+  .demo-story h2 { font-size: var(--apply-type-media-mobile); line-height: 1.15; }
   .application-section { margin-top: 82px; padding-top: 44px; }
   .application-intro h2 { font-size: 32px; }
   .apply-steps { grid-template-columns: 1fr; gap: 24px; }
@@ -1869,7 +1799,6 @@ onUnmounted(() => cleanUpMediaQueries?.())
   .form-step { animation: none; }
 
   .apply-button,
-  .demo-control,
   .demo-card,
   .form-progress li,
   .form-progress li::before,
