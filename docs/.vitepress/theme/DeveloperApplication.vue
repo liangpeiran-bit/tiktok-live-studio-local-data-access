@@ -594,7 +594,7 @@ onUnmounted(() => cleanUpMediaQueries?.())
 
         <footer class="apply-shell__footer">
           <p>{{ copy.informationUse }}</p>
-          <p>{{ copy.support }} <a href="mailto:liangpeiran@bytedance.com">liangpeiran@bytedance.com</a></p>
+          <p>{{ copy.support }} <a href="mailto:TikTok_LIVE_Studio_Office@bytedance.com">TikTok_LIVE_Studio_Office@bytedance.com</a></p>
           <span v-for="item in copy.footer" :key="item">{{ item }}</span>
         </footer>
       </section>

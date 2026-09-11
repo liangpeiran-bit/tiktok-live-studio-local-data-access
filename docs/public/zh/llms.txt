@@ -56,4 +56,4 @@
 - [本地客户端源码](https://tiktok-live-studio-local-data-access.pages.dev/samples/local-client.mjs): 有界发现、鉴权、取消与事件去重。
 - [塔防视频案例](https://tiktok-live-studio-local-data-access.pages.dev/zh/demos/tower-defense): 录制视频，不是可试玩游戏。
 - [英文检索别名](https://tiktok-live-studio-local-data-access.pages.dev/data/gift-aliases.json): 仅覆盖文档示例，不是全球官方名称列表。
-- [联系支持](mailto:liangpeiran@bytedance.com): 申请与接入支持；不要发送密钥。审核结果通过邮箱通知，不承诺固定审核时长。
+- [联系支持](mailto:TikTok_LIVE_Studio_Office@bytedance.com): 申请与接入支持；不要发送密钥。审核结果通过邮箱通知，不承诺固定审核时长。

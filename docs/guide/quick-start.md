@@ -12,7 +12,7 @@ The goal is one authenticated connection and one real event. You do not need to 
 - The installation and account enabled for local data access, as described in your approval email.
 - Your issued `app_id`, `key_id`, and `secret`.
 
-There is no verified public minimum LIVE Studio build listed here yet. Use the setup instructions supplied with your approval; updating LIVE Studio alone does not enable access. If those instructions or credentials are missing, email [liangpeiran@bytedance.com](mailto:liangpeiran@bytedance.com).
+There is no verified public minimum LIVE Studio build listed here yet. Use the setup instructions supplied with your approval; updating LIVE Studio alone does not enable access. If those instructions or credentials are missing, email [TikTok_LIVE_Studio_Office@bytedance.com](mailto:TikTok_LIVE_Studio_Office@bytedance.com).
 
 ## 2. Run the local starter
 

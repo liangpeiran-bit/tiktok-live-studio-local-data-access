@@ -2,7 +2,7 @@
 
 ## Contact support
 
-For access, missing setup instructions, or an unresolved integration issue, contact [liangpeiran@bytedance.com](mailto:liangpeiran@bytedance.com). Include your LIVE Studio version, client runtime, last connection status, and a redacted error code. Never send your `secret`, full `AUTH` payload, or raw viewer data. Application results are sent by email; review times vary.
+For access, missing setup instructions, or an unresolved integration issue, contact [TikTok_LIVE_Studio_Office@bytedance.com](mailto:TikTok_LIVE_Studio_Office@bytedance.com). Include your LIVE Studio version, client runtime, last connection status, and a redacted error code. Never send your `secret`, full `AUTH` payload, or raw viewer data. Application results are sent by email; review times vary.
 
 Use this page when a local client cannot discover, authenticate, or receive events from LIVE Studio.
 

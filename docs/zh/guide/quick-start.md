@@ -12,7 +12,7 @@
 - 按获批邮件说明，已开启本地数据能力的安装版本和账号。
 - 为应用签发的 `app_id`、`key_id` 和 `secret`。
 
-目前这里尚未列出已确认的最低 LIVE Studio 版本。请以获批邮件中的配置说明为准；仅升级客户端不代表能力已开通。缺少说明或凭证时，请联系 [liangpeiran@bytedance.com](mailto:liangpeiran@bytedance.com)。
+目前这里尚未列出已确认的最低 LIVE Studio 版本。请以获批邮件中的配置说明为准；仅升级客户端不代表能力已开通。缺少说明或凭证时，请联系 [TikTok_LIVE_Studio_Office@bytedance.com](mailto:TikTok_LIVE_Studio_Office@bytedance.com)。
 
 ## 2. 运行本地示例
 

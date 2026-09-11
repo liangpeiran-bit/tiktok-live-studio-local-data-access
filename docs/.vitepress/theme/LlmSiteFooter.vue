@@ -30,7 +30,7 @@ const content = computed(() => isChinese.value
         <span aria-hidden="true">·</span>
         <a :href="content.fullPath">{{ content.full }}</a>
         <span aria-hidden="true">·</span>
-        <a href="mailto:liangpeiran@bytedance.com">{{ isChinese ? '联系支持' : 'Contact support' }}</a>
+        <a href="mailto:TikTok_LIVE_Studio_Office@bytedance.com">{{ isChinese ? '联系支持' : 'Contact support' }}</a>
       </nav>
     </div>
   </footer>
