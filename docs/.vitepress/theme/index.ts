@@ -11,6 +11,7 @@ import LlmSiteFooter from './LlmSiteFooter.vue'
 import Mermaid from './Mermaid.vue'
 import './custom.css'
 import './home.css'
+import './headline-motion.css'
 
 export default {
   extends: DefaultTheme,

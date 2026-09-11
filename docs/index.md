@@ -4,12 +4,12 @@ description: Build games the whole live room can play. Connect likes, gifts, and
 
 hero:
   kicker: LIVE STUDIO · DATA ACCESS
-  text: Turn live interactions into gameplay
+  text: Build for the moment the chat changes the game.
   headline:
-    lead: Turn
-    subject: live interactions
-    bridge: into
-    accent: gameplay
+    lead: Build for the moment
+    lines:
+      - the chat changes
+      - the game.
   tagline: A like builds momentum. A gift changes the round. Bring the live room into your game, and decide what happens next.
   actions:
     - theme: brand

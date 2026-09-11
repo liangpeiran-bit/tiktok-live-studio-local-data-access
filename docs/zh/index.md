@@ -4,12 +4,11 @@ description: 通过 LIVE Studio Data Access，将点赞、礼物和评论变成�
 
 hero:
   kicker: LIVE STUDIO · DATA ACCESS
-  text: 让直播互动，实时进入你的游戏
+  text: 为直播互动而生，让弹幕改变游戏
   headline:
-    lead: 让
-    subject: 直播互动，
-    bridge: 实时进入
-    accent: 你的游戏
+    lead: 为直播互动而生
+    lines:
+      - 让弹幕改变游戏
   tagline: 一次点赞积蓄能量，一份礼物改变战局。让直播间参与进来，接下来发生什么，由你的游戏决定。
   actions:
     - theme: brand

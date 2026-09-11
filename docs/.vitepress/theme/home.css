@@ -86,8 +86,13 @@
   border-bottom: 1px solid var(--tt-color-border);
 }
 .home-runtime p { margin: 0; color: var(--tt-color-text-secondary); font-size: 14px; }
-.home-runtime ul { display: flex; flex-wrap: wrap; gap: 16px 28px; margin: 0; padding: 0; list-style: none; }
-.home-runtime li { margin: 0; color: var(--tt-color-text-primary); font-size: 13px; font-weight: 600; }
+.VPHome .home-runtime ul { display: flex; align-items: center; flex-wrap: wrap; gap: 16px 28px; margin: 0; padding: 0; list-style: none; }
+.home-runtime li { color: var(--tt-color-text-primary); font-size: 13px; font-weight: 600; line-height: 1.5; }
+/* Outrank the document theme's .vp-doc li + li margin, only in homepage layouts. */
+.VPHome .home-runtime li,
+.VPHome .home-runtime li + li,
+.VPHome .home-steps li,
+.VPHome .home-steps li + li { margin: 0; padding: 0; }
 .home-section { margin-top: var(--home-section-gap); }
 .home-section__heading { max-width: 750px; }
 .home-editorial .home-eyebrow,
@@ -137,9 +142,11 @@
 .home-editorial .tt-demo-showcase__header span { max-width: 620px; margin-top: 16px; font-size: 16px; }
 .home-editorial .tt-demo-showcase__header > a b { color: var(--tt-color-text-primary); }
 .home-editorial .tt-demo-showcase__grid { gap: 28px; }
-.home-editorial .tt-demo-card { box-shadow: none; background: var(--tt-color-surface); }
+.home-editorial .tt-demo-card { display: flex; flex-direction: column; box-shadow: none; background: var(--tt-color-surface); }
 .home-editorial .tt-demo-card:hover { box-shadow: var(--tt-shadow-card); transform: translateY(-2px); }
-.home-editorial .tt-demo-card__body { padding: 26px; }
+.home-editorial .tt-demo-card__visual { flex-shrink: 0; }
+.home-editorial .tt-demo-card__body { display: flex; flex: 1; flex-direction: column; align-items: flex-start; padding: 26px; }
+.home-editorial .tt-demo-card footer { margin-top: auto; padding-top: 20px; }
 .home-editorial .tt-demo-card__body > p { color: var(--tt-color-text-secondary); font-weight: 600; }
 .home-editorial .tt-demo-card__body h3 { margin-top: 8px; font-size: 24px; font-weight: 680; }
 .home-editorial .tt-demo-card__body > span { min-height: 0; font-size: 15px; }
@@ -147,7 +154,7 @@
 .home-editorial .tt-demo-card__visual img { filter: none; transform: none; }
 .home-editorial .tt-demo-button--brand { box-shadow: none; }
 .home-connect { padding-top: var(--home-section-gap); border-top: 1px solid var(--tt-color-border); }
-.home-editorial .home-steps { padding: 0; list-style: none; }
+.VPHome .home-editorial .home-steps { margin: 36px 0 0; padding: 0; list-style: none; }
 .home-steps li { display: flex; flex-direction: column; align-items: flex-start; margin: 0; }
 .home-steps li > span { color: var(--tt-color-text-secondary); font-size: 13px; font-weight: 600; }
 .home-local-note { margin-top: 36px; padding: 20px 24px; color: var(--tt-color-text-secondary); border-radius: var(--tux-v2-radius-container-level0-large); background: var(--tt-color-bg-grouped); font-size: 13px; line-height: 1.75; }
@@ -160,7 +167,7 @@
   .VPHome .VPHomeHero { padding: 48px 48px 40px !important; }
   .VPHome .VPHomeHero .container { grid-template-columns: 1fr; gap: 36px; }
   .VPHome .VPHomeHero.has-image .main { max-width: 620px; }
-  .VPHome .VPHomeHero .tagline { max-width: 520px; }
+  .VPHome .VPHomeHero.has-image .tagline { max-width: 520px; }
   .VPHome .VPHomeHero .image { max-width: 800px; }
   .VPHome .vp-doc.container { padding: 0 48px 64px; }
   .home-editorial { --home-section-gap: 64px; }
@@ -174,13 +181,14 @@
   .VPHome .VPHomeHero { padding: 40px 24px 32px !important; }
   .VPHome .VPHomeHero .actions { display: flex; flex-direction: row; flex-wrap: wrap; }
   .VPHome .VPHomeHero .action { width: auto; }
-  .VPHome .VPHomeHero .tagline { font-size: 16px; }
+  .VPHome .VPHomeHero.has-image .tagline { font-size: 16px; }
   .VPHome .VPHomeHero .actions .VPButton { min-width: 0; padding: 0 16px; font-size: 13px; }
   .VPHome .vp-doc.container { padding: 0 24px 48px; }
   .home-hero-kicker { margin-bottom: 16px; }
   .home-editorial { --home-section-gap: 52px; }
-  .home-runtime ul { gap: 8px 18px; }
+  .VPHome .home-runtime ul { gap: 8px 18px; }
   .home-mechanics, .home-steps { grid-template-columns: 1fr; gap: 28px; margin-top: 28px; }
+  .VPHome .home-editorial .home-steps { margin-top: 28px; }
   .home-mechanics p, .home-steps p { margin-bottom: 14px; }
   .home-editorial .tt-demo-showcase__header { align-items: flex-start; flex-direction: column; gap: 18px; }
   .home-editorial .tt-demo-showcase__grid { grid-template-columns: 1fr; gap: 24px; }
