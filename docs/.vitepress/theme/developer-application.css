@@ -10,10 +10,11 @@
   --apply-soft: var(--tt-color-bg-grouped);
   --apply-border: var(--tt-color-border);
   --apply-border-strong: var(--tt-color-border-strong);
-  --apply-input-border: #8a8f9c;
-  --apply-accent: #007d77;
+  --apply-input-border: var(--tt-color-border-strong);
+  --apply-accent: var(--tt-brand-pink);
+  --apply-accent-cyan: var(--tt-brand-cyan);
   --apply-on-accent: #ffffff;
-  --apply-error: #b42340;
+  --apply-error: var(--tt-brand-pink);
   --apply-success: #147d49;
   --apply-on-dark: #ffffff;
   --apply-layout-width: 1180px;
@@ -33,7 +34,10 @@
   --apply-radius-card: var(--tux-v2-radius-container-level1-large);
   --apply-shadow-panel: var(--tt-shadow-card);
   --apply-button-edge: -2px 2px 0 var(--tt-cyan), 2px -2px 0 var(--tt-pink);
-  --apply-focus-ring: 0 0 0 3px color-mix(in srgb, var(--apply-accent) 16%, transparent);
+  --apply-focus-ring:
+    0 0 0 3px color-mix(in srgb, var(--apply-accent-cyan) 24%, transparent),
+    -2px 2px 0 color-mix(in srgb, var(--apply-accent-cyan) 72%, transparent),
+    2px -2px 0 color-mix(in srgb, var(--apply-accent) 64%, transparent);
   position: relative;
   isolation: isolate;
   display: grid;
@@ -49,9 +53,9 @@
 }
 
 .dark .apply-page {
-  --apply-input-border: #656a79;
-  --apply-accent: var(--tt-cyan);
-  --apply-on-accent: var(--tt-ink);
+  --apply-input-border: var(--tt-color-border-strong);
+  --apply-accent: var(--tt-brand-pink);
+  --apply-on-accent: #ffffff;
   --apply-error: #ff9cad;
   --apply-success: #7fe2a4;
 }
@@ -114,6 +118,7 @@
 .form-button:disabled { opacity: 0.55; cursor: wait; }
 
 .apply-shell {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: auto;
@@ -121,21 +126,60 @@
   min-width: 0;
   scroll-margin-top: calc(var(--vp-nav-height) + 24px);
   overflow: hidden;
-  border: 1px solid var(--apply-border);
+  border: 1px solid color-mix(in srgb, var(--apply-accent) 24%, var(--apply-border));
   border-radius: var(--apply-radius-card);
-  background: var(--apply-panel);
-  box-shadow: var(--apply-shadow-panel);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--apply-accent-cyan) 5%, var(--apply-panel)), var(--apply-panel) 38%, color-mix(in srgb, var(--apply-accent) 5%, var(--apply-panel)));
+  box-shadow:
+    var(--apply-shadow-panel),
+    -3px 3px 0 color-mix(in srgb, var(--apply-accent-cyan) 25%, transparent),
+    3px -3px 0 color-mix(in srgb, var(--apply-accent) 22%, transparent);
+}
+.apply-shell::before {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 22px;
+  left: 22px;
+  height: 2px;
+  content: '';
+  border-radius: 0 0 var(--tux-v2-radius-content-small) var(--tux-v2-radius-content-small);
+  background: var(--tt-gradient-brand);
+  pointer-events: none;
 }
 /* Size to the active step, so actions follow the fields rather than the viewport. */
 .apply-shell:focus { outline: none; }
-.apply-shell__header { padding: 28px 32px 16px; }
+.apply-shell__header {
+  padding: 28px 32px 16px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--apply-accent-cyan) 8%, transparent), transparent 45%, color-mix(in srgb, var(--apply-accent) 7%, transparent));
+}
 .eyebrow { color: var(--tt-muted); font-size: var(--apply-type-kicker); font-weight: var(--apply-weight-label); letter-spacing: 0.1em; }
 .apply-shell__header h2 { margin: 10px 0 0; color: var(--tt-text); font-size: var(--apply-type-panel-title); font-weight: var(--apply-weight-title); line-height: 1.3; letter-spacing: -0.025em; }
 .native-form { padding: 0 32px; }
 .form-overview { scroll-margin-top: calc(var(--vp-nav-height) + 24px); }
 .form-overview > p { margin: 0; color: var(--tt-muted); font-size: var(--apply-type-small); line-height: 1.6; }
 .form-progress { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 24px 0 0; padding: 0; list-style: none; }
-.form-progress li { display: flex; min-width: 0; align-items: center; gap: 8px; padding-bottom: 14px; color: var(--tt-muted); border-bottom: 2px solid var(--apply-border); }
+.form-progress li {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 14px;
+  color: var(--tt-muted);
+  border-bottom: 2px solid var(--apply-border);
+}
+.form-progress li::after {
+  position: absolute;
+  right: 0;
+  bottom: -2px;
+  left: 0;
+  height: 2px;
+  content: '';
+  opacity: 0;
+  background: var(--tt-gradient-brand);
+  transition: opacity 160ms ease;
+}
 .form-progress li > span {
   display: grid;
   place-items: center;
@@ -149,9 +193,23 @@
   transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 .form-progress li > strong { font-size: var(--apply-type-small); font-weight: var(--apply-weight-label); line-height: 1.35; }
-.form-progress .is-active { color: var(--tt-text); border-bottom-color: var(--apply-accent); }
-.form-progress .is-complete { border-bottom-color: var(--apply-accent); }
-.form-progress .is-active > span, .form-progress .is-complete > span { color: var(--apply-on-accent); border-color: var(--apply-accent); background: var(--apply-accent); }
+.form-progress .is-active { color: var(--tt-text); }
+.form-progress .is-active::after, .form-progress .is-complete::after { opacity: 1; }
+.form-progress .is-complete { color: var(--tt-text); }
+.form-progress .is-active > span {
+  color: var(--apply-on-accent);
+  border-color: transparent;
+  background:
+    linear-gradient(var(--tt-brand-black), var(--tt-brand-black)) padding-box,
+    var(--tt-gradient-brand) border-box;
+  box-shadow: var(--apply-button-edge);
+}
+.form-progress .is-complete > span {
+  color: var(--tt-brand-black);
+  border-color: var(--apply-accent-cyan);
+  background: var(--apply-accent-cyan);
+  box-shadow: 2px -2px 0 color-mix(in srgb, var(--apply-accent) 70%, transparent);
+}
 .native-form form { margin: 0; }
 .form-panels { overflow: visible; padding: 24px 2px 28px; }
 .form-honeypot { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; overflow: hidden !important; clip-path: inset(50%) !important; border: 0 !important; }
@@ -205,8 +263,15 @@
   cursor: pointer;
   transition: background-color 160ms ease, border-color 160ms ease;
 }
-.event-option:hover { border-color: var(--apply-accent); background: var(--apply-soft); }
-.event-option:has(input:checked) { border-color: var(--apply-accent); background: color-mix(in srgb, var(--apply-accent) 6%, var(--apply-panel)); }
+.event-option:hover {
+  border-color: color-mix(in srgb, var(--apply-accent-cyan) 72%, var(--apply-border-strong));
+  background: linear-gradient(120deg, color-mix(in srgb, var(--apply-accent-cyan) 7%, var(--apply-panel)), var(--apply-soft));
+}
+.event-option:has(input:checked) {
+  border-color: var(--apply-accent);
+  background: linear-gradient(120deg, color-mix(in srgb, var(--apply-accent-cyan) 11%, var(--apply-panel)), color-mix(in srgb, var(--apply-accent) 8%, var(--apply-panel)));
+  box-shadow: -2px 2px 0 color-mix(in srgb, var(--apply-accent-cyan) 56%, transparent), 2px -2px 0 color-mix(in srgb, var(--apply-accent) 44%, transparent);
+}
 .event-option input, .consent-field input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .event-option__check, .consent-field__check {
   position: relative;
@@ -231,7 +296,13 @@
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
-.event-option input:checked + .event-option__check, .consent-field input:checked + .consent-field__check { border-color: var(--apply-accent); background: var(--apply-accent); }
+.event-option input:checked + .event-option__check, .consent-field input:checked + .consent-field__check {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--tt-brand-black), var(--tt-brand-black)) padding-box,
+    var(--tt-gradient-brand) border-box;
+  box-shadow: 1px -1px 0 var(--apply-accent-cyan), -1px 1px 0 var(--apply-accent);
+}
 .event-option input:checked + .event-option__check::after, .consent-field input:checked + .consent-field__check::after { opacity: 1; }
 .event-option input:focus-visible + .event-option__check, .consent-field input:focus-visible + .consent-field__check { outline: 2px solid var(--apply-accent); outline-offset: 3px; }
 .event-option strong { display: block; color: var(--tt-text); font-size: var(--apply-type-label); font-weight: var(--apply-weight-label); line-height: 1.5; }
