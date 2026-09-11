@@ -97,3 +97,28 @@ test('gift search aliases reference real distinct snapshot IDs', async () => {
   for (const id of Object.keys(aliases)) assert.equal(catalog.gifts.filter(g => g.id === id).length, 1)
   assert.ok(aliases['5655'].includes('Rose')); assert.ok(aliases['7569'].includes('Game Controller'))
 })
+
+test('application form sizes to its content without a viewport-height spacer or nested scroller', async () => {
+  const css = await readFile(new URL('../docs/.vitepress/theme/developer-application.css', import.meta.url), 'utf8')
+  const shell = css.match(/\.apply-shell\s*\{([^}]+)\}/)?.[1]
+  const panels = css.match(/\.form-panels\s*\{([^}]+)\}/)?.[1]
+  assert.ok(shell && panels)
+  assert.match(shell, /height:\s*auto/)
+  assert.match(panels, /overflow:\s*visible/)
+  assert.doesNotMatch(css, /\b(?:height|min-height|max-height):[^;}]*\b(?:\d+(?:\.\d+)?)(?:s|d|l)?vh\b/)
+  assert.doesNotMatch(panels, /flex:\s*1|overflow-y:\s*(?:auto|scroll)/)
+})
+
+test('application keeps the guidance beside one three-step form without the Home showcase', async () => {
+  const source = await readFile(new URL('../docs/.vitepress/theme/DeveloperApplication.vue', import.meta.url), 'utf8')
+  const template = source.slice(source.indexOf('<template>'))
+  assert.match(template, /class="application-intro"/)
+  assert.match(template, /class="apply-shell"/)
+  assert.ok(template.indexOf('class="application-intro"') < template.indexOf('class="apply-shell"'))
+  assert.match(template, /v-for="\(step, index\) in copy\.steps"/)
+  assert.match(template, /copy\.accessNote/)
+  assert.match(template, /copy\.secretNote/)
+  assert.equal((template.match(/<form\b/g) || []).length, 1)
+  assert.equal((template.match(/<fieldset\b/g) || []).length, 3)
+  assert.doesNotMatch(template, /<video\b|apply-masthead/)
+})

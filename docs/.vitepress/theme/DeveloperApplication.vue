@@ -195,9 +195,12 @@ const focusCurrentStep = () => {
   void nextTick(() => {
     const panel = applicationForm.value?.querySelector<HTMLElement>(`[data-form-step="${currentStep.value}"]`)
     panel?.querySelector<HTMLElement>('legend')?.focus({ preventScroll: true })
-    applicationForm.value?.querySelector('.form-panels')?.scrollTo({ top: 0, behavior: 'instant' })
-    if (window.matchMedia('(max-width: 959px), (max-height: 680px)').matches) {
-      applicationForm.value?.previousElementSibling?.scrollIntoView({ block: 'start', behavior: 'instant' })
+    const overview = applicationForm.value?.previousElementSibling
+    if (!overview) return
+    const bounds = overview.getBoundingClientRect()
+    const scrollInset = Number.parseFloat(window.getComputedStyle(overview).scrollMarginTop) || 0
+    if (bounds.top < scrollInset || bounds.bottom > window.innerHeight) {
+      overview.scrollIntoView({ block: 'start', behavior: 'instant' })
     }
   })
 }
