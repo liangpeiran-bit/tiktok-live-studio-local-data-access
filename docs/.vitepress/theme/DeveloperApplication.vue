@@ -19,6 +19,18 @@ const isZh = computed(() => props.locale === 'zh')
 const copy = computed(() =>
   isZh.value
     ? {
+        sectionLabel: '申请接入',
+        applicationTitle: '四步接入 LIVE Studio',
+        applicationDescription: '先告诉我们你想做什么。审核通过后，开发凭证和接入说明会发送到你的申请邮箱。',
+        stepsAria: 'LIVE Studio 开发者接入流程',
+        steps: [
+          { title: '提交申请', description: '填写开发者、游戏和所需直播事件信息。' },
+          { title: 'LIVE Studio 官方审核', description: '团队确认使用场景、测试信息与接入计划，审核结果通过邮箱通知。' },
+          { title: '邮件获取开发凭证', description: '审核通过后，在申请邮箱中查收凭证和配置说明。' },
+          { title: '连接本地 LIVE Studio', description: '在主播同一台设备上，使用 app_id、key_id 和 secret 完成 WebSocket 鉴权，开始接收已开放的直播事件。' },
+        ],
+        accessNote: '提交申请不代表已获得接入资格，请等待审核结果。',
+        secretNote: '请勿将 Secret Key 提交到公开仓库或分享给无关人员。',
         program: '开发者计划',
         requestAccess: '申请抢先体验',
         formIntro: '填写约需 3 分钟。带 * 的项目为必填项，审核结果通过邮箱通知。',
@@ -79,6 +91,18 @@ const copy = computed(() =>
         support: '申请或接入遇到问题？',
       }
     : {
+        sectionLabel: 'APPLY FOR ACCESS',
+        applicationTitle: 'Four steps to your first connection.',
+        applicationDescription: 'Tell us what you are building. Once approved, your developer credentials and setup instructions will arrive by email.',
+        stepsAria: 'LIVE Studio developer access journey',
+        steps: [
+          { title: 'Submit your application', description: 'Share your developer profile, game, and requested live events.' },
+          { title: 'LIVE Studio review', description: 'Our team reviews your use case, testing details, and launch plan. Results are sent by email.' },
+          { title: 'Receive developer credentials', description: 'Once approved, check your application email for credentials and setup instructions.' },
+          { title: 'Connect to LIVE Studio', description: 'On the creator’s machine, authenticate with your app_id, key_id, and secret to receive enabled live events over WebSocket.' },
+        ],
+        accessNote: 'Submitting an application does not grant access. Please wait for the review result.',
+        secretNote: 'Never commit your Secret Key to a public repository or share it outside your team.',
         program: 'DEVELOPER PROGRAM',
         requestAccess: 'Request early access',
         formIntro: 'About 3 minutes. Fields marked * are required. Review results are sent by email.',
@@ -172,7 +196,7 @@ const focusCurrentStep = () => {
     const panel = applicationForm.value?.querySelector<HTMLElement>(`[data-form-step="${currentStep.value}"]`)
     panel?.querySelector<HTMLElement>('legend')?.focus({ preventScroll: true })
     applicationForm.value?.querySelector('.form-panels')?.scrollTo({ top: 0, behavior: 'instant' })
-    if (window.matchMedia('(max-width: 620px), (max-height: 680px)').matches) {
+    if (window.matchMedia('(max-width: 959px), (max-height: 680px)').matches) {
       applicationForm.value?.previousElementSibling?.scrollIntoView({ block: 'start', behavior: 'instant' })
     }
   })
@@ -231,11 +255,32 @@ const handleSubmit = async () => {
 
 <template>
   <main class="apply-page" :class="{ 'apply-page--zh': isZh }" :lang="isZh ? 'zh-CN' : 'en'">
+    <section class="application-intro" aria-labelledby="application-intro-title">
+      <span class="section-index">{{ copy.sectionLabel }}</span>
+      <h1 id="application-intro-title">{{ copy.applicationTitle }}</h1>
+      <p class="application-description">{{ copy.applicationDescription }}</p>
+
+      <ol class="apply-steps" :aria-label="copy.stepsAria">
+        <li v-for="(step, index) in copy.steps" :key="step.title">
+          <span class="step-marker" aria-hidden="true">{{ index + 1 }}</span>
+          <div class="step-content">
+            <h2>{{ step.title }}</h2>
+            <p>{{ step.description }}</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="application-notes">
+        <p>{{ copy.accessNote }}</p>
+        <p>{{ copy.secretNote }}</p>
+      </div>
+    </section>
+
     <section id="application" class="apply-shell" aria-labelledby="application-title" tabindex="-1">
       <header class="apply-shell__header">
         <div>
           <span class="eyebrow">{{ copy.program }}</span>
-          <h1 id="application-title">{{ copy.requestAccess }}</h1>
+          <h2 id="application-title">{{ copy.requestAccess }}</h2>
         </div>
       </header>
 
@@ -247,7 +292,7 @@ const handleSubmit = async () => {
         tabindex="-1"
       >
         <span class="submission-success__eyebrow"><i aria-hidden="true"></i>{{ copy.successEyebrow }}</span>
-        <h2>{{ copy.successTitle }}</h2>
+        <h3>{{ copy.successTitle }}</h3>
         <p>{{ copy.successDescription }}</p>
         <small>{{ copy.successNote }}</small>
       </div>
