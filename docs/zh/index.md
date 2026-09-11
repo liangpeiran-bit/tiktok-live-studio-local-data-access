@@ -1,58 +1,79 @@
 ---
 layout: home
+description: 通过 LIVE Studio Data Access，将点赞、礼物和评论变成实时游戏玩法，让整个直播间一起参与。
 
 hero:
+  kicker: LIVE STUDIO · DATA ACCESS
   text: 让直播互动，实时进入你的游戏
   headline:
     lead: 让
     subject: 直播互动，
     bridge: 实时进入
     accent: 你的游戏
-  tagline: 通过主播本机的 WebSocket，将点赞、礼物和评论转化为 H5、Unity、Unreal 游戏中的实时玩法。
+  tagline: 一次点赞积蓄能量，一份礼物改变战局。让直播间参与进来，接下来发生什么，由你的游戏决定。
   actions:
     - theme: brand
       text: 申请接入
       link: /zh/apply
     - theme: alt
-      text: 阅读开发文档
+      text: 开始开发
       link: /zh/guide/quick-start
-
-features:
-  - title: 本机 WebSocket
-    details: Gateway 只监听 127.0.0.1，让直播数据留在主播设备内，接入简单且低延迟。
-  - title: 可控事件范围
-    details: 客户端完成凭证鉴权后，只会收到当前应用开放的 IM 消息类型。
-  - title: 不限制游戏技术栈
-    details: 使用稳定的 JSON 事件协议连接 H5、Unity、Unreal 或任意支持 WebSocket 的运行时。
 ---
+
+<div class="home-editorial">
+
+<div class="home-runtime">
+  <p>引擎由你选，玩法由你定。</p>
+  <ul aria-label="支持的运行环境"><li>H5 / Web</li><li>Unity</li><li>Unreal</li><li>任意 WebSocket 客户端</li></ul>
+</div>
+
+<section class="home-section" aria-labelledby="home-interactions">
+  <header class="home-section__heading">
+    <p class="home-eyebrow">从观看，到参与</p>
+    <h2 id="home-interactions">让整个直播间，一起玩。</h2>
+    <p>从观众熟悉的互动出发。每次点赞、礼物和评论如何改变游戏，交给你来设计。</p>
+  </header>
+  <div class="home-mechanics">
+    <article>
+      <span class="home-mechanics__label">点赞</span>
+      <h3>每一次点赞，都在积蓄力量。</h3>
+      <p>填满全场共享的能量条，为阵营加成，或解锁下一波挑战。让小小的点赞汇成共同的目标。</p>
+      <a href="/zh/events/live-like">了解点赞事件 <span aria-hidden="true">→</span></a>
+    </article>
+    <article>
+      <span class="home-mechanics__label">礼物</span>
+      <h3>让礼物，成为玩法的一部分。</h3>
+      <p>一朵玫瑰生成一座防御塔，另一份礼物触发一个技能。自由选择礼物 ID，定义属于你的效果。</p>
+      <a href="/zh/reference/gift-catalog">浏览礼物目录 <span aria-hidden="true">→</span></a>
+    </article>
+    <article>
+      <span class="home-mechanics__label">评论</span>
+      <h3>下一步，听听直播间的。</h3>
+      <p>用评论选择阵营、投票决定路线，或发起新的挑战。让观众不只是看比赛，也能参与其中。</p>
+      <a href="/zh/events/live-chat">了解评论事件 <span aria-hidden="true">→</span></a>
+    </article>
+  </div>
+</section>
 
 <DemoShowcase locale="zh" compact />
 
-## 这是什么？
+<section class="home-section home-connect" aria-labelledby="home-connect">
+  <header class="home-section__heading">
+    <p class="home-eyebrow">为你的技术栈而生</p>
+    <h2 id="home-connect">接上 LIVE Studio，继续做你的游戏。</h2>
+    <p>通过本机 WebSocket 接收已开放的 JSON 直播事件。保留熟悉的引擎、游戏循环，以及对玩法的完整控制。</p>
+  </header>
+  <ol class="home-steps">
+    <li><span aria-hidden="true">01</span><h3>告诉我们，你想做什么。</h3><p>提交游戏想法与所需事件。申请通过后，开发者凭证和配置说明将通过邮箱发送给你。</p><a href="/zh/apply">申请抢先体验 <span aria-hidden="true">→</span></a></li>
+    <li><span aria-hidden="true">02</span><h3>跑通第一次连接。</h3><p>将客户端与 LIVE Studio 运行在同一台设备上，发现 Gateway，再使用下发的凭证完成鉴权。</p><a href="/zh/guide/quick-start">阅读快速开始 <span aria-hidden="true">→</span></a></li>
+    <li><span aria-hidden="true">03</span><h3>把下一条事件，变成玩法。</h3><p>为事件绑定游戏动作并开始测试。先从一次点赞或评论入手，再逐步完善自己的互动规则。</p><a href="/zh/samples/h5">查看 H5 接入示例 <span aria-hidden="true">→</span></a></li>
+  </ol>
+  <aside class="home-local-note"><strong>在主播本机运行。</strong> Gateway 只监听 127.0.0.1，并投递当前应用已开放的消息类型。它不会向观众设备推送游戏状态，也不会为不同观众生成个性化直播画面。</aside>
+</section>
 
-LIVE Studio 本地数据开放是一个跑在主播本机上的 WebSocket 网关，面向与 LIVE Studio 同机运行的受信任第三方工具。客户端完成鉴权后，可以接收点赞、礼物、评论等选定的实时直播间事件。
+<section class="home-builder" aria-labelledby="home-builder">
+  <div><p class="home-eyebrow">从一个想法，到第一条事件</p><h2 id="home-builder">准备好，就开始。</h2><p>自己阅读协议，或让开发 Agent 和你一起接入。</p></div>
+  <nav aria-label="开发者资源"><a href="/zh/guide/quick-start">快速开始 <span aria-hidden="true">→</span></a><a href="/zh/guide/agent-skill">Agent Skill <span aria-hidden="true">→</span></a><a href="/zh/llms.txt">llms.txt <span aria-hidden="true">→</span></a></nav>
+</section>
 
-该能力适用于本地游戏引擎、H5 overlay、Unity 客户端，以及需要直播间数据、但不嵌入 LIVE Studio 本身的开发者工具。
-
-::: warning 能力边界
-这不是看播侧 overlay 推送 API。它不会把个性化状态送到观众设备，也不能让直播流按人分画面。它只把已授权的直播间事件投递给主播机上的本地客户端。
-:::
-
-## 从这里开始
-
-<div class="tt-start-grid">
-  <a href="/zh/guide/quick-start">
-    <b>01</b>
-    <span><strong>跑通第一次连接</strong><small>发现端口、完成鉴权，并在最短路径中收到第一条直播事件。</small></span>
-  </a>
-  <a href="/zh/guide/agent-skill">
-    <b>02</b>
-    <span><strong>与开发 Agent 一起接入</strong><small>安装 Skill，或提供 llms.txt，让 Agent 在现有项目中适配协议。</small></span>
-  </a>
-  <a href="/zh/events/">
-    <b>03</b>
-    <span><strong>把事件变成玩法</strong><small>查看点赞、礼物、评论事件，并选择礼物触发对应效果。</small></span>
-  </a>
 </div>
-
-遇到连接或事件问题时，前往[排障指南](/zh/guide/troubleshooting)。

@@ -2,18 +2,20 @@
 import { computed } from 'vue'
 import { useData } from 'vitepress'
 
-const { frontmatter } = useData()
+const { frontmatter, lang } = useData()
+const wordSpace = computed(() => lang.value.startsWith('zh') ? '' : ' ')
 const hero = computed(() => frontmatter.value.hero)
 const headline = computed(() => hero.value?.headline)
 </script>
 
 <template>
+  <p v-if="hero?.kicker" class="home-hero-kicker">{{ hero.kicker }}</p>
   <h1 v-if="headline" class="home-headline">
     <span class="home-headline__accessible">{{ hero.text }}</span>
     <span class="home-headline__visual" aria-hidden="true">
-      <span class="home-headline__lead">{{ headline.lead }} {{ headline.subject }}</span>
+      <span class="home-headline__lead">{{ headline.lead }}{{ wordSpace }}{{ headline.subject }}</span>
       <span class="home-headline__outcome">
-        {{ headline.bridge }}{{ ' ' }}<em class="home-headline__accent" :data-text="headline.accent">{{ headline.accent }}</em>
+        {{ headline.bridge }}{{ wordSpace }}<em class="home-headline__accent" :data-text="headline.accent">{{ headline.accent }}</em>
       </span>
     </span>
   </h1>
@@ -23,7 +25,7 @@ const headline = computed(() => hero.value?.headline)
 
 <style scoped>
 .home-headline {
-  --headline-type: clamp(2rem, 5vw, 4rem);
+  --headline-type: clamp(2rem, 3.6vw, 3.25rem);
   --headline-weight: 720;
   --headline-shadow: -0.7px 0 color-mix(in srgb, var(--tt-brand-cyan) 38%, transparent), 0.7px 0 color-mix(in srgb, var(--tt-brand-pink) 34%, transparent);
   margin: 0;

@@ -5,16 +5,18 @@ import DeveloperApplication from './DeveloperApplication.vue'
 import DemoShowcase from './DemoShowcase.vue'
 import GiftCatalog from './GiftCatalog.vue'
 import HomeHeroInfo from './HomeHeroInfo.vue'
+import HomeLiveDemo from './HomeLiveDemo.vue'
 import LlmDocsEntry from './LlmDocsEntry.vue'
 import LlmSiteFooter from './LlmSiteFooter.vue'
 import Mermaid from './Mermaid.vue'
 import './custom.css'
-import './headline-motion.css'
+import './home.css'
 
 export default {
   extends: DefaultTheme,
   Layout: () => h(DefaultTheme.Layout, null, {
     'home-hero-info': () => h(HomeHeroInfo),
+    'home-hero-image': () => h(HomeLiveDemo),
     'layout-bottom': () => h(LlmSiteFooter),
   }),
   enhanceApp({ app }) {

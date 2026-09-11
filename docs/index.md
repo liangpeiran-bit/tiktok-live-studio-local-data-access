@@ -1,58 +1,79 @@
 ---
 layout: home
+description: Build games the whole live room can play. Connect likes, gifts, and chat to your game with LIVE Studio Data Access.
 
 hero:
+  kicker: LIVE STUDIO · DATA ACCESS
   text: Turn live interactions into gameplay
   headline:
     lead: Turn
     subject: live interactions
     bridge: into
     accent: gameplay
-  tagline: Use a local WebSocket to transform likes, gifts, and chat into real-time experiences for H5, Unity, Unreal, or any game stack.
+  tagline: A like builds momentum. A gift changes the round. Bring the live room into your game, and decide what happens next.
   actions:
     - theme: brand
-      text: Apply for Access
+      text: Apply for access
       link: /apply
     - theme: alt
-      text: Read the documentation
+      text: Start building
       link: /guide/quick-start
-
-features:
-  - title: Local WebSocket
-    details: The Gateway listens only on 127.0.0.1, keeping live data on the creator device with low-latency delivery.
-  - title: Controlled event access
-    details: After credential authentication, a client receives only the IM message types enabled for its application.
-  - title: Bring any game stack
-    details: Connect H5, Unity, Unreal, or any WebSocket-capable runtime through a stable JSON event protocol.
 ---
+
+<div class="home-editorial">
+
+<div class="home-runtime">
+  <p>Your engine. Your rules.</p>
+  <ul aria-label="Compatible runtimes"><li>H5 / Web</li><li>Unity</li><li>Unreal</li><li>Any WebSocket client</li></ul>
+</div>
+
+<section class="home-section" aria-labelledby="home-interactions">
+  <header class="home-section__heading">
+    <p class="home-eyebrow">FROM AUDIENCE TO PLAYERS</p>
+    <h2 id="home-interactions">Give the room a way to play.</h2>
+    <p>Build around the interactions viewers already know. You choose how each one changes the game.</p>
+  </header>
+  <div class="home-mechanics">
+    <article>
+      <span class="home-mechanics__label">LIKES</span>
+      <h3>Build momentum together.</h3>
+      <p>Fill a shared energy bar, power up a team, or unlock the next wave. Every like can move the room closer.</p>
+      <a href="/events/live-like">Explore like events <span aria-hidden="true">→</span></a>
+    </article>
+    <article>
+      <span class="home-mechanics__label">GIFTS</span>
+      <h3>Make a gift part of the game.</h3>
+      <p>Turn a Rose into a tower or another gift into a special move. Pick the gift IDs and define the effects yourself.</p>
+      <a href="/reference/gift-catalog">Browse the gift catalog <span aria-hidden="true">→</span></a>
+    </article>
+    <article>
+      <span class="home-mechanics__label">CHAT</span>
+      <h3>Let the room call the next move.</h3>
+      <p>Use comments to choose a side, vote on a route, or set off a challenge. Give the audience a role in the round.</p>
+      <a href="/events/live-chat">Explore chat events <span aria-hidden="true">→</span></a>
+    </article>
+  </div>
+</section>
 
 <DemoShowcase locale="en" compact />
 
-## What is this?
+<section class="home-section home-connect" aria-labelledby="home-connect">
+  <header class="home-section__heading">
+    <p class="home-eyebrow">BUILT FOR YOUR STACK</p>
+    <h2 id="home-connect">Your game, connected to LIVE Studio.</h2>
+    <p>A local WebSocket delivers enabled live events as JSON. Keep your engine, your game loop, and your creative control.</p>
+  </header>
+  <ol class="home-steps">
+    <li><span aria-hidden="true">01</span><h3>Tell us what you’re building.</h3><p>Apply with your game idea and the events you need. Approved developers receive credentials and setup instructions by email.</p><a href="/apply">Request early access <span aria-hidden="true">→</span></a></li>
+    <li><span aria-hidden="true">02</span><h3>Make your first connection.</h3><p>Run your client on the same machine as LIVE Studio, discover the Gateway, and authenticate with your issued credentials.</p><a href="/guide/quick-start">Follow the quick start <span aria-hidden="true">→</span></a></li>
+    <li><span aria-hidden="true">03</span><h3>Make the next event playable.</h3><p>Map an event to an action and test it in your game. Start with a like or comment, then build out your own rules.</p><a href="/samples/h5">Explore the H5 starter <span aria-hidden="true">→</span></a></li>
+  </ol>
+  <aside class="home-local-note"><strong>Local by design.</strong> The Gateway listens on 127.0.0.1 and delivers the message types enabled for your application. It does not push game state to viewer devices or personalize the live video.</aside>
+</section>
 
-LIVE Studio Local Data Access is a local WebSocket gateway for trusted third-party tools running on the same machine as LIVE Studio. After authentication, a client can receive selected real-time live room events such as likes, gifts, and chat messages.
+<section class="home-builder" aria-labelledby="home-builder">
+  <div><p class="home-eyebrow">FROM IDEA TO FIRST EVENT</p><h2 id="home-builder">Ready when you are.</h2><p>Explore the protocol yourself, or bring your coding agent.</p></div>
+  <nav aria-label="Developer resources"><a href="/guide/quick-start">Quick start <span aria-hidden="true">→</span></a><a href="/guide/agent-skill">Agent Skill <span aria-hidden="true">→</span></a><a href="/llms.txt">llms.txt <span aria-hidden="true">→</span></a></nav>
+</section>
 
-This capability is designed for local game engines, H5 overlays, Unity clients, and developer tools that need live room data without embedding directly into LIVE Studio.
-
-::: warning Scope boundary
-This is not a viewer-side overlay push API. It does not send personalized state to viewer devices and cannot make the video stream per-viewer. It only delivers authorized live room events to local clients on the creator machine.
-:::
-
-## Start here
-
-<div class="tt-start-grid">
-  <a href="/guide/quick-start">
-    <b>01</b>
-    <span><strong>Make your first connection</strong><small>Discover a port, authenticate, and receive your first live event by following the shortest path.</small></span>
-  </a>
-  <a href="/guide/agent-skill">
-    <b>02</b>
-    <span><strong>Build with your coding agent</strong><small>Install the skill or share llms.txt to adapt the protocol to your existing project.</small></span>
-  </a>
-  <a href="/events/">
-    <b>03</b>
-    <span><strong>Turn events into gameplay</strong><small>Explore like, gift, and chat events, then map gifts to the effects you want.</small></span>
-  </a>
 </div>
-
-If a connection or event does not behave as expected, use the [Troubleshooting guide](/guide/troubleshooting).
