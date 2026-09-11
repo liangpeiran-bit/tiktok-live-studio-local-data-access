@@ -15,6 +15,19 @@ export default defineConfig({
   markdown: {
     config(md) {
       const defaultFence = md.renderer.rules.fence!
+      const defaultTableOpen = md.renderer.rules.table_open
+      const defaultTableClose = md.renderer.rules.table_close
+
+      // Keep wide reference tables scrollable without widening the document on mobile.
+      md.renderer.rules.table_open = (tokens, idx, options, env, self) => {
+        const label = env.relativePath?.startsWith('zh/') ? '表格，可横向滚动' : 'Table, scroll horizontally'
+        const table = defaultTableOpen?.(tokens, idx, options, env, self) ?? self.renderToken(tokens, idx, options)
+        return `<div class="docs-table-scroll" role="region" aria-label="${label}" tabindex="0">${table}`
+      }
+      md.renderer.rules.table_close = (tokens, idx, options, env, self) => {
+        const table = defaultTableClose?.(tokens, idx, options, env, self) ?? self.renderToken(tokens, idx, options)
+        return `${table}</div>\n`
+      }
 
       md.renderer.rules.fence = (tokens, idx, options, env, self) => {
         const token = tokens[idx]

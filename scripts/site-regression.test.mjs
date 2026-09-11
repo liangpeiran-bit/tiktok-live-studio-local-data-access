@@ -122,3 +122,21 @@ test('application keeps the guidance beside one three-step form without the Home
   assert.equal((template.match(/<fieldset\b/g) || []).length, 3)
   assert.doesNotMatch(template, /<video\b|apply-masthead/)
 })
+
+test('documentation styles stay scoped and no longer force dark syntax colors on light pages', async () => {
+  const themeDir = new URL('../docs/.vitepress/theme/', import.meta.url)
+  const css = await readFile(new URL('docs.css', themeDir), 'utf8')
+  const common = await readFile(new URL('custom.css', themeDir), 'utf8')
+  const theme = await readFile(new URL('index.ts', themeDir), 'utf8')
+  assert.match(theme, /'docs-layout': !page\.value\.isNotFound && \(!frontmatter\.value\.layout \|\| frontmatter\.value\.layout === 'doc'\)/)
+  for (const selector of css.matchAll(/^\s*([^@/{}\s][^{}]*?)\s*\{/gm)) {
+    assert.ok(selector[1].includes('.docs-layout'), `Unscoped documentation selector: ${selector[1]}`)
+  }
+  assert.match(common, /html:not\(\.dark\) \.Layout:not\(\.docs-layout\) \.vp-doc/)
+  assert.match(css, /\.dark \.docs-layout/)
+  assert.match(css, /\.docs-layout \.VPDoc\.has-sidebar \.content-container/)
+  assert.match(css, /\.docs-layout \.vp-doc > div > h1::after\s*\{\s*display: none/)
+  assert.doesNotMatch(css, /\.vp-doc > (?:h[1-4]|p|ul|ol)\b/)
+  assert.match(css, /\.docs-layout \.docs-table-scroll[^}]+overflow-x:\s*auto/)
+  assert.doesNotMatch(css, /linear-gradient|radial-gradient/)
+})

@@ -488,7 +488,8 @@ body {
   font-family: var(--vp-font-family-mono);
 }
 
-html:not(.dark) .vp-doc div[class*='language-'] span {
+/* Marketing surfaces keep dark code panels; documentation uses native Shiki themes. */
+html:not(.dark) .Layout:not(.docs-layout) .vp-doc div[class*='language-'] span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
 }

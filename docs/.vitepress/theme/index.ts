@@ -1,6 +1,7 @@
 import type { Theme } from 'vitepress'
+import { useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
-import { h } from 'vue'
+import { defineComponent, h } from 'vue'
 import DeveloperApplication from './DeveloperApplication.vue'
 import DemoShowcase from './DemoShowcase.vue'
 import GiftCatalog from './GiftCatalog.vue'
@@ -12,13 +13,23 @@ import Mermaid from './Mermaid.vue'
 import './custom.css'
 import './home.css'
 import './headline-motion.css'
+import './docs.css'
 
 export default {
   extends: DefaultTheme,
-  Layout: () => h(DefaultTheme.Layout, null, {
-    'home-hero-info': () => h(HomeHeroInfo),
-    'home-hero-image': () => h(HomeLiveDemo),
-    'layout-bottom': () => h(LlmSiteFooter),
+  Layout: defineComponent({
+    setup() {
+      const { frontmatter, page } = useData()
+      return () => h(DefaultTheme.Layout, {
+        class: {
+          'docs-layout': !page.value.isNotFound && (!frontmatter.value.layout || frontmatter.value.layout === 'doc'),
+        },
+      }, {
+        'home-hero-info': () => h(HomeHeroInfo),
+        'home-hero-image': () => h(HomeLiveDemo),
+        'layout-bottom': () => h(LlmSiteFooter),
+      })
+    },
   }),
   enhanceApp({ app }) {
     app.component('DeveloperApplication', DeveloperApplication)
