@@ -1,0 +1,45 @@
+/* Shared with the application hero: one short-circuit burst per five-second cycle. */
+@keyframes headline-short-circuit {
+  0%, 2.4% { opacity: 0; filter: brightness(2.2) blur(1px); transform: translate3d(-24px, 0, 0) scaleX(1.12); }
+  4% { opacity: 0.36; filter: brightness(2); transform: translate3d(12px, 0, 0) skewX(2deg); }
+  6.2% { opacity: 1; filter: brightness(1.7); transform: translate3d(-7px, 0, 0) skewX(-1deg); }
+  9% { filter: brightness(1.25); transform: translate3d(3px, 0, 0); }
+  12.5%, 100% { opacity: 1; filter: brightness(1); transform: translate3d(0, 0, 0); }
+}
+
+@keyframes headline-glitch-cyan {
+  0%, 2.4%, 13%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate3d(0, 0, 0); }
+  2.9% { opacity: 0.95; clip-path: inset(5% 0 69% 0); transform: translate3d(-42px, 0, 0) scaleX(1.18); }
+  4.9% { opacity: 0.86; clip-path: inset(34% 0 40% 0); transform: translate3d(-18px, 0, 0) scaleX(1.08); }
+  6.9% { opacity: 0.76; clip-path: inset(63% 0 10% 0); transform: translate3d(13px, 0, 0); }
+  9.3% { opacity: 0.55; clip-path: inset(19% 0 57% 0); transform: translate3d(-8px, 0, 0); }
+  11.8% { opacity: 0.22; clip-path: inset(76% 0 4% 0); transform: translate3d(-3px, 0, 0); }
+}
+
+@keyframes headline-glitch-pink {
+  0%, 2.4%, 13%, 100% { opacity: 0; clip-path: inset(100% 0 0 0); transform: translate3d(0, 0, 0); }
+  2.9% { opacity: 0.9; clip-path: inset(68% 0 6% 0); transform: translate3d(40px, 0, 0) scaleX(1.18); }
+  4.9% { opacity: 0.82; clip-path: inset(12% 0 62% 0); transform: translate3d(17px, 0, 0) scaleX(1.08); }
+  6.9% { opacity: 0.72; clip-path: inset(42% 0 31% 0); transform: translate3d(-12px, 0, 0); }
+  9.3% { opacity: 0.5; clip-path: inset(72% 0 7% 0); transform: translate3d(8px, 0, 0); }
+  11.8% { opacity: 0.2; clip-path: inset(27% 0 55% 0); transform: translate3d(3px, 0, 0); }
+}
+
+@keyframes headline-electric-line {
+  0% { opacity: 0; transform: translate3d(-24%, 0, 0) scaleX(0.08); }
+  1.6% { opacity: 0.42; transform: translate3d(-18%, 0, 0) scaleX(0.28); }
+  2.9% { opacity: 1; transform: translate3d(-4%, 0, 0) scaleX(0.82); }
+  4.5% { opacity: 0.94; transform: translate3d(0, 0, 0) scaleX(1); }
+  6.5% { opacity: 0.56; transform: translate3d(8%, 0, 0) scaleX(0.72); }
+  9.5%, 100% { opacity: 0; transform: translate3d(28%, 0, 0) scaleX(0.12); }
+}
+
+@keyframes headline-tiktok-smear-cyan {
+  0%, 46%, 72%, 100% { opacity: 0.12; filter: blur(1px); transform: translate3d(-2px, 0, 0) scaleX(1); }
+  58% { opacity: 0.72; filter: blur(7px); transform: translate3d(-20px, 0, 0) scaleX(1.08); }
+}
+
+@keyframes headline-tiktok-smear-pink {
+  0%, 46%, 72%, 100% { opacity: 0.1; filter: blur(1px); transform: translate3d(2px, 0, 0) scaleX(1); }
+  58% { opacity: 0.68; filter: blur(7px); transform: translate3d(20px, 0, 0) scaleX(1.08); }
+}

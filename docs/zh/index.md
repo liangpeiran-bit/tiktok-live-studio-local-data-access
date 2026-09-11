@@ -3,6 +3,11 @@ layout: home
 
 hero:
   text: 让直播互动，实时进入你的游戏
+  headline:
+    lead: 让
+    subject: 直播互动，
+    bridge: 实时进入
+    accent: 你的游戏
   tagline: 通过主播本机的 WebSocket，将点赞、礼物和评论转化为 H5、Unity、Unreal 游戏中的实时玩法。
   actions:
     - theme: brand

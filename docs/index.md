@@ -3,6 +3,11 @@ layout: home
 
 hero:
   text: Turn live interactions into gameplay
+  headline:
+    lead: Turn
+    subject: live interactions
+    bridge: into
+    accent: gameplay
   tagline: Use a local WebSocket to transform likes, gifts, and chat into real-time experiences for H5, Unity, Unreal, or any game stack.
   actions:
     - theme: brand
