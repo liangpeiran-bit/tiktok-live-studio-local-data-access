@@ -22,6 +22,33 @@ npm run docs:build
 
 Output directory: `docs/.vitepress/dist`
 
+## Browser acceptance
+
+After installing dependencies, install the isolated test browser once:
+
+```bash
+npx playwright install chromium
+```
+
+Build the site, start a fresh preview, and run acceptance in a second terminal:
+
+```bash
+npm run docs:build
+npm run docs:preview -- --host 127.0.0.1 --port 4182
+# In the second terminal:
+npm run test:e2e
+npm run test:e2e:docs
+npm run test:e2e:apply
+```
+
+The test only accepts a localhost URL (`E2E_BASE_URL` can override it). It covers English/Chinese, light/dark themes, responsive layouts, navigation, search, the video and glitch motion, and the application form. Formspree responses are mocked and all other non-GET/HEAD requests are blocked, so no real applications are submitted. Screenshots and `report.json` are saved in `artifacts/homepage-e2e/` (not published or committed).
+
+Restart the production preview after rebuilding: its asset file list is captured at startup.
+
+The documentation suite covers themed navigation, English/Chinese category labels, keyboard focus, outline jumps, code copying, syntax highlighting, and mobile table scrolling. Its screenshots and report are saved separately in `artifacts/docs-e2e/`.
+
+The Apply suite checks all three form steps in both languages and themes, responsive field/card alignment, keyboard selection, loading and duplicate-submit protection, and mocked rejection/success states. Results are saved in `artifacts/apply-e2e/`; it never sends real applications.
+
 ## Refresh the gift catalog
 
 The repository publishes a curated gift snapshot for search and gift-to-effect configuration. Refresh it from a captured gift-panel response without committing the raw response:

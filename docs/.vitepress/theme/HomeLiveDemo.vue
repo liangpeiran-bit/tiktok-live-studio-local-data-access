@@ -37,6 +37,7 @@ onUnmounted(() => cleanUp?.())
 </script>
 
 <template>
+  <div class="home-video-stage">
   <article class="home-live-demo" aria-labelledby="home-demo-title">
     <video
       ref="video" muted loop playsinline preload="metadata"
@@ -54,6 +55,8 @@ onUnmounted(() => cleanUp?.())
       <p>{{ copy.description }}</p>
     </div>
   </article>
+  <span class="home-video-note" aria-hidden="true"><span>GAMES</span><span>PEOPLE</span><span>TOGETHER</span></span>
+  </div>
 </template>
 
 <style scoped>
@@ -62,23 +65,23 @@ onUnmounted(() => cleanUp?.())
   --demo-text: #ffffff;
   --demo-muted: #d0d2da;
   --demo-type-kicker: 0.625rem;
-  --demo-type-title: clamp(1.125rem, 1.8vw, 1.5rem);
+  --demo-type-title: clamp(1.125rem, 1.75vw, 1.5rem);
   --demo-type-description: 0.75rem;
   --demo-weight: 700;
-  --demo-edge: -1px 1px 0 var(--tt-brand-cyan), 1px -1px 0 var(--tt-brand-pink);
-  --demo-shadow: 0 20px 48px color-mix(in srgb, var(--demo-ink) 14%, transparent);
+  --demo-edge: -2px 2px 0 var(--tt-brand-cyan), 2px -2px 0 var(--tt-brand-pink);
+  --demo-shadow: 0 12px 28px color-mix(in srgb, var(--demo-ink) 18%, transparent);
   position: relative;
   width: 100%;
   overflow: hidden;
-  border: 1px solid var(--tt-color-border-strong);
-  border-radius: var(--tux-v2-radius-container-level1-large);
+  border: 2px solid var(--demo-ink);
+  border-radius: var(--home-radius, var(--tux-v2-radius-container-level0-small));
   background: var(--demo-ink);
   box-shadow: var(--demo-edge), var(--demo-shadow);
   text-align: left;
 }
 .home-live-demo video { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; cursor: pointer; }
 .home-live-demo video:focus-visible { outline: 2px solid var(--tt-brand-cyan); outline-offset: -4px; }
-.home-live-demo__caption { position: absolute; inset: auto 0 0; padding: 18px 22px; color: var(--demo-text); pointer-events: none; }
+.home-live-demo__caption { position: absolute; inset: auto 0 0; padding: 18px 22px 18px 23%; color: var(--demo-text); pointer-events: none; }
 .home-live-demo__caption::before {
   position: absolute;
   inset: -24px 0 0;
@@ -88,7 +91,12 @@ onUnmounted(() => cleanUp?.())
 .home-live-demo__caption > * { position: relative; }
 .home-live-demo__caption span { color: var(--tt-brand-cyan); font-size: var(--demo-type-kicker); font-weight: var(--demo-weight); letter-spacing: 0.08em; }
 .home-live-demo__caption h2 { margin: 5px 0; color: inherit; font-size: var(--demo-type-title); font-weight: var(--demo-weight); line-height: 1.15; letter-spacing: -0.025em; }
-.home-live-demo__caption p { max-width: 430px; margin: 0; color: var(--demo-muted); font-size: var(--demo-type-description); line-height: 1.5; }
+.home-live-demo__caption p { max-width: none; margin: 0; color: var(--demo-muted); font-size: var(--demo-type-description); line-height: 1.5; }
+.home-video-stage { position: relative; }
+.home-video-note { position: absolute; right: -74px; bottom: 70px; width: 72px; color: var(--home-ink); font-size: var(--home-type-body); font-style: italic; font-weight: 900; line-height: 1.1; letter-spacing: -.065em; transform: rotate(-13deg) skewY(-6deg); pointer-events: none; }
+.home-video-note span { display: block; width: 125%; transform: scaleX(.8); transform-origin: left; white-space: nowrap; }
+.home-video-note::after { display: block; width: 65px; height: 18px; margin-top: 4px; background: currentColor; clip-path: polygon(0 40%, 100% 0, 100% 20%, 40% 70%, 88% 64%, 80% 85%, 10% 100%, 9% 78%, 66% 28%, 3% 61%); content: ''; }
+@media (max-width: 1279px) { .home-video-note { display: none; } }
 @media (max-width: 620px) {
   .home-live-demo__caption { padding: 10px 14px; }
   .home-live-demo__caption p { display: none; }

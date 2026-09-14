@@ -92,6 +92,55 @@ test('LLM links resolve against each source, without rewriting code blocks', () 
   assert.match(normalizeDocument('[Gift](../events/live-gift.md)', 'docs/guide/overview.md'), /pages\.dev\/events\/live-gift\)/)
   assert.ok(!normalizeDocument('<GiftCatalog />\n<LlmDocsEntry locale="en" />', 'docs/guide/overview.md').includes('<GiftCatalog'))
 })
+test('homepage keeps one five-second keyword glitch cycle and a reduced-motion fallback', async () => {
+  const themeDir = new URL('../docs/.vitepress/theme/', import.meta.url)
+  const source = await readFile(new URL('HomeHeroInfo.vue', themeDir), 'utf8')
+  const motion = await readFile(new URL('headline-motion.css', themeDir), 'utf8')
+  assert.match(source, /--headline-cycle:\s*5s/)
+  assert.match(source, /class="home-headline__accessible">\{\{ hero\.text \}\}/)
+  assert.match(source, /class="home-headline__visual" aria-hidden="true"/)
+  assert.match(source, /class="home-headline__line" :data-text="accentLine"/)
+  for (const animation of ['short-circuit', 'glitch-cyan', 'glitch-pink', 'tiktok-smear-cyan', 'tiktok-smear-pink', 'electric-line']) {
+    assert.ok(source.includes(`animation: headline-${animation} var(--headline-cycle)`))
+  }
+  // Only the initial 18% may contain active keyframes; the remaining cycle stays still.
+  for (const selector of motion.matchAll(/([\d%. ,]+)\s*\{/g)) {
+    const frames = [...selector[1].matchAll(/([\d.]+)%/g)].map(match => Number(match[1]))
+    assert.ok(frames.every(frame => frame <= 18 || frame === 100))
+  }
+  const reduced = source.slice(source.indexOf('@media (prefers-reduced-motion: reduce)'))
+  assert.match(reduced, /\.home-headline__ink\s*\{\s*animation: none/)
+  assert.match(reduced, /display: none; animation: none/)
+})
+
+test('localized homepages retain navigation and keep decorative icons out of LLM text', async () => {
+  for (const prefix of ['', 'zh/']) {
+    const path = `docs/${prefix}index.md`
+    const source = await readFile(new URL(`../${path}`, import.meta.url), 'utf8')
+    assert.equal((source.match(/<HomeInteractionIcon name="(?:like|gift|chat)" \/>/g) || []).length, 3)
+    assert.ok(source.includes(`link: /${prefix}apply`))
+    assert.ok(source.includes(`link: /${prefix}guide/quick-start`))
+    assert.ok(source.includes(`href="/${prefix}reference/gift-catalog"`))
+    assert.doesNotMatch(source, /ROSE ×1|LIVE\.CHAT|CONNECTED|Applications open/)
+    const context = normalizeDocument(source, path)
+    assert.doesNotMatch(context, /HomeInteractionIcon/)
+    assert.ok(context.includes(`${prefix}reference/gift-catalog`))
+  }
+})
+
+test('homepage video remains complete, keyboard-operable, and respects reduced motion', async () => {
+  const source = await readFile(new URL('../docs/.vitepress/theme/HomeLiveDemo.vue', import.meta.url), 'utf8')
+  assert.match(source, /interactive-tower-defense-demo\.mp4/)
+  assert.match(source, /aspect-ratio:\s*16\s*\/\s*9;\s*object-fit:\s*contain/)
+  assert.match(source, /role="button" tabindex="0"/)
+  assert.match(source, /@keydown\.space\.prevent="togglePlayback"/)
+  assert.match(source, /@keydown\.enter\.prevent="togglePlayback"/)
+  assert.match(source, /if \(reducedMotion\.matches\) video\.value\?\.pause\(\)/)
+  assert.match(source, /removeEventListener\('change', updatePlayback\)/)
+  assert.match(source, /home-live-demo__caption::before[\s\S]*linear-gradient\(transparent/)
+  assert.doesNotMatch(source, /<button|backdrop-filter/)
+})
+
 test('gift search aliases reference real distinct snapshot IDs', async () => {
   const catalog = JSON.parse(await readFile(new URL('../docs/public/data/gifts.json', import.meta.url)))
   const { aliases } = JSON.parse(await readFile(new URL('../docs/public/data/gift-aliases.json', import.meta.url)))
@@ -139,7 +188,32 @@ test('documentation styles stay scoped and no longer force dark syntax colors on
   assert.match(css, /\.docs-layout \.vp-doc > div > h1::after\s*\{\s*display: none/)
   assert.doesNotMatch(css, /\.vp-doc > (?:h[1-4]|p|ul|ol)\b/)
   assert.match(css, /\.docs-layout \.docs-table-scroll[^}]+overflow-x:\s*auto/)
+  assert.match(css, /table:has\(th:nth-child\(3\)\)[^}]+min-width: 640px/)
+  assert.match(css, /\.docs-table-scroll :not\(pre\) > code[^}]+white-space: nowrap/)
   assert.doesNotMatch(css, /linear-gradient|radial-gradient/)
+  assert.doesNotMatch(css, /#007d77/)
+  assert.match(css, /--docs-selected: var\(--tt-brand-black\)/)
+  assert.match(css, /--docs-brand-edge:.*var\(--tt-brand-cyan\).*var\(--tt-brand-pink\)/)
+  assert.match(css, /\.is-active[^}]+color: var\(--docs-on-solid\) !important/)
+  assert.match(css, /button\.copy\s*\{[^}]+opacity: 1/)
+  assert.match(css, /prefers-reduced-motion: reduce/)
+  assert.match(theme, /'doc-before': \(\) => h\(DocsPageContext\)/)
+  const context = await readFile(new URL('DocsPageContext.vue', themeDir), 'utf8')
+  assert.match(context, /theme\.value\.sidebar/)
+  assert.match(context, /page\.value\.relativePath/)
+})
+
+test('Apply shares brand selection states and puts mobile guidance after the form', async () => {
+  const themeDir = new URL('../docs/.vitepress/theme/', import.meta.url)
+  const css = await readFile(new URL('developer-application.css', themeDir), 'utf8')
+  const component = await readFile(new URL('DeveloperApplication.vue', themeDir), 'utf8')
+  assert.match(css, /grid-template-areas: 'intro form' 'guide form'/)
+  assert.match(css, /grid-template-areas: 'intro' 'form' 'guide'/)
+  assert.match(css, /\.form-progress \.is-active[^}]+background: var\(--tt-ink\)[^}]+box-shadow: var\(--apply-button-edge\)/)
+  assert.match(css, /\.event-option input:checked \+ \.event-option__check \{ background: var\(--tt-cyan\)/)
+  assert.doesNotMatch(css, /linear-gradient|radial-gradient/)
+  assert.ok(component.indexOf('class="apply-shell"') < component.indexOf('class="application-guide"'))
+  assert.match(component, /import InteractionIcon from '\.\/HomeInteractionIcon.vue'/)
 })
 
 const submissionEndpoint = 'https://forms.example.test/f/mock'

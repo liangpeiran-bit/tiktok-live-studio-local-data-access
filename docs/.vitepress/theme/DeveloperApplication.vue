@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
 import { ApplicationSubmissionError, submitApplication } from './application-submission.mjs'
+import InteractionIcon from './HomeInteractionIcon.vue'
 
 const props = defineProps<{
   formId: string
@@ -17,6 +18,7 @@ const isSubmitting = ref(false)
 const submitError = ref('')
 const eventsError = ref('')
 const submitted = ref(false)
+const eventIcons = { GiftMessage: 'gift', LikeMessage: 'like', ChatMessage: 'chat' } as const
 
 const isZh = computed(() => props.locale === 'zh')
 const copy = computed(() =>
@@ -272,20 +274,6 @@ const handleSubmit = async () => {
       <h1 id="application-intro-title">{{ copy.applicationTitle }}</h1>
       <p class="application-description">{{ copy.applicationDescription }}</p>
 
-      <ol class="apply-steps" :aria-label="copy.stepsAria">
-        <li v-for="(step, index) in copy.steps" :key="step.title">
-          <span class="step-marker" aria-hidden="true">{{ index + 1 }}</span>
-          <div class="step-content">
-            <h2>{{ step.title }}</h2>
-            <p>{{ step.description }}</p>
-          </div>
-        </li>
-      </ol>
-
-      <div class="application-notes">
-        <p>{{ copy.accessNote }}</p>
-        <p>{{ copy.secretNote }}</p>
-      </div>
     </section>
 
     <section id="application" class="apply-shell" aria-labelledby="application-title" tabindex="-1">
@@ -403,7 +391,8 @@ const handleSubmit = async () => {
                   <label v-for="option in copy.fields.eventOptions" :key="option.value" class="event-option">
                     <input v-model="selectedEvents" type="checkbox" :value="option.value" />
                     <span class="event-option__check" aria-hidden="true"></span>
-                    <span><strong>{{ option.title }}</strong><small>{{ option.description }}</small></span>
+                    <span class="event-option__copy"><strong>{{ option.title }}</strong><small>{{ option.description }}</small></span>
+                    <InteractionIcon :name="eventIcons[option.value as keyof typeof eventIcons]" class="event-option__icon" />
                   </label>
                 </div>
                 <p v-if="eventsError" class="field-error" role="alert">{{ eventsError }}</p>
@@ -454,6 +443,22 @@ const handleSubmit = async () => {
         <p>{{ copy.informationUse }}</p>
         <p>{{ copy.support }} <a href="mailto:TikTok_LIVE_Studio_Office@bytedance.com">TikTok_LIVE_Studio_Office@bytedance.com</a></p>
       </footer>
+    </section>
+
+    <section class="application-guide" :aria-label="copy.stepsAria">
+      <ol class="apply-steps" :aria-label="copy.stepsAria">
+        <li v-for="(step, index) in copy.steps" :key="step.title">
+          <span class="step-marker" aria-hidden="true">0{{ index + 1 }}</span>
+          <div class="step-content">
+            <h2>{{ step.title }}</h2>
+            <p>{{ step.description }}</p>
+          </div>
+        </li>
+      </ol>
+      <div class="application-notes">
+        <p>{{ copy.accessNote }}</p>
+        <p>{{ copy.secretNote }}</p>
+      </div>
     </section>
   </main>
 </template>

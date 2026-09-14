@@ -9,6 +9,9 @@
   },
   "scripts": {
     "test": "node --test scripts/site-regression.test.mjs",
+    "test:e2e": "node scripts/homepage-e2e.mjs",
+    "test:e2e:docs": "node scripts/docs-e2e.mjs",
+    "test:e2e:apply": "node scripts/apply-e2e.mjs",
     "docs:check-links": "node scripts/check-site-links.mjs",
     "gifts:extract": "node scripts/extract-gifts.mjs",
     "docs:llms": "node scripts/generate-llms.mjs",
@@ -18,6 +21,7 @@
   },
   "devDependencies": {
     "mermaid": "^11.16.1",
+    "playwright": "1.62.1",
     "vitepress": "^2.0.0-alpha.19"
   }
 }

@@ -11,7 +11,7 @@
 }
 
 :root {
-  --vp-font-family-base: 'TikTok Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --vp-font-family-base: 'TikTok Sans', Inter, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --vp-font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   --tt-brand-cyan: #25f4ee;
   --tt-brand-pink: #fe2c55;
@@ -1334,6 +1334,8 @@ html:has(.developer-application-page)::-webkit-scrollbar-thumb:hover { backgroun
   background: var(--tt-color-bg-base);
 }
 .developer-application-page .VPFooter { display: none; }
+/* Apply has its own step navigation; the docs-only mobile return-to-top bar obscures it. */
+.developer-application-page .VPLocalNav { display: none; }
 
 /* Gallery pages are a destination, not narrow API reference articles. */
 .tt-demo-index { max-width: 1180px; margin: 0 auto; padding: 64px 24px 80px; }

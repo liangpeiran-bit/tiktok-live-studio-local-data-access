@@ -30,6 +30,7 @@ export function normalizeDocument(markdown, path) {
       .replace(/<GiftCatalog\b[^>]*\/>/g, `[Gift catalog JSON](${site}/data/gifts.json) · [Search aliases](${site}/data/gift-aliases.json)`)
       .replace(/<LlmDocsEntry\b[^>]*\/>/g, `[LLM index](${site}${prefix}/llms.txt) · [Complete context](${site}${prefix}/llms-full.txt)`)
       .replace(/<DemoShowcase\b[^>]*\/>/g, `[Tug of Trap](${site}${prefix}/demos/tug-of-trap) · [Candy Arena](${site}${prefix}/demos/candy-arena-duel). Public demo mode uses simulated events.`)
+      .replace(/<HomeInteractionIcon\b[^>]*\/>/g, '')
       .replace(/<a\s+[^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/g, (_, href, label) => `[${label.replace(/<[^>]+>/g, '') || 'View resource'}](${link(href)})`)
       .replace(/<img\s+[^>]*src="([^"]+)"[^>]*>/g, (_, href) => `[Image](${link(href)})`)
       .replace(/<\/?(?:div|section|article|header|footer|p|h[1-6]|small|strong|span|b|video|source)\b[^>]*>/g, '')

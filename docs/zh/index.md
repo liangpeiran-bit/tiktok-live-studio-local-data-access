@@ -3,13 +3,17 @@ layout: home
 description: 通过 LIVE Studio Data Access，将点赞、礼物和评论变成实时游戏玩法，让整个直播间一起参与。
 
 hero:
-  kicker: LIVE STUDIO · DATA ACCESS
+  kicker: LIVE STUDIO / DATA ACCESS
   text: 为直播互动而生，让弹幕改变游戏
   headline:
     lead: 为直播互动而生
     lines:
-      - 让弹幕改变游戏
-  tagline: 一次点赞积蓄能量，一份礼物改变战局。让直播间参与进来，接下来发生什么，由你的游戏决定。
+      - 让弹幕
+      - 改变游戏。
+  tagline: 把实时点赞、礼物和评论变成游戏动作。用你熟悉的引擎，让整个直播间一起参与。
+  taglineLines:
+    - 把实时点赞、礼物和评论变成游戏动作。
+    - 用你熟悉的引擎，让整个直播间一起参与。
   actions:
     - theme: brand
       text: 申请接入
@@ -23,32 +27,32 @@ hero:
 
 <div class="home-runtime">
   <p>引擎由你选，玩法由你定。</p>
-  <ul aria-label="支持的运行环境"><li>H5 / Web</li><li>Unity</li><li>Unreal</li><li>任意 WebSocket 客户端</li></ul>
+  <ul aria-label="支持的运行环境"><li>H5 / Web</li><li>Unity</li><li>Unreal</li><li>WebSocket</li></ul>
 </div>
 
-<section class="home-section" aria-labelledby="home-interactions">
+<section class="home-section home-interactions" aria-labelledby="home-interactions">
   <header class="home-section__heading">
     <p class="home-eyebrow">从观看，到参与</p>
     <h2 id="home-interactions">让整个直播间，一起玩。</h2>
-    <p>从观众熟悉的互动出发。每次点赞、礼物和评论如何改变游戏，交给你来设计。</p>
+    <p>每一次互动如何改变游戏，由你来设计。</p>
   </header>
   <div class="home-mechanics">
     <article>
-      <span class="home-mechanics__label">点赞</span>
-      <h3>每一次点赞，都在积蓄力量。</h3>
-      <p>填满全场共享的能量条，为阵营加成，或解锁下一波挑战。让小小的点赞汇成共同的目标。</p>
+      <div class="home-mechanics__top"><span class="home-mechanics__label">点赞</span><HomeInteractionIcon name="like" /></div>
+      <h3>一起点赞，一起蓄力。</h3>
+      <p>让点赞积蓄能量，为团队带来加成。</p>
       <a href="/zh/events/live-like">了解点赞事件 <span aria-hidden="true">→</span></a>
     </article>
     <article>
-      <span class="home-mechanics__label">礼物</span>
-      <h3>让礼物，成为玩法的一部分。</h3>
-      <p>一朵玫瑰生成一座防御塔，另一份礼物触发一个技能。自由选择礼物 ID，定义属于你的效果。</p>
+      <div class="home-mechanics__top"><span class="home-mechanics__label">礼物</span><HomeInteractionIcon name="gift" /></div>
+      <h3>一份礼物，改变战局。</h3>
+      <p>自由选择礼物，为它定义游戏效果。</p>
       <a href="/zh/reference/gift-catalog">浏览礼物目录 <span aria-hidden="true">→</span></a>
     </article>
     <article>
-      <span class="home-mechanics__label">评论</span>
-      <h3>下一步，听听直播间的。</h3>
-      <p>用评论选择阵营、投票决定路线，或发起新的挑战。让观众不只是看比赛，也能参与其中。</p>
+      <div class="home-mechanics__top"><span class="home-mechanics__label">评论</span><HomeInteractionIcon name="chat" /></div>
+      <h3>下一步，交给直播间。</h3>
+      <p>让评论选择阵营、决定路线或发起挑战。</p>
       <a href="/zh/events/live-chat">了解评论事件 <span aria-hidden="true">→</span></a>
     </article>
   </div>

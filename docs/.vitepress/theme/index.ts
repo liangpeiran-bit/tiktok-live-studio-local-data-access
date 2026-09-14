@@ -4,8 +4,10 @@ import DefaultTheme from 'vitepress/theme-without-fonts'
 import { defineComponent, h } from 'vue'
 import DeveloperApplication from './DeveloperApplication.vue'
 import DemoShowcase from './DemoShowcase.vue'
+import DocsPageContext from './DocsPageContext.vue'
 import GiftCatalog from './GiftCatalog.vue'
 import HomeHeroInfo from './HomeHeroInfo.vue'
+import HomeInteractionIcon from './HomeInteractionIcon.vue'
 import HomeLiveDemo from './HomeLiveDemo.vue'
 import LlmDocsEntry from './LlmDocsEntry.vue'
 import LlmSiteFooter from './LlmSiteFooter.vue'
@@ -27,6 +29,7 @@ export default {
       }, {
         'home-hero-info': () => h(HomeHeroInfo),
         'home-hero-image': () => h(HomeLiveDemo),
+        'doc-before': () => h(DocsPageContext),
         'layout-bottom': () => h(LlmSiteFooter),
       })
     },
@@ -35,6 +38,7 @@ export default {
     app.component('DeveloperApplication', DeveloperApplication)
     app.component('DemoShowcase', DemoShowcase)
     app.component('GiftCatalog', GiftCatalog)
+    app.component('HomeInteractionIcon', HomeInteractionIcon)
     app.component('LlmDocsEntry', LlmDocsEntry)
     app.component('Mermaid', Mermaid)
   },

@@ -3,14 +3,18 @@ layout: home
 description: Build games the whole live room can play. Connect likes, gifts, and chat to your game with LIVE Studio Data Access.
 
 hero:
-  kicker: LIVE STUDIO · DATA ACCESS
+  kicker: LIVE STUDIO / DATA ACCESS
   text: Build for the moment the chat changes the game.
   headline:
     lead: Build for the moment
     lines:
-      - the chat changes
-      - the game.
-  tagline: A like builds momentum. A gift changes the round. Bring the live room into your game, and decide what happens next.
+      - THE CHAT
+      - CHANGES
+      - THE GAME.
+  tagline: Turn live likes, gifts, and chat into game actions. Your engine. Your rules. A whole room playing along.
+  taglineLines:
+    - Turn live likes, gifts, and chat into game actions.
+    - Your engine. Your rules. A whole room playing along.
   actions:
     - theme: brand
       text: Apply for access
@@ -24,32 +28,32 @@ hero:
 
 <div class="home-runtime">
   <p>Your engine. Your rules.</p>
-  <ul aria-label="Compatible runtimes"><li>H5 / Web</li><li>Unity</li><li>Unreal</li><li>Any WebSocket client</li></ul>
+  <ul aria-label="Compatible runtimes"><li>H5 / Web</li><li>Unity</li><li>Unreal</li><li>WebSocket</li></ul>
 </div>
 
-<section class="home-section" aria-labelledby="home-interactions">
+<section class="home-section home-interactions" aria-labelledby="home-interactions">
   <header class="home-section__heading">
     <p class="home-eyebrow">FROM AUDIENCE TO PLAYERS</p>
     <h2 id="home-interactions">Give the room a way to play.</h2>
-    <p>Build around the interactions viewers already know. You choose how each one changes the game.</p>
+    <p>You choose how each interaction changes the game.</p>
   </header>
   <div class="home-mechanics">
     <article>
-      <span class="home-mechanics__label">LIKES</span>
-      <h3>Build momentum together.</h3>
-      <p>Fill a shared energy bar, power up a team, or unlock the next wave. Every like can move the room closer.</p>
+      <div class="home-mechanics__top"><span class="home-mechanics__label">LIKES</span><HomeInteractionIcon name="like" /></div>
+      <h3>Build momentum.</h3>
+      <p>Likes charge energy and power up teams.</p>
       <a href="/events/live-like">Explore like events <span aria-hidden="true">→</span></a>
     </article>
     <article>
-      <span class="home-mechanics__label">GIFTS</span>
-      <h3>Make a gift part of the game.</h3>
-      <p>Turn a Rose into a tower or another gift into a special move. Pick the gift IDs and define the effects yourself.</p>
+      <div class="home-mechanics__top"><span class="home-mechanics__label">GIFTS</span><HomeInteractionIcon name="gift" /></div>
+      <h3>Change the round.</h3>
+      <p>Choose a gift. Define its game effect.</p>
       <a href="/reference/gift-catalog">Browse the gift catalog <span aria-hidden="true">→</span></a>
     </article>
     <article>
-      <span class="home-mechanics__label">CHAT</span>
-      <h3>Let the room call the next move.</h3>
-      <p>Use comments to choose a side, vote on a route, or set off a challenge. Give the audience a role in the round.</p>
+      <div class="home-mechanics__top"><span class="home-mechanics__label">CHAT</span><HomeInteractionIcon name="chat" /></div>
+      <h3>Call the next move.</h3>
+      <p>Let chat pick teams, routes, or challenges.</p>
       <a href="/events/live-chat">Explore chat events <span aria-hidden="true">→</span></a>
     </article>
   </div>
