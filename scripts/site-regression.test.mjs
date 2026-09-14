@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { connectLocal } from '../docs/public/samples/local-client.mjs'
 import { canonicalUrl, normalizeDocument } from './llms-markdown.mjs'
+import { ApplicationSubmissionError, submitApplication } from '../docs/.vitepress/theme/application-submission.mjs'
 
 const hello = { type: 'SERVER_HELLO', product: 'tiktok_live_studio', channel: 'third-party-im', version: '1.0.0' }
 const event = (id, name = 'live.like') => ({ type: 'EVENT', event: name, payload: { message_id: id, count: '1' } })
@@ -139,4 +140,114 @@ test('documentation styles stay scoped and no longer force dark syntax colors on
   assert.doesNotMatch(css, /\.vp-doc > (?:h[1-4]|p|ul|ol)\b/)
   assert.match(css, /\.docs-layout \.docs-table-scroll[^}]+overflow-x:\s*auto/)
   assert.doesNotMatch(css, /linear-gradient|radial-gradient/)
+})
+
+const submissionEndpoint = 'https://forms.example.test/f/mock'
+const submissionFailure = code => error => error instanceof ApplicationSubmissionError && error.code === code
+
+test('application blocks any populated honeypot before networking, without mutating answers', async () => {
+  for (const value of ['autofilled', ' ', '\n', new Blob(['test'])]) {
+    const payload = new FormData()
+    payload.append('_gotcha', '')
+    payload.append('_gotcha', value)
+    payload.set('full_name', 'Example Developer')
+    payload.set('email', 'developer@example.test')
+    const before = [...payload.entries()]
+    let calls = 0
+    await assert.rejects(submitApplication(submissionEndpoint, payload, {
+      fetchImpl: async () => { calls++; throw new Error('must not send') },
+    }), submissionFailure('HONEYPOT_FILLED'))
+    assert.equal(calls, 0)
+    assert.deepEqual([...payload.entries()], before)
+  }
+})
+
+test('application sends empty honeypots and accepts the documented acknowledgement exactly once', async () => {
+  for (const includeTrap of [true, false]) {
+    const payload = new FormData()
+    if (includeTrap) payload.set('_gotcha', '')
+    payload.set('email', 'developer@example.test')
+    payload.set('event_types', 'GiftMessage, LikeMessage')
+    const before = [...payload.entries()]
+    let calls = 0
+    await submitApplication(submissionEndpoint, payload, { fetchImpl: async (endpoint, options) => {
+      calls++
+      assert.equal(endpoint, submissionEndpoint)
+      assert.equal(options.method, 'POST')
+      assert.equal(options.body, payload)
+      assert.deepEqual(options.headers, { Accept: 'application/json' })
+      assert.ok(options.signal instanceof AbortSignal)
+      return Response.json({ next: '/thanks', ok: true })
+    } })
+    assert.equal(calls, 1)
+    assert.deepEqual([...payload.entries()], before)
+  }
+})
+
+test('application rejects JSON errors even with HTTP 200 and a next URL', async () => {
+  for (const body of [
+    { errors: [{ field: '_gotcha', message: 'Honeypot field _gotcha is not empty' }] },
+    { error: 'Form inactive' },
+    { ok: false },
+    { errors: [] },
+  ]) {
+    await assert.rejects(submitApplication(submissionEndpoint, new FormData(), {
+      fetchImpl: async () => Response.json({ next: '/thanks', ...body }),
+    }), submissionFailure('REJECTED'))
+  }
+})
+
+test('application does not claim success for unknown responses or HTTP failures', async () => {
+  for (const body of [null, [], {}, { ok: true }, { next: 1 }, { stripe: {}, resubmitKey: 'pending' }]) {
+    await assert.rejects(submitApplication(submissionEndpoint, new FormData(), {
+      fetchImpl: async () => Response.json(body),
+    }), submissionFailure('UNCONFIRMED'))
+  }
+  await assert.rejects(submitApplication(submissionEndpoint, new FormData(), {
+    fetchImpl: async () => new Response('<html>captcha</html>', { headers: { 'Content-Type': 'text/html' } }),
+  }), submissionFailure('UNCONFIRMED'))
+  for (const status of [400, 403, 422, 429, 500, 503]) {
+    await assert.rejects(submitApplication(submissionEndpoint, new FormData(), {
+      fetchImpl: async () => Response.json({ next: '/thanks' }, { status }),
+    }), submissionFailure(status >= 500 ? 'UNCONFIRMED' : 'REJECTED'))
+  }
+})
+
+test('application times out or reports network uncertainty without retrying or exposing raw errors', async () => {
+  for (const timeout of [false, true]) {
+    let calls = 0
+    await assert.rejects(submitApplication(submissionEndpoint, new FormData(), {
+      timeoutMs: 5,
+      fetchImpl: async (_url, { signal }) => {
+        calls++
+        if (!timeout) throw new Error('untrusted server text with private data')
+        return new Promise((_resolve, reject) => signal.addEventListener('abort', () => reject(signal.reason), { once: true }))
+      },
+    }), error => {
+      assert.equal(error.code, 'UNCONFIRMED')
+      assert.equal(error.message, 'UNCONFIRMED')
+      return true
+    })
+    assert.equal(calls, 1)
+  }
+})
+
+test('application hides the honeypot and only resets user answers after a confirmed acknowledgement', async () => {
+  const source = await readFile(new URL('../docs/.vitepress/theme/DeveloperApplication.vue', import.meta.url), 'utf8')
+  const css = await readFile(new URL('../docs/.vitepress/theme/developer-application.css', import.meta.url), 'utf8')
+  const trap = source.match(/<input\b[^>]*name="_gotcha"[^>]*>/)?.[0]
+  assert.ok(trap)
+  assert.match(trap, /\shidden\s/)
+  assert.match(trap, /aria-hidden="true"/)
+  assert.match(trap, /autocomplete="off"/)
+  assert.doesNotMatch(trap, /\bdisabled\b|\bvalue=/)
+  assert.match(css, /\.form-honeypot\s*\{\s*display:\s*none\s*!important/)
+  const handler = source.slice(source.indexOf('const handleSubmit ='), source.indexOf('</script>'))
+  assert.match(handler, /await submitApplication\(formAction\.value, payload\)[\s\S]*submitted\.value = true[\s\S]*applicationForm\.value\.reset\(\)/)
+  const recovery = handler.slice(handler.indexOf('} catch (error)'))
+  assert.doesNotMatch(recovery, /applicationForm\.value\.reset|selectedEvents\.value =|submitted\.value = true|submitApplication\(/)
+  assert.match(recovery, /honeypot\.value\.value = ''/)
+  assert.match(recovery, /copy\.value\.honeypotFilled/)
+  assert.match(recovery, /copy\.value\.submitUnconfirmed/)
+  assert.match(source, /ref="errorPanel"[^>]*role="alert"[^>]*tabindex="-1"/)
 })

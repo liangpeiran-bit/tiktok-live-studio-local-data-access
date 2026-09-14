@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
+import { ApplicationSubmissionError, submitApplication } from './application-submission.mjs'
 
 const props = defineProps<{
   formId: string
@@ -8,6 +9,8 @@ const props = defineProps<{
 
 const applicationForm = ref<HTMLFormElement | null>(null)
 const successPanel = ref<HTMLElement | null>(null)
+const errorPanel = ref<HTMLElement | null>(null)
+const honeypot = ref<HTMLInputElement | null>(null)
 const currentStep = ref(0)
 const selectedEvents = ref<string[]>([])
 const isSubmitting = ref(false)
@@ -81,6 +84,8 @@ const copy = computed(() =>
         required: '必填',
         eventRequired: '请至少选择一种直播事件。',
         submitFailed: '暂时无法提交，请稍后重试；你的填写内容仍保留在页面中。',
+        submitUnconfirmed: '暂时无法确认提交结果，你的填写内容仍保留。请勿连续重复提交；如需确认，请联系页面底部的支持邮箱。',
+        honeypotFilled: '隐藏校验项被意外填写，本次尚未发送。已清除此项，请暂停自动填表插件后再次提交；其他填写内容不变。',
         successEyebrow: '申请已提交',
         successTitle: '感谢你的申请',
         successDescription: '审核结果将发送到你填写的工作邮箱。审核时间因申请情况而异。',
@@ -153,7 +158,9 @@ const copy = computed(() =>
         required: 'Required',
         eventRequired: 'Choose at least one LIVE event.',
         submitFailed: 'We could not submit the form. Please try again; your answers are still here.',
-        successEyebrow: 'APPLICATION RECEIVED',
+        submitUnconfirmed: 'We could not confirm the submission result. Your answers are still here. Avoid repeated submissions; contact the support email below if you need confirmation.',
+        honeypotFilled: 'A hidden check was unexpectedly filled. Nothing was sent. We cleared that field; pause any autofill extensions and submit again. Your answers are unchanged.',
+        successEyebrow: 'APPLICATION SUBMITTED',
         successTitle: 'Thanks for applying.',
         successDescription: 'We will email the review result to your work address. Review times vary by application.',
         successNote: 'Please check your inbox and spam folder.',
@@ -229,27 +236,29 @@ const handleSubmit = async () => {
   isSubmitting.value = true
   submitError.value = ''
 
-  const payload = new FormData(applicationForm.value)
-  payload.set('event_types', selectedEvents.value.join(', '))
-  payload.set('locale', isZh.value ? 'zh-CN' : 'en')
-  payload.set('source', 'LIVE Studio developer application')
-  payload.set('page_url', window.location.href)
-
   try {
-    const response = await fetch(formAction.value, {
-      method: 'POST',
-      body: payload,
-      headers: { Accept: 'application/json' },
-    })
-
-    if (!response.ok) throw new Error(`Form submission failed: ${response.status}`)
+    const payload = new FormData(applicationForm.value)
+    payload.set('event_types', selectedEvents.value.join(', '))
+    payload.set('locale', isZh.value ? 'zh-CN' : 'en')
+    payload.set('source', 'LIVE Studio developer application')
+    payload.set('page_url', window.location.href)
+    await submitApplication(formAction.value, payload)
 
     submitted.value = true
     applicationForm.value.reset()
     selectedEvents.value = []
     void nextTick(() => successPanel.value?.focus())
-  } catch {
-    submitError.value = copy.value.submitFailed
+  } catch (error) {
+    if (error instanceof ApplicationSubmissionError && error.code === 'HONEYPOT_FILLED') {
+      // Clear only the accidentally filled trap; require a new, explicit submit attempt.
+      if (honeypot.value) honeypot.value.value = ''
+      submitError.value = copy.value.honeypotFilled
+    } else {
+      submitError.value = error instanceof ApplicationSubmissionError && error.code === 'REJECTED'
+        ? copy.value.submitFailed
+        : copy.value.submitUnconfirmed
+    }
+    void nextTick(() => errorPanel.value?.focus())
   } finally {
     isSubmitting.value = false
   }
@@ -317,7 +326,7 @@ const handleSubmit = async () => {
         </div>
 
         <form ref="applicationForm" :action="formAction" method="POST" novalidate @submit.prevent="handleSubmit">
-          <input class="form-honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+          <input ref="honeypot" class="form-honeypot" type="text" name="_gotcha" hidden aria-hidden="true" tabindex="-1" autocomplete="off" />
           <input type="hidden" name="_subject" value="LIVE Studio developer access application" />
 
           <div class="form-panels">
@@ -418,7 +427,7 @@ const handleSubmit = async () => {
               </label>
             </fieldset>
 
-            <p v-if="submitError" class="form-error" role="alert">{{ submitError }}</p>
+            <p v-if="submitError" ref="errorPanel" class="form-error" role="alert" tabindex="-1">{{ submitError }}</p>
 
           </div>
           <div class="form-actions">
